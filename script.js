@@ -1,16 +1,15 @@
 // ==========================================
 // ۱. تنظیمات اتصال به Supabase
 // ==========================================
-// این اطلاعات را از پنل Supabase خودتان برداشته‌اید
 const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
 
-// ایجاد اتصال - نام متغیر را از supabase به client تغییر دادیم تا خطا برطرف شود
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// اصلاح شده: استفاده از شیء جهانی supabase برای ایجاد اتصال
+// ما نام متغیر را 'supabaseClient' می‌گذاریم تا با نام کتابخانه اصلی قاطی نشود
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // متغیر برای ذخیره محصولات در حافظه موقت
 let products = [];
-
 // ==========================================
 // ۲. توابع مربوط به دیتابیس (Supabase)
 // ==========================================
@@ -18,14 +17,13 @@ let products = [];
 // خواندن محصولات از دیتابیس
 async function fetchProducts() {
     try {
-        // از client استفاده می‌کنیم
-        const { data, error } = await client
+        // تغییر از client به supabaseClient
+        const { data, error } = await supabaseClient
             .from('products') 
             .select('*');
 
         if (error) {
             console.error('خطا در دریافت اطلاعات:', error.message);
-            alert('خطا در دریافت محصولات: ' + error.message);
         } else {
             products = data;
             displayProducts(products);
@@ -78,7 +76,9 @@ async function deleteProduct(productId) {
 // ==========================================
 
 function displayProducts(productsList) {
-    const container = document.getElementById('product-container');
+    // اصلاح شده: نام آی‌دی باید با HTML یکی باشد
+    const container = document.getElementById('product-grid');
+
     if (!container) return; 
 
     container.innerHTML = ''; // پاک کردن محتوای قبلی
