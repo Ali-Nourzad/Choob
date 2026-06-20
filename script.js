@@ -1,7 +1,7 @@
 // --- ۱. تنظیمات اولیه و اتصال به Supabase ---
 // حتماً این مقادیر را از پنل Supabase خودتان جایگزین کنید
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; 
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co'; 
+const SUPABASE_ANON_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
 
 const { createClient } = window.supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
