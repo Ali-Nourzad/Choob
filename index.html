@@ -2,30 +2,148 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>T-Choob</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Choob | فروشگاه ایستا</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
         body { font-family: 'Vazirmatn', sans-serif; }
+        
+        /* استایل برای نرم‌تر شدن باز شدن سبد خرید */
+        #cart-modal {
+            transition: all 0.3s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
-    <nav class="bg-blue-600 text-white p-4 shadow-lg">
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- نوار ناوبری (Navbar) -->
+    <nav class="bg-blue-600 text-white p-4 shadow-lg sticky top-0 z-40">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold">فروشگاه ایستا</h1>
-            <a href="admin.html" class="bg-blue-800 px-3 py-1 rounded text-sm">پنل مدیریت</a>
+            
+            <div class="flex items-center gap-6">
+                <!-- سبد خرید -->
+                <button onclick="toggleCart()" class="relative p-2 hover:bg-blue-700 rounded-full transition">
+                    <span class="text-2xl">🛒</span>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+                
+                <a href="admin.html" class="hidden md:block bg-blue-800 hover:bg-blue-900 px-4 py-1 rounded text-sm transition">پنل مدیریت</a>
+            </div>
         </div>
     </nav>
 
-    <div class="container mx-auto p-6">
-        <h2 class="text-3xl font-bold mb-8 text-center">محصولات ما</h2>
-        <!-- این قسمت توسط جاوااسکریپت پر می‌شود -->
-        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <p class="text-center col-span-3">در حال بارگذاری محصولات...</p>
+    <!-- بخش اصلی محصولات -->
+    <main class="container mx-auto p-6">
+        <header class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">محصولات ما</h2>
+            <p class="text-gray-600">بهترین کیفیت، بهترین قیمت</p>
+        </header>
+
+        <!-- ظرف نمایش محصولات (Container) -->
+        <!-- در اینجا کلاس object-contain در جاوااسکریپت اعمال می‌شود تا عکس‌ها کشیده نشوند -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <!-- پیام بارگذاری اولیه -->
+            <div class="col-span-full text-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p class="text-gray-500 text-lg">در حال بارگذاری محصولات...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- بخش سبد خرید (Cart Modal Overlay) -->
+    <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex justify-end">
+        <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 overflow-y-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold">سبد خرید شما</h2>
+                <button onclick="toggleCart()" class="text-3xl text-gray-500 hover:text-red-500">&times;</button>
+            </div>
+
+            <!-- لیست آیتم‌های سبد خرید -->
+            <div id="cart-items-list" class="space-y-4 mb-8">
+                <!-- محصولات اضافه شده اینجا قرار می‌گیرند -->
+                <p class="text-center text-gray-400 py-10">سبد خرید شما خالی است.</p>
+            </div>
+
+            <div class="border-t pt-6">
+                <div class="flex justify-between text-xl font-bold mb-6">
+                    <span>جمع کل:</span>
+                    <span id="cart-total">۰ تومان</span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-green-600 hover:bg-green-700 text-white text-lg font-bold py-4 rounded-xl transition shadow-lg">
+                    ثبت نهایی سفارش
+                </button>
+                <p class="text-center text-xs text-gray-400 mt-4">پس از کلیک، سفارش شما برای مدیریت ارسال می‌شود.</p>
+            </div>
         </div>
     </div>
 
+    <!-- فوتر -->
+    <footer class="bg-gray-800 text-white py-8 mt-20">
+        <div class="container mx-auto text-center">
+            <p class="text-sm opacity-70">© ۲۰۲۶ تمامی حقوق برای فروشگاه ایستا محفوظ است.</p>
+        </div>
+    </footer>
+
+    <!-- اسکریپت‌ها -->
     <script src="script.js"></script>
+    <script>
+        // تابع کمکی برای باز و بسته کردن سبد خرید در سمت کلاینت
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.toggle('hidden');
+            
+            // اگر سبد باز شد، لیست را آپدیت کن
+            if (!modal.classList.contains('hidden')) {
+                renderCartItems();
+            }
+        }
+
+        // این تابع باید در script.js شما باشد یا اینجا اضافه شود تا لیست سبد را نمایش دهد
+        function renderCartItems() {
+            const listContainer = document.getElementById('cart-items-list');
+            const totalContainer = document.getElementById('cart-total');
+            
+            // اگر سبد خالی بود
+            if (cart.length === 0) {
+                listContainer.innerHTML = '<p class="text-center text-gray-400 py-10">سبد خرید شما خالی است.</p>';
+                totalContainer.innerText = '۰ تومان';
+                return;
+            }
+
+            let total = 0;
+            listContainer.innerHTML = cart.map((item, index) => {
+                total += Number(item.price);
+                return `
+                    <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-lg">
+                        <img src="${item.image_url}" class="w-16 h-16 object-contain rounded bg-white">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm">${item.name}</h4>
+                            <p class="text-blue-600 text-xs">${Number(item.price).toLocaleString()} تومان</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-500 text-sm">حذف</button>
+                    </div>
+                `;
+            }).join('');
+
+            totalContainer.innerText = `${total.toLocaleString()} تومان`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCartItems();
+            updateCartCount();
+        }
+
+        // اضافه کردن این دو تابع به اسکریپت اصلی خودتان در script.js یا اینجا:
+        function goToCart() {
+            toggleCart();
+        }
+    </script>
 </body>
 </html>
