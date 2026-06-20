@@ -51,7 +51,7 @@ function displayProducts(productsList) {
             <h2 class="text-lg font-bold mb-1">${product.name}</h2>
             <p class="text-blue-600 font-semibold mb-3">${Number(product.price).toLocaleString()} تومان</p>
             <div class="mt-auto flex flex-col gap-2">
-                <button onclick="viewDetails(${product.id})" class="text-sm text-gray-500 underline">مشاهده جزئیات</button>
+                <button onclick="renderProducts(${product.id})" class="text-sm text-gray-500 underline">مشاهده جزئیات</button>
                 <button onclick="addToCart(${product.id})" class="bg-blue-600 text-white px-4 py-2 rounded w-full">افزودن به سبد</button>
             </div>
         `;
@@ -127,8 +127,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('orders-list')) fetchOrders();
 });
 
-// نمایش جزئیات محصول (Modal ساده)
-function viewDetails(productId) {
-    const product = products.find(p => p.id === productId);
-    alert(`نام محصول: ${product.name}\nقیمت: ${product.price} تومان\n\nاین یک نمایش ساده است. در نسخه کامل می‌توانید اینجا توضیحات کامل را بنویسید.`);
+// این بخشی از کد نمایش محصول است که باید اصلاح شود
+function renderProducts(products) {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = products.map(product => `
+        <div onclick="openProductPage('${product.id}')" class="cursor-pointer bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+            <img src="${product.image_url}" class="w-full h-48 object-contain p-4">
+            <div class="p-4">
+                <h3 class="font-bold text-lg">${product.name}</h3>
+                <p class="text-blue-600">${product.price.toLocaleString()} تومان</p>
+                
+                <!-- دکمه افزودن به سبد خرید (باید جلوی انتشار کلیک کارت را بگیرد) -->
+                <button onclick="event.stopPropagation(); addToCart('${product.id}')" 
+                        class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+                    افزودن به سبد خرید
+                </button>
+            </div>
+        </div>
+    `).join('');
 }
