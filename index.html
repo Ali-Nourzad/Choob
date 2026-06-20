@@ -3,200 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T-Choob</title>
-    <link rel="icon" type="image/png" href="loogo.png">
-    <!-- Tailwind CSS -->
+    <title>T-Choob | فروشگاه حرفه‌ای</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
-        body { font-family: 'Vazirmatn', sans-serif; }
-        
-        /* استایل برای نرم‌تر شدن باز شدن سبد خرید */
-        #cart-modal {
-            transition: all 0.3s ease-in-out;
-        }
+        body { font-family: 'Vazirmatn', sans-serif; scroll-behavior: smooth; }
+        .product-card:hover img { transform: scale(1.05); }
+        #cart-modal, #product-detail-page, #auth-modal { transition: all 0.3s ease-in-out; }
+        /* پنهان کردن اسکرول‌بار برای تصاویر کوچک */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
 
     <!-- نوار ناوبری (Navbar) -->
-    <nav class="bg-blue-600 text-white p-4 shadow-lg sticky top-0 z-40">
+    <nav class="bg-white shadow-md sticky top-0 z-40 p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">چوب گالری</h1>
+            <h1 class="text-2xl font-bold text-blue-600 cursor-pointer" onclick="window.location.reload()">T-Choob</h1>
             
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
+                <!-- پروفایل/ورود -->
+                <div id="user-section">
+                    <button onclick="openAuthModal()" class="text-gray-600 hover:text-blue-600 font-medium">ورود / ثبت‌نام</button>
+                </div>
+
                 <!-- سبد خرید -->
-                <button onclick="toggleCart()" class="relative p-2 hover:bg-blue-700 rounded-full transition">
-                    <span class="text-2xl">🛒</span>
+                <button onclick="toggleCart()" class="relative p-2 bg-blue-50 rounded-full">
+                    <span class="text-xl">🛒</span>
                     <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
                 </button>
-                
-                <a href="TC admin.html" class="hidden md:block bg-blue-800 hover:bg-blue-900 px-4 py-1 rounded text-sm transition">پنل مدیریت</a>
             </div>
         </div>
     </nav>
 
     <!-- بخش اصلی محصولات -->
     <main class="container mx-auto p-6">
-        <header class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">محصولات ما</h2>
-            <p class="text-gray-600">بهترین کیفیت، بهترین قیمت</p>
+        <header class="text-center my-10">
+            <h2 class="text-3xl font-bold text-gray-800">محصولات برتر ما</h2>
+            <p class="text-gray-500 mt-2">کیفیت تضمین شده برای شما</p>
         </header>
 
-        <!-- ظرف نمایش محصولات (Container) -->
-        <!-- در اینجا کلاس object-contain در جاوااسکریپت اعمال می‌شود تا عکس‌ها کشیده نشوند -->
-        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            <!-- پیام بارگذاری اولیه -->
-            <div class="col-span-full text-center py-20">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p class="text-gray-500 text-lg">در حال بارگذاری محصولات...</p>
-            </div>
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- محصولات توسط JS اینجا ساخته می‌شوند -->
         </div>
     </main>
 
-    <!-- بخش سبد خرید (Cart Modal Overlay) -->
-    <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex justify-end">
-        <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 overflow-y-auto">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold">سبد خرید شما</h2>
-                <button onclick="toggleCart()" class="text-3xl text-gray-500 hover:text-red-500">&times;</button>
+    <!-- [MODAL] سبد خرید -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
+        <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">سبد خرید شما</h2>
+                <button onclick="toggleCart()" class="text-2xl">&times;</button>
             </div>
-
-            <!-- لیست آیتم‌های سبد خرید -->
-            <div id="cart-items-list" class="space-y-4 mb-8">
-                <!-- محصولات اضافه شده اینجا قرار می‌گیرند -->
-                <p class="text-center text-gray-400 py-10">سبد خرید شما خالی است.</p>
-            </div>
-
-            <div class="border-t pt-6">
-                <div class="flex justify-between text-xl font-bold mb-6">
+            <div id="cart-items-list" class="flex-1 overflow-y-auto space-y-4"></div>
+            <div class="border-t pt-4 mt-4">
+                <div class="flex justify-between text-lg font-bold mb-4">
                     <span>جمع کل:</span>
                     <span id="cart-total">۰ تومان</span>
                 </div>
-                <button onclick="checkout()" class="w-full bg-green-600 hover:bg-green-700 text-white text-lg font-bold py-4 rounded-xl transition shadow-lg">
-                    ثبت نهایی سفارش
-                </button>
-                <p class="text-center text-xs text-gray-400 mt-4">پس از کلیک، سفارش شما برای مدیریت ارسال می‌شود.</p>
+                <button onclick="checkout()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold">ثبت نهایی سفارش</button>
             </div>
         </div>
     </div>
 
-    <!-- فوتر -->
-    <footer class="bg-gray-800 text-white py-8 mt-20">
-        <div class="container mx-auto text-center">
-            <p class="text-sm opacity-70">© ۲۰۲۶ تمامی حقوق برای شرکت بزرگ TChoob(Choob galary) محفوظ است.</p>
-        </div>
-    </footer>
-
-    <!-- اسکریپت‌ها -->
-    <script src="script.js"></script>
-    <script>
-        // تابع کمکی برای باز و بسته کردن سبد خرید در سمت کلاینت
-        function toggleCart() {
-            const modal = document.getElementById('cart-modal');
-            modal.classList.toggle('hidden');
-            
-            // اگر سبد باز شد، لیست را آپدیت کن
-            if (!modal.classList.contains('hidden')) {
-                renderCartItems();
-            }
-        }
-
-        // این تابع باید در script.js شما باشد یا اینجا اضافه شود تا لیست سبد را نمایش دهد
-        function renderCartItems() {
-            const listContainer = document.getElementById('cart-items-list');
-            const totalContainer = document.getElementById('cart-total');
-            
-            // اگر سبد خالی بود
-            if (cart.length === 0) {
-                listContainer.innerHTML = '<p class="text-center text-gray-400 py-10">سبد خرید شما خالی است.</p>';
-                totalContainer.innerText = '۰ تومان';
-                return;
-            }
-
-            let total = 0;
-            listContainer.innerHTML = cart.map((item, index) => {
-                total += Number(item.price);
-                return `
-                    <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-lg">
-                        <img src="${item.image_url}" class="w-16 h-16 object-contain rounded bg-white">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-sm">${item.name}</h4>
-                            <p class="text-blue-600 text-xs">${Number(item.price).toLocaleString()} تومان</p>
-                        </div>
-                        <button onclick="removeFromCart(${index})" class="text-red-500 text-sm">حذف</button>
-                    </div>
-                `;
-            }).join('');
-
-            totalContainer.innerText = `${total.toLocaleString()} تومان`;
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCartItems();
-            updateCartCount();
-        }
-
-        // اضافه کردن این دو تابع به اسکریپت اصلی خودتان در script.js یا اینجا:
-        function goToCart() {
-            toggleCart();
-        }
-    </script>
-    <!-- بخش جزئیات محصول (Product Detail Page View) -->
+    <!-- [PAGE] جزئیات محصول (Product Detail Page) -->
     <div id="product-detail-page" class="fixed inset-0 bg-white z-50 hidden overflow-y-auto">
-        <!-- دکمه بازگشت -->
-        <button onclick="closeProductPage()" class="fixed top-4 right-4 bg-gray-200 p-2 rounded-full z-50">🔙 بازگشت</button>
-    
-        <div class="container mx-auto p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                
-                <!-- بخش تصاویر (Slider) -->
+        <button onclick="closeProductPage()" class="fixed top-6 right-6 bg-gray-100 p-3 rounded-full shadow-md z-50 hover:bg-gray-200">🔙 بازگشت</button>
+        
+        <div class="container mx-auto p-6 pt-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- تصاویر -->
                 <div class="space-y-4">
-                    <div class="h-[400px] flex items-center justify-center bg-gray-100 rounded-xl">
-                        <img id="main-product-img" src="" class="max-h-full object-contain">
+                    <div class="aspect-square bg-gray-100 rounded-2xl flex items-center justify-center overflow-hidden">
+                        <img id="main-product-img" src="" class="max-h-full object-contain transition-all duration-500">
                     </div>
-                    <div id="product-image-thumbnails" class="flex gap-4 overflow-x-auto pb-2">
-                        <!-- تصاویر کوچک اینجا ساخته می‌شوند -->
+                    <div id="product-image-thumbnails" class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+                        <!-- Thumbnails -->
                     </div>
                 </div>
-    
-                <!-- بخش اطلاعات و خرید -->
+                <!-- اطلاعات -->
                 <div class="space-y-6">
-                    <h1 id="detail-title" class="text-3xl font-bold text-gray-800">نام محصول</h1>
-                    <p id="detail-price" class="text-2xl text-blue-600 font-bold">۰ تومان</p>
-                    <p id="detail-description" class="text-gray-600 leading-relaxed">توضیحات محصول در اینجا قرار می‌گیرد...</p>
-                    
-                    <div class="border-t pt-6">
-                        <button id="detail-add-to-cart" class="w-full bg-blue-600 text-white py-4 rounded-xl text-xl font-bold hover:bg-blue-700 transition">
-                            افزودن به سبد خرید
-                        </button>
-                    </div>
+                    <h1 id="detail-title" class="text-4xl font-bold text-gray-800">نام محصول</h1>
+                    <p id="detail-price" class="text-3xl text-blue-600 font-bold">۰ تومان</p>
+                    <p id="detail-description" class="text-gray-600 text-lg leading-relaxed">توضیحات...</p>
+                    <button id="detail-add-to-cart" class="w-full bg-blue-600 text-white py-4 rounded-2xl text-xl font-bold hover:bg-blue-700 shadow-lg">افزودن به سبد خرید</button>
                 </div>
             </div>
-    
-            <!-- بخش نظرات (Reviews Section) -->
-            <div class="mt-20 border-t pt-10">
-                <h2 class="text-2xl font-bold mb-8">نظرات کاربران</h2>
-                
-                <!-- فرم ثبت نظر (فقط اگر کاربر وارد شده باشد) -->
-                <div id="review-form-container" class="bg-gray-50 p-6 rounded-xl mb-10">
-                    <h3 class="font-bold mb-4">نظر خود را بنویسید</h3>
-                    <textarea id="review-text" class="w-full p-4 border rounded-lg h-32" placeholder="تجربه خود را بنویسید..."></textarea>
-                    <button onclick="submitReview()" class="mt-4 bg-green-600 text-white px-8 py-2 rounded-lg">ارسال نظر</button>
+
+            <!-- بخش نظرات -->
+            <div class="mt-20 max-w-3xl mx-auto border-t pt-10">
+                <h3 class="text-2xl font-bold mb-6">نظرات مشتریان</h3>
+                <div id="review-form-container" class="bg-gray-50 p-6 rounded-2xl mb-10">
+                    <textarea id="review-text" class="w-full p-4 border rounded-xl h-32 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="نظر خود را بنویسید..."></textarea>
+                    <button onclick="submitReview()" class="mt-4 bg-blue-600 text-white px-10 py-2 rounded-lg">ارسال نظر</button>
                 </div>
-    
-                <!-- لیست نظرات -->
-                <div id="reviews-list" class="space-y-6">
-                    <!-- نظرات از دیتابیس اینجا لود می‌شوند -->
-                    <p class="text-gray-400 text-center">هنوز نظری ثبت نشده است.</p>
-                </div>
+                <div id="reviews-list" class="space-y-6"></div>
             </div>
         </div>
     </div>
 
+    <!-- [MODAL] ورود و ثبت‌نام -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/50 z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl relative">
+            <button onclick="toggleAuthModal()" class="absolute top-4 left-4 text-2xl text-gray-400">&times;</button>
+            <div id="auth-content">
+                <h2 class="text-2xl font-bold text-center mb-8">ورود به حساب</h2>
+                <input type="email" id="login-email" placeholder="ایمیل" class="w-full p-4 mb-4 border rounded-xl outline-none focus:border-blue-500">
+                <input type="password" id="login-password" placeholder="رمز عبور" class="w-full p-4 mb-6 border rounded-xl outline-none focus:border-blue-500">
+                <button onclick="handleLogin()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg">ورود</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
