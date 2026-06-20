@@ -3,7 +3,7 @@
 // ==========================================
 // این اطلاعات را از پنل Supabase خودتان برداشته‌اید
 const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
+const SUPABASE_KEY = 'sb_secret_l8fJeuqtvbpZYJ6-lhZgKw_YnecxTuw';
 
 // ایجاد اتصال - نام متغیر را از supabase به client تغییر دادیم تا خطا برطرف شود
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
