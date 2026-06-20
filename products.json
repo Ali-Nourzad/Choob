@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "گوشی موبایل",
+    "price": 15000000,
+    "img": "https://via.placeholder.com/150"
+  },
+  {
+    "id": 2,
+    "name": "هدفون بیسیم",
+    "price": 2500000,
+    "img": "https://via.placeholder.com/150"
+  }
+]

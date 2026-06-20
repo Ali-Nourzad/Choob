@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>T-Choob</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+        body { font-family: 'Vazirmatn', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">فروشگاه ایستا</h1>
+            <a href="admin.html" class="bg-blue-800 px-3 py-1 rounded text-sm">پنل مدیریت</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6">
+        <h2 class="text-3xl font-bold mb-8 text-center">محصولات ما</h2>
+        <!-- این قسمت توسط جاوااسکریپت پر می‌شود -->
+        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <p class="text-center col-span-3">در حال بارگذاری محصولات...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
