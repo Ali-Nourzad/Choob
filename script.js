@@ -1,142 +1,134 @@
-// ==========================================
-// ۱. تنظیمات اتصال به Supabase
-// ==========================================
+// ۱. تنظیمات اصلی
 const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
-
-// اصلاح شده: استفاده از شیء جهانی supabase برای ایجاد اتصال
-// ما نام متغیر را 'supabaseClient' می‌گذاریم تا با نام کتابخانه اصلی قاطی نشود
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// متغیر برای ذخیره محصولات در حافظه موقت
 let products = [];
-// ==========================================
-// ۲. توابع مربوط به دیتابیس (Supabase)
-// ==========================================
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// خواندن محصولات از دیتابیس
+// ==========================================
+// ۲. سیستم احراز هویت ساده (برای پنل ادمین)
+// ==========================================
+function checkAdmin() {
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    if (!isAdmin && window.location.pathname.includes('admin.html')) {
+        const pass = prompt("لطفاً رمز عبور ادمین را وارد کنید:");
+        if (pass === 'admin') {
+            localStorage.setItem('isAdmin', 'true');
+            location.reload();
+        } else {
+            alert("رمز اشتباه است!");
+            window.location.href = 'index.html';
+        }
+    }
+}
+
+// ==========================================
+// ۳. مدیریت محصولات و نمایش
+// ==========================================
 async function fetchProducts() {
-    try {
-        // تغییر از client به supabaseClient
-        const { data, error } = await supabaseClient
-            .from('products') 
-            .select('*');
-
-        if (error) {
-            console.error('خطا در دریافت اطلاعات:', error.message);
-        } else {
-            products = data;
-            displayProducts(products);
-        }
-    } catch (err) {
-        console.error('خطای غیرمنتظره:', err);
-    }
-}
-
-// اضافه کردن محصول جدید (برای پنل مدیریت)
-async function addProduct(name, price, imageUrl) {
-    try {
-        const { error } = await supabaseClient
-            .from('products')
-            .insert([{ name: name, price: parseInt(price), image_url: imageUrl }]);
-
-        if (error) {
-            alert('خطا در ثبت محصول: ' + error.message);
-        } else {
-            alert('محصول با موفقیت اضافه شد!');
-            await fetchProducts(); // لیست را آپدیت کن
-        }
-    } catch (err) {
-        console.error('خطا در افزودن:', err);
-    }
-}
-
-// حذف محصول (برای پنل مدیریت)
-async function deleteProduct(productId) {
-    if (!confirm('آیا از حذف این محصول مطمئن هستید؟')) return;
-
-    try {
-        const { error } = await supabaseClient
-            .from('products')
-            .delete()
-            .eq('id', productId);
-
-        if (error) {
-            alert('خطا در حذف محصول!');
-        } else {
-            await fetchProducts(); // لیست را آپدیت کن
-        }
-    } catch (err) {
-        console.error('خطا در حذف:', err);
-    }
-}
-
-// ==========================================
-// ۳. توابع مربوط به نمایش در صفحه (UI)
-// ==========================================
-
-function displayProducts(productsList) {
-    // اصلاح شده: نام آی‌دی باید با HTML یکی باشد
-    const container = document.getElementById('product-grid');
-
-    if (!container) return; 
-
-    container.innerHTML = ''; // پاک کردن محتوای قبلی
-
-    if (productsList.length === 0) {
-        container.innerHTML = '<p class="text-center col-span-full text-gray-500">هیچ محصولی یافت نشد.</p>';
+    const { data, error } = await supabaseClient.from('products').select('*');
+    if (error) {
+        console.error(error);
         return;
     }
+    products = data;
+    displayProducts(products);
+}
+
+function displayProducts(productsList) {
+    const container = document.getElementById('product-grid');
+    if (!container) return;
+    container.innerHTML = '';
 
     productsList.forEach(product => {
         const card = document.createElement('div');
-        card.className = 'bg-white p-4 rounded-lg shadow-md flex flex-col'; 
+        card.className = 'bg-white p-4 rounded-lg shadow-md flex flex-col transition hover:shadow-xl';
         card.innerHTML = `
-            <img src="${product.image_url}" alt="${product.name}" class="w-full h-48 object-cover rounded mb-2">
-            <h2 class="text-xl font-bold mb-1">${product.name}</h2>
-            <p class="text-gray-600 mb-3">${Number(product.price).toLocaleString()} تومان</p>
-            <div class="mt-auto">
-                <button onclick="addToCart(${product.id})" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full transition">
-                    افزودن به سبد خرید
-                </button>
-                ${window.location.pathname.includes('admin.html') ? 
-                    `<button onclick="deleteProduct(${product.id})" class="mt-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-full transition">حذف محصول</button>` 
-                    : ''}
+            <img src="${product.image_url}" alt="${product.name}" 
+                 class="w-full h-48 object-contain bg-gray-50 rounded mb-2" 
+                 onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+            <h2 class="text-lg font-bold mb-1">${product.name}</h2>
+            <p class="text-blue-600 font-semibold mb-3">${Number(product.price).toLocaleString()} تومان</p>
+            <div class="mt-auto flex flex-col gap-2">
+                <button onclick="viewDetails(${product.id})" class="text-sm text-gray-500 underline">مشاهده جزئیات</button>
+                <button onclick="addToCart(${product.id})" class="bg-blue-600 text-white px-4 py-2 rounded w-full">افزودن به سبد</button>
             </div>
         `;
         container.appendChild(card);
     });
 }
 
+// رفع مشکل کشیده شدن تصویر: استفاده از object-contain
+// در کد بالا کلاس object-contain اضافه شد تا تصویر در کادر خودش قرار بگیرد نه اینکه کشیده شود.
+
 // ==========================================
-// ۴. مدیریت رویدادها (Event Listeners)
+// ۴. سبد خرید (Cart System)
 // ==========================================
+function addToCart(productId) {
+    const product = products.find(p => p.id === productId);
+    cart.push(product);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${product.name} به سبد اضافه شد!`);
+    updateCartCount();
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    // ۱. همیشه محصولات را از دیتابیس بگیر
-    fetchProducts();
+function updateCartCount() {
+    const countEl = document.getElementById('cart-count');
+    if (countEl) countEl.innerText = cart.length;
+}
 
-    // ۲. اگر در صفحه مدیریت هستیم، فرم افزودن را فعال کن
-    const adminForm = document.getElementById('admin-form');
-    if (adminForm) {
-        adminForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const img = document.getElementById('p-img').value;
-
-            if (!name || !price || !img) {
-                alert('لطفاً همه فیلدها را پر کنید');
-                return;
-            }
-
-            await addProduct(name, price, img);
-            adminForm.reset(); 
-        });
+async function checkout() {
+    if (cart.length === 0) return alert("سبد خرید خالی است!");
+    
+    try {
+        for (let item of cart) {
+            const { error } = await supabaseClient.from('orders').insert([{
+                product_name: item.name,
+                price: item.price,
+                image_url: item.image_url,
+                status: 'در انتظار پرداخت'
+            }]);
+            if (error) throw error;
+        }
+        cart = [];
+        localStorage.removeItem('cart');
+        alert("سفارش شما با موفقیت ثبت شد!");
+        location.reload();
+    } catch (err) {
+        alert("خطا در ثبت سفارش: " + err.message);
     }
+}
+
+// ==========================================
+// ۵. پنل ادمین و سفارشات
+// ==========================================
+async function fetchOrders() {
+    const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
+    const container = document.getElementById('orders-list');
+    if (!container || error) return;
+
+    container.innerHTML = data.map(order => `
+        <div class="border-b p-4 flex justify-between items-center">
+            <div>
+                <p class="font-bold">${order.product_name}</p>
+                <p class="text-sm text-gray-500">${order.price.toLocaleString()} تومان</p>
+            </div>
+            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">${order.status}</span>
+        </div>
+    `).join('');
+}
+
+// اجرای اولیه
+document.addEventListener('DOMContentLoaded', () => {
+    checkAdmin();
+    fetchProducts();
+    updateCartCount();
+    if (document.getElementById('orders-list')) fetchOrders();
 });
 
-// تابع سبد خرید (ساده شده)
-function addToCart(productId) {
-    alert('محصول با کد ' + productId + ' به سبد خرید اضافه شد!');
+// نمایش جزئیات محصول (Modal ساده)
+function viewDetails(productId) {
+    const product = products.find(p => p.id === productId);
+    alert(`نام محصول: ${product.name}\nقیمت: ${product.price} تومان\n\nاین یک نمایش ساده است. در نسخه کامل می‌توانید اینجا توضیحات کامل را بنویسید.`);
 }
