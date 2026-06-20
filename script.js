@@ -1,160 +1,153 @@
-// تنظیمات Supabase (اطلاعات خود را اینجا جایگزین کنید)
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// --- ۱. تنظیمات اولیه و اتصال به Supabase ---
+// حتماً این مقادیر را از پنل Supabase خودتان جایگزین کنید
+const SUPABASE_URL = 'YOUR_SUPABASE_URL'; 
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
-// وضعیت‌های برنامه
+const { createClient } = window.supabase;
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// متغیرهای سراسری برای مدیریت وضعیت برنامه
 let products = [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let currentUser = null;
 let currentProductId = null;
 
-// --- ۱. لود اولیه داده‌ها ---
-async function init() {
+// --- ۲. شروع برنامه (Initialization) ---
+document.addEventListener('DOMContentLoaded', async () => {
     await fetchProducts();
+    await checkUser();
     updateCartCount();
-    checkUser();
-}
+    renderCartItems(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
+});
 
+// --- ۳. مدیریت محصولات ---
 async function fetchProducts() {
-    const { data, error } = await supabase.from('products').select('*');
+    const { data, error } = await supabase
+        .from('products')
+        .select('*');
+
     if (error) {
-        console.error("Error fetching products:", error);
+        console.error('خطا در دریافت محصولات:', error);
         return;
     }
     products = data;
-    renderProductGrid();
+    renderProducts(products);
 }
 
-// --- ۲. مدیریت نمایش محصولات ---
-function renderProductGrid() {
-    const grid = document.getElementById('product-grid');
-    grid.innerHTML = products.map(product => `
-        <div onclick="openProductPage('${product.id}')" class="product-card group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden">
-            <div class="h-52 overflow-hidden flex items-center justify-center p-4">
-                <img src="${product.image_url}" class="w-full h-full object-contain transition-transform duration-500">
+function renderProducts(productsList) {
+    const container = document.getElementById('products-grid');
+    if (!container) return;
+
+    if (productsList.length === 0) {
+        container.innerHTML = '<p class="col-span-full text-center text-gray-500">محصولی یافت نشد.</p>';
+        return;
+    }
+
+    container.innerHTML = productsList.map(product => `
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow p-4">
+            <div class="relative group cursor-pointer" onclick="showProductDetails('${product.id}')">
+                <img src="${product.image_url}" alt="${product.name}" class="w-full h-48 object-contain mb-4">
+                <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
-            <div class="p-5">
-                <h3 class="font-bold text-lg text-gray-800 truncate">${product.name}</h3>
-                <p class="text-blue-600 font-bold mt-2">${Number(product.price).toLocaleString()} تومان</p>
-                <button onclick="event.stopPropagation(); addToCart('${product.id}')" 
-                        class="mt-4 w-full bg-gray-100 group-hover:bg-blue-600 group-hover:text-white text-gray-800 py-2 rounded-xl transition-colors">
-                    افزودن به سبد
-                </button>
-            </div>
+            <h3 class="font-bold text-gray-800 mb-2">${product.name}</h3>
+            <p class="text-blue-600 font-bold mb-4">${Number(product.price).toLocaleString()} تومان</p>
+            <button onclick="addToCart('${product.id}')" class="w-full bg-gray-900 text-white py-2 rounded-xl hover:bg-blue-600 transition-colors">
+                افزودن به سبد خرید
+            </button>
         </div>
     `).join('');
 }
 
-// --- ۳. مدیریت صفحه جزئیات محصول (SPA Logic) ---
-async function openProductPage(id) {
-    const product = products.find(p => p.id === id);
+async function showProductDetails(productId) {
+    currentProductId = productId;
+    const product = products.find(p => p.id == productId);
     if (!product) return;
 
-    currentProductId = id;
-    document.getElementById('detail-title').innerText = product.name;
-    document.getElementById('detail-price').innerText = `${Number(product.price).toLocaleString()} تومان`;
-    document.getElementById('detail-description').innerText = product.description || 'توضیحاتی برای این محصول ثبت نشده است.';
-    document.getElementById('main-product-img').src = product.image_url;
-    
-    // دکمه افزودن به سبد در صفحه جزئیات
-    document.getElementById('detail-add-to-cart').onclick = () => addToCart(product.id);
+    // پر کردن اطلاعات در بخش جزئیات (اگر المان‌ها در HTML وجود داشته باشند)
+    document.getElementById('product-detail-name').innerText = product.name;
+    document.getElementById('product-detail-price').innerText = `${Number(product.price).toLocaleString()} تومان`;
+    document.getElementById('product-detail-desc').innerText = product.description;
+    document.getElementById('product-detail-img').src = product.image_url;
 
-    // مدیریت تصاویر (اگر چند تصویر وجود داشته باشد)
-    const thumbContainer = document.getElementById('product-image-thumbnails');
-    thumbContainer.innerHTML = '';
-    
-    // فرض می‌کنیم تصاویر در فیلد images به صورت آرایه هستند
-    const images = product.images || [product.image_url];
-    images.forEach(imgUrl => {
-        const img = document.createElement('img');
-        img.src = imgUrl;
-        img.className = "w-20 h-20 object-contain bg-gray-100 rounded-lg cursor-pointer border-2 border-transparent hover:border-blue-500";
-        img.onclick = () => {
-            document.getElementById('main-product-img').src = imgUrl;
-        };
-        thumbContainer.appendChild(img);
-    });
+    // اسکرول به بخش جزئیات
+    document.getElementById('product-details-section').scrollIntoView({ behavior: 'smooth' });
 
-    // لود نظرات
-    loadReviews(id);
-
-    // نمایش صفحه
-    document.getElementById('product-detail-page').classList.remove('hidden');
-    document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول صفحه اصلی
+    // بارگذاری نظرات مربوط به این محصول
+    loadReviews(productId);
 }
 
-function closeProductPage() {
-    document.getElementById('product-detail-page').classList.add('hidden');
-    document.body.style.overflow = 'auto';
+// --- ۴. مدیریت سبد خرید (Cart) ---
+function updateCartCount() {
+    const countEl = document.getElementById('cart-count');
+    if (countEl) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        countEl.innerText = totalItems;
+    }
 }
 
-// --- ۴. مدیریت سبد خرید ---
-function addToCart(id) {
-    const product = products.find(p => p.id === id);
-    const existingItem = cart.find(item => item.id === id);
+function addToCart(productId) {
+    const product = products.find(p => p.id == productId);
+    if (!product) return;
+
+    const existingItem = cart.find(item => item.id == productId);
 
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        cart.push({ ...product, quantity: 1 });
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image_url: product.image_url,
+            quantity: 1
+        });
     }
-    
+
     saveCart();
     updateCartCount();
-    
-    // نمایش افکت کوچک (اختیاری)
-    console.log("Added to cart:", product.name);
-}
-
-function updateCartCount() {
-    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-    document.getElementById('cart-count').innerText = count;
+    alert('محصول به سبد خرید اضافه شد!');
 }
 
 function saveCart() {
     localStorage.setItem('cart', JSON.stringify(cart));
 }
 
-function toggleCart() {
-    const modal = document.getElementById('cart-modal');
-    modal.classList.toggle('hidden');
-    if (!modal.classList.contains('hidden')) renderCartItems();
-}
-
 function renderCartItems() {
     const list = document.getElementById('cart-items-list');
     const totalEl = document.getElementById('cart-total');
-    
+    if (!list) return;
+
     if (cart.length === 0) {
-        list.innerHTML = '<p class="text-center text-gray-400 mt-10">سبد خرید خالی است</p>';
-        totalEl.innerText = '۰ تومان';
+        list.innerHTML = '<p class="text-center text-gray-400 py-4">سبد خرید شما خالی است.</p>';
+        if (totalEl) totalEl.innerText = '۰ تومان';
         return;
     }
 
     let total = 0;
-// ادامه تابع renderCartItems
-    list.innerHTML = cart.map((item, index) => `
-        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl">
-            <img src="${item.image_url}" class="w-16 h-16 object-contain bg-white rounded-lg">
-            <div class="flex-1">
-                <h4 class="font-bold text-sm">${item.name}</h4>
-                <p class="text-xs text-blue-600">${Number(item.price).toLocaleString()} تومان</p>
-                <div class="flex items-center gap-2 mt-2">
-                    <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 bg-gray-200 rounded flex items-center justify-center">-</button>
-                    <span class="text-xs">${item.quantity}</span>
-                    <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 bg-gray-200 rounded flex items-center justify-center">+</button>
+    list.innerHTML = cart.map(item => {
+        total += item.price * item.quantity;
+        return `
+            <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl mb-2">
+                <img src="${item.image_url}" class="w-12 h-12 object-contain bg-white rounded-lg">
+                <div class="flex-1">
+                    <h4 class="font-bold text-xs">${item.name}</h4>
+                    <p class="text-xs text-blue-600">${Number(item.price).toLocaleString()} تومان</p>
                 </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="updateQty('${item.id}', -1)" class="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">-</button>
+                    <span class="text-xs">${item.quantity}</span>
+                    <button onclick="updateQty('${item.id}', 1)" class="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">+</button>
+                </div>
+                <button onclick="removeFromCart('${item.id}')" class="text-red-400 text-lg">&times;</button>
             </div>
-            <button onclick="removeFromCart('${item.id}')" class="text-red-400 hover:text-red-600 text-xl">&times;</button>
-        </div>
-    `).join('');
-    totalEl.innerText = `${total.toLocaleString()} تومان`;
+        `;
+    }).join('');
+
+    if (totalEl) totalEl.innerText = `${total.toLocaleString()} تومان`;
 }
 
-// مدیریت تعداد و حذف از سبد
 function updateQty(id, delta) {
-    const item = cart.find(i => i.id === id);
+    const item = cart.find(i => i.id == id);
     if (item) {
         item.quantity += delta;
         if (item.quantity <= 0) return removeFromCart(id);
@@ -165,7 +158,7 @@ function updateQty(id, delta) {
 }
 
 function removeFromCart(id) {
-    cart = cart.filter(i => i.id !== id);
+    cart = cart.filter(i => i.id != id);
     saveCart();
     updateCartCount();
     renderCartItems();
@@ -175,44 +168,49 @@ function removeFromCart(id) {
 async function loadReviews(productId) {
     const list = document.getElementById('reviews-list');
     const formContainer = document.getElementById('review-form-container');
-    
-    // نمایش فرم فقط اگر کاربر وارد شده باشد
+    if (!list) return;
+
+    // نمایش فرم ثبت نظر فقط برای کاربران لاگین شده
     if (currentUser) {
-        formContainer.classList.remove('hidden');
+        if (formContainer) formContainer.classList.remove('hidden');
     } else {
-        formContainer.innerHTML = `<p class="text-center text-gray-500 italic">برای ثبت نظر، ابتدا <button onclick="openAuthModal()" class="text-blue-600 underline">وارد شوید</button>.</p>`;
+        if (formContainer) {
+            formContainer.innerHTML = `<p class="text-center text-gray-500 text-sm italic">برای ثبت نظر، ابتدا <button onclick="openAuthModal()" class="text-blue-600 underline">وارد شوید</button>.</p>`;
+        }
     }
 
     const { data: reviews, error } = await supabase
         .from('reviews')
-        .select('*, profiles(full_name)') // فرض بر این است که پروفایل کاربر را هم می‌خواهید
+        .select('*')
         .eq('product_id', productId)
         .order('created_at', { ascending: false });
 
     if (error) {
-        list.innerHTML = '<p class="text-red-500">خطا در بارگذاری نظرات</p>';
+        list.innerHTML = '<p class="text-red-500 text-sm">خطا در بارگذاری نظرات</p>';
         return;
     }
 
     if (reviews.length === 0) {
-        list.innerHTML = '<p class="text-gray-400 text-center">هنوز نظری ثبت نشده است.</p>';
+        list.innerHTML = '<p class="text-gray-400 text-center text-sm">هنوز نظری ثبت نشده است.</p>';
         return;
     }
 
     list.innerHTML = reviews.map(rev => `
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-            <div class="flex justify-between items-center mb-3">
-                <span class="font-bold text-blue-600">${rev.user_name || 'کاربر مهمان'}</span>
-                <span class="text-xs text-gray-400">${new Date(rev.created_at).toLocaleDateString('fa-IR')}</span>
+        <div class="bg-white p-4 rounded-xl border border-gray-100 mb-3">
+            <div class="flex justify-between items-center mb-2">
+                <span class="font-bold text-sm text-blue-600">${rev.user_name || 'کاربر'}</span>
+                <span class="text-[10px] text-gray-400">${new Date(rev.created_at).toLocaleDateString('fa-IR')}</span>
             </div>
-            <p class="text-gray-700 leading-relaxed">${rev.comment}</p>
+            <p class="text-gray-700 text-sm leading-relaxed">${rev.comment}</p>
         </div>
     `).join('');
 }
 
 async function submitReview() {
-    const text = document.getElementById('review-text').value.trim();
-    if (!text) return alert("لطفاً نظر خود را بنویسید");
+    const textEl = document.getElementById('review-text');
+    const text = textEl.value.trim();
+
+    if (!text) return alert("لطفاً متن نظر را وارد کنید");
     if (!currentUser) return alert("ابتدا باید وارد حساب خود شوید");
 
     const { error } = await supabase
@@ -221,30 +219,33 @@ async function submitReview() {
             product_id: currentProductId, 
             comment: text, 
             user_id: currentUser.id,
-            user_name: currentUser.email // یا نام واقعی کاربر از پروفایل
+            user_name: currentUser.email.split('@')[0] 
         }]);
 
     if (error) {
-        alert("خطا در ثبت نظر");
-        console.error(error);
+        alert("خطا در ثبت نظر: " + error.message);
     } else {
-        document.getElementById('review-text').value = '';
-        loadReviews(currentProductId); // بازسازی لیست نظرات
+        textEl.value = '';
+        loadReviews(currentProductId);
     }
 }
 
 // --- ۶. مدیریت احراز هویت (Auth) ---
 function openAuthModal() {
-    document.getElementById('auth-modal').classList.remove('hidden');
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.classList.remove('hidden');
 }
 
 function toggleAuthModal() {
-    document.getElementById('auth-modal').classList.add('hidden');
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.classList.add('hidden');
 }
 
 async function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
+
+    if (!email || !password) return alert("لطفاً ایمیل و رمز عبور را وارد کنید");
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -257,6 +258,28 @@ async function handleLogin() {
     }
 }
 
+async function handleSignup() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+
+    if (!email || !password) return alert("لطفاً اطلاعات ثبت‌نام را کامل کنید");
+
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+        alert("خطا در ثبت‌نام: " + error.message);
+    } else {
+        alert("ثبت‌نام با موفقیت انجام شد! لطفاً ایمیل خود را برای تایید لینک چک کنید.");
+        // در حالت تست، معمولاً کاربر بلافاصله لاگین می‌شود یا باید لاگین کند
+    }
+}
+
+async function handleLogout() {
+    await supabase.auth.signOut();
+    currentUser = null;
+    updateUserUI();
+}
+
 async function checkUser() {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
@@ -267,20 +290,16 @@ async function checkUser() {
 
 function updateUserUI() {
     const userSection = document.getElementById('user-section');
+    if (!userSection) return;
+
     if (currentUser) {
         userSection.innerHTML = `
             <div class="flex items-center gap-3">
                 <span class="text-sm font-medium text-gray-700">${currentUser.email.split('@')[0]}</span>
-                <button onclick="handleLogout()" class="text-sm text-red-500 underline">خروج</button>
+                <button onclick="handleLogout()" class="text-xs text-red-500 hover:underline">خروج</button>
             </div>
         `;
     } else {
-        userSection.innerHTML = `<button onclick="openAuthModal()" class="text-gray-600 hover:text-blue-600 font-medium">ورود / ثبت‌نام</button>`;
+        userSection.innerHTML = `<button onclick="openAuthModal()" class="text-gray-600 hover:text-blue-600 font-medium text-sm">ورود / ثبت‌نام</button>`;
     }
-}
-
-async function handleLogout() {
-    await supabase.auth.signOut();
-    currentUser = null;
-    updateUserUI();
 }
