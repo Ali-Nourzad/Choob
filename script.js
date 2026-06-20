@@ -36,7 +36,7 @@ async function fetchProducts() {
 // اضافه کردن محصول جدید (برای پنل مدیریت)
 async function addProduct(name, price, imageUrl) {
     try {
-        const { error } = await client
+        const { error } = await supabaseClient
             .from('products')
             .insert([{ name: name, price: parseInt(price), image_url: imageUrl }]);
 
@@ -56,7 +56,7 @@ async function deleteProduct(productId) {
     if (!confirm('آیا از حذف این محصول مطمئن هستید؟')) return;
 
     try {
-        const { error } = await client
+        const { error } = await supabaseClient
             .from('products')
             .delete()
             .eq('id', productId);
