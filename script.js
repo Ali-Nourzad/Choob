@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // --- ۳. مدیریت محصولات ---
 async function fetchProducts() {
-    const { data, error } = await supabaseClient
+    const { data, error } = await supabase
         .from('products')
         .select('*');
 
@@ -179,7 +179,7 @@ async function loadReviews(productId) {
         }
     }
 
-    const { data: reviews, error } = await supabaseClient
+    const { data: reviews, error } = await supabase
         .from('reviews')
         .select('*')
         .eq('product_id', productId)
@@ -213,7 +213,7 @@ async function submitReview() {
     if (!text) return alert("لطفاً متن نظر را وارد کنید");
     if (!currentUser) return alert("ابتدا باید وارد حساب خود شوید");
 
-    const { error } = await supabaseClient
+    const { error } = await supabase
         .from('reviews')
         .insert([{ 
             product_id: currentProductId, 
@@ -247,7 +247,7 @@ async function handleLogin() {
 
     if (!email || !password) return alert("لطفاً ایمیل و رمز عبور را وارد کنید");
 
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
         alert("خطا در ورود: " + error.message);
@@ -264,7 +264,7 @@ async function handleSignup() {
 
     if (!email || !password) return alert("لطفاً اطلاعات ثبت‌نام را کامل کنید");
 
-    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
         alert("خطا در ثبت‌نام: " + error.message);
@@ -275,13 +275,13 @@ async function handleSignup() {
 }
 
 async function handleLogout() {
-    await supabaseClient.auth.signOut();
+    await supabase.auth.signOut();
     currentUser = null;
     updateUserUI();
 }
 
 async function checkUser() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (user) {
         currentUser = user;
         updateUserUI();
