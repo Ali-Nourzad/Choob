@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchProducts();
     await checkUser();
     await updateUserNavbar();
+    await loadOrders();
     updateCartUI();
     //toggleCart(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
 });
@@ -267,9 +268,37 @@ function renderCartItems() {
   }
 }
 
-async function loadOrders(){
+async function loadOrders() {
 
-  if(!currentUser){
+  const ordersBox =
+
+    document.getElementById(
+
+      'orders-list'
+
+    );
+
+
+
+  if (!ordersBox) return;
+
+
+
+  const {
+
+    data: { user }
+
+  } = await shopDB.auth.getUser();
+
+
+
+  if (!user) {
+
+    ordersBox.innerHTML =
+
+      '<p>ابتدا وارد حساب شوید.</p>';
+
+
 
     return;
 
@@ -283,51 +312,33 @@ async function loadOrders(){
 
     error
 
-  }
+  } = await shopDB
 
-  = await shopDB
+    .from('orders')
 
-  .from('orders')
+    .select('*')
 
-  .select('*')
+    .eq('user_id', user.id)
 
-  .eq(
+    .order(
 
-    'user_id',
+      'created_at',
 
-    currentUser.id
+      {
 
-  )
+        ascending: false
 
-  .order(
+      }
 
-    'created_at',
-
-    {
-
-      ascending:false
-
-    }
-
-  );
+    );
 
 
 
-  const box =
+  if (error) {
 
-  document.getElementById(
+    ordersBox.innerHTML =
 
-    'orders-list'
-
-  );
-
-
-
-  if(error){
-
-    box.innerHTML =
-
-    'خطا در دریافت سفارش‌ها';
+      '<p>خطا در دریافت سفارش‌ها</p>';
 
 
 
@@ -337,11 +348,11 @@ async function loadOrders(){
 
 
 
-  if(orders.length===0){
+  if (!orders || orders.length === 0) {
 
-    box.innerHTML =
+    ordersBox.innerHTML =
 
-    'هنوز سفارشی ثبت نشده است.';
+      '<p>هنوز سفارشی ثبت نشده است.</p>';
 
 
 
@@ -351,96 +362,101 @@ async function loadOrders(){
 
 
 
-  box.innerHTML =
+  ordersBox.innerHTML =
 
-  orders.map(order => `
+    orders.map(order => `
 
-  <div
+      <div
 
-  class="bg-gray-50 p-4 rounded-2xl flex items-center gap-4"
+      class="bg-white shadow rounded-2xl p-4 mb-4 flex items-center gap-4"
 
-  >
+      >
 
-  <img
+        <img
 
-  src="${order.image_url}"
+        src="${order.image_url}"
 
-  class="w-20 h-20 object-contain"
+        class="w-20 h-20 object-contain"
 
-  >
-
-  <div class="flex-1">
-
-  <div class="font-bold">
-
-  ${order.product_name}
-
-  </div>
+        >
 
 
 
-  <div class="text-gray-500">
+        <div class="flex-1">
 
-  ${order.quantity} عدد
+          <h3 class="font-bold">
 
-  </div>
+            ${order.product_name}
 
-
-
-  <div class="text-blue-600">
-
-  ${Number(order.price)
-
-  .toLocaleString()} تومان
-
-  </div>
+          </h3>
 
 
 
-  </div>
+          <div class="text-gray-500 text-sm">
+
+            تعداد:
+
+            ${order.quantity}
+
+          </div>
 
 
 
-  <div>
+          <div class="text-blue-600 font-bold">
 
-  <div
+            ${Number(
 
-  class="text-sm text-gray-500"
+              order.price
 
-  >
+            ).toLocaleString()}
 
-  ${order.status}
+            تومان
 
-  </div>
+          </div>
 
-
-
-  <div
-
-  class="text-xs"
-
-  >
-
-  ${new Date(
-
-    order.created_at
-
-  ).toLocaleDateString('fa-IR')}
-
-  </div>
+        </div>
 
 
 
-  </div>
+        <div class="text-left">
+
+          <div
+
+          class="text-green-600"
+
+          >
+
+            ${order.status}
+
+          </div>
 
 
 
-  </div>
+          <div
 
-  `).join('');
+          class="text-xs text-gray-400"
+
+          >
+
+            ${new Date(
+
+              order.created_at
+
+            ).toLocaleDateString(
+
+              'fa-IR'
+
+            )}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `).join('');
 
 }
-
 async function updateUserNavbar() {
 
   const userSection =
