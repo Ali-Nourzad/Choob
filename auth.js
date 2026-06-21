@@ -1,6 +1,6 @@
-const SUPABASE_URL='آدرس سوپابیس';
+const SUPABASE_URL='https://rlduutynqgevgzmayeit.supabase.co';
 
-const SUPABASE_KEY='کلید Publishable';
+const SUPABASE_KEY='sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
 
 const shopDB=
 
