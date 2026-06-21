@@ -101,71 +101,105 @@ function toggleCart() {
 
   modal.classList.toggle('hidden');
 
-  renderCart();
+  renderCartItems();
 
 }
 
 function renderCartItems() {
-
   const list = document.getElementById('cart-items-list');
-
   const totalEl = document.getElementById('cart-total');
-
   if (!list) return;
+    if (!totalEl) {
+        console.warn('cart-total پیدا نشد');
+    }
+    // سبد خالی
+    if (cart.length === 0) {
+        list.innerHTML = `
+        <p class="text-center text-gray-500 py-6">
+        سبد خرید شما خالی است.
+        </p>
+        `;
+        if (totalEl) {
+          totalEl.innerText = '۰ تومان';
+        } 
+        return;
+      }
+    let total = 0;
+    list.innerHTML = cart.map(item => {
+        const product = products.find(
+            p => String(p.id) === String(item.id)
+        );
+        if (!product) return '';
+        // یکسان‌سازی quantity
+        item.quantity = item.quantity || item.qty || 1;
+        total += product.price * item.quantity;
+        return `
+        <div class="flex items-center gap-4 border-b py-4">
+        <img
+          src="${product.image_url}"
+          class="w-16 h-16 object-contain rounded-lg bg-gray-100"
+        >
+        <div class="flex-1">
+            <h4 class="font-bold">
+                ${product.name}
+            </h4>
+            <p class="text-sm text-gray-500">
+            ${Number(product.price).toLocaleString()} تومان
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
 
-  if (cart.length === 0) {
+          <button
 
-    list.innerHTML = `
-      <p class="text-center text-gray-500">
-        سبد خرید شما خالی است
-      </p>
-    `;
+            onclick="changeQty('${item.id}', -1)"
 
-    totalEl.innerText = '۰ تومان';
+            class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300"
 
-    return;
+          >
 
-  }
+            ➖
 
-  let total = 0;
+          </button>
 
-  list.innerHTML = cart.map(item => {
+          <span class="font-bold">
 
-    const product = products.find(
-      p => p.id == item.id
-    );
+            ${item.quantity}
 
-    if (!product) return '';
+          </span>
 
-    total += product.price * item.quantity;
+          <button
 
-    return `
+            onclick="changeQty('${item.id}', 1)"
 
-      <div class="flex items-center justify-between border-b py-3">
+            class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300"
 
-        <div>
+          >
 
-          <div class="font-bold">
+            ➕
 
-            ${product.name}
-
-          </div>
-
-          <div class="text-sm text-gray-500">
-
-            ${item.quantity} عدد
-
-          </div>
+          </button>
 
         </div>
 
-        <div>
+        <div class="w-28 text-center font-bold">
 
-          ${(
-            product.price * item.quantity
-          ).toLocaleString()} تومان
+          ${(product.price * item.quantity).toLocaleString()}
+
+          تومان
 
         </div>
+
+        <button
+
+          onclick="removeItem('${item.id}')"
+
+          class="text-red-500 text-2xl hover:text-red-700"
+
+        >
+
+          🗑️
+
+        </button>
 
       </div>
 
@@ -173,10 +207,13 @@ function renderCartItems() {
 
   }).join('');
 
-  totalEl.innerText =
+  if (totalEl) {
 
-  `${total.toLocaleString()} تومان`;
+    totalEl.innerText =
 
+      `${total.toLocaleString()} تومان`;
+
+  }
 }
 
 function checkout(){
@@ -254,44 +291,6 @@ function updateCartUI() {
 }
 
 /* ---------------- CART PAGE (optional modal) ---------------- */
-
-function renderCart() {
-
-  const box = document.getElementById("cart-items");
-
-  if (!box) return;
-
-  box.innerHTML = cart.map(i => {
-
-    const p = products.find(x => x.id === i.id);
-
-    if (!p) return "";
-
-    return `
-      <div class="flex justify-between items-center border-b py-2">
-
-        <div>
-          <div class="font-bold">${p.name}</div>
-
-          <div class="text-sm text-gray-500">
-            ${i.qty} عدد
-          </div>
-        </div>
-
-        <div class="flex gap-2 items-center">
-
-          <button onclick="changeQty(${i.id}, -1)">➖</button>
-
-          <button onclick="changeQty(${i.id}, 1)">➕</button>
-
-          <button onclick="removeItem(${i.id})" class="text-red-500">❌</button>
-
-        </div>
-
-      </div>
-    `;
-  }).join("");
-}
 
 // --- ۵. مدیریت نظرات (Reviews) ---
 async function loadReviews(productId) {
