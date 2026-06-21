@@ -1,5 +1,4 @@
 // --- ۱. تنظیمات اولیه و اتصال به Supabase ---
-// حتماً این مقادیر را از پنل Supabase خودتان جایگزین کنید
 const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co'; 
 const SUPABASE_ANON_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
 
@@ -263,7 +262,7 @@ async function submitReview() {
     const text = textEl.value.trim();
 
     if (!text) return alert("لطفاً متن نظر را وارد کنید");
-    if (!currentUser) return alert("ابتدا باید وارد حساب خود شوید");
+    else if (!currentUser) return alert("ابتدا باید وارد حساب خود شوید");
 
     const { error } = await shopDB
         .from('reviews')
