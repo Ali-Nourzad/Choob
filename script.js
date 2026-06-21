@@ -95,9 +95,87 @@ function goToProduct(id) {
 
 function toggleCart() {
 
-    document
-        .getElementById('cart-modal')
-        .classList.toggle('hidden');
+  const modal = document.getElementById('cart-modal');
+
+  if (!modal) return;
+
+  modal.classList.toggle('hidden');
+
+  renderCartItems();
+
+}
+
+function renderCartItems() {
+
+  const list = document.getElementById('cart-items-list');
+
+  const totalEl = document.getElementById('cart-total');
+
+  if (!list) return;
+
+  if (cart.length === 0) {
+
+    list.innerHTML = `
+      <p class="text-center text-gray-500">
+        سبد خرید شما خالی است
+      </p>
+    `;
+
+    totalEl.innerText = '۰ تومان';
+
+    return;
+
+  }
+
+  let total = 0;
+
+  list.innerHTML = cart.map(item => {
+
+    const product = products.find(
+      p => p.id == item.id
+    );
+
+    if (!product) return '';
+
+    total += product.price * item.quantity;
+
+    return `
+
+      <div class="flex items-center justify-between border-b py-3">
+
+        <div>
+
+          <div class="font-bold">
+
+            ${product.name}
+
+          </div>
+
+          <div class="text-sm text-gray-500">
+
+            ${item.quantity} عدد
+
+          </div>
+
+        </div>
+
+        <div>
+
+          ${(
+            product.price * item.quantity
+          ).toLocaleString()} تومان
+
+        </div>
+
+      </div>
+
+    `;
+
+  }).join('');
+
+  totalEl.innerText =
+
+  `${total.toLocaleString()} تومان`;
 
 }
 
