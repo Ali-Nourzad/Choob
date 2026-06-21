@@ -359,3 +359,47 @@ function updateUserUI() {
         userSection.innerHTML = `<button onclick="openAuthModal()" class="text-gray-600 hover:text-blue-600 font-medium text-sm">ورود / ثبت‌نام</button>`;
     }
 }
+
+async function loadProductPage() {
+  const id = new URLSearchParams(window.location.search).get("id");
+
+  const { data } = await db.from("products").select("*").eq("id", id).single();
+
+  const box = document.getElementById("product-box");
+
+  if (!data) return;
+
+  let images = [];
+
+  try {
+    images = data.images ? data.images.split("|") : [];
+  } catch {
+    images = [];
+  }
+
+  box.innerHTML = `
+    <img id="main-img" src="${data.image_url}" class="w-full h-96 object-contain">
+
+    <div class="flex gap-2 mt-4 overflow-x-auto">
+      ${images.map(img => `
+        <img src="${img}" onclick="document.getElementById('main-img').src='${img}'"
+        class="w-20 h-20 object-cover border cursor-pointer">
+      `).join("")}
+    </div>
+
+    <h1 class="text-2xl font-bold mt-4">${data.name}</h1>
+
+    <p class="text-gray-600 mt-2">${data.description || ""}</p>
+
+    <p class="text-blue-600 text-xl mt-3">
+      ${Number(data.price).toLocaleString()} تومان
+    </p>
+
+    <button onclick="addToCart(${data.id})"
+    class="w-full bg-green-600 text-white py-3 mt-4 rounded-xl">
+
+      افزودن به سبد خرید
+
+    </button>
+  `;
+}
