@@ -310,6 +310,30 @@ function saveCart() {
 
 /* ---------------- CART UI ---------------- */
 
+function updateCartCount() {
+
+  const countEl = document.getElementById('cart-count');
+
+  if (!countEl) return;
+
+  const totalItems = cart.reduce(
+
+    (sum, item) => {
+
+      const quantity = item.quantity || item.qty || 1;
+
+      return sum + quantity;
+
+    },
+
+    0
+
+  );
+
+  countEl.innerText = totalItems;
+
+}
+
 function updateCartUI() {
 
   const el = document.getElementById("cart-count");
