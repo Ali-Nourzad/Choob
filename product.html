@@ -9,19 +9,56 @@
 </head>
 
 <body class="bg-gray-100">
+<!-- بخش جزئیات محصول (Product Detail Page View) -->
+<div id="product-detail-page" class="fixed inset-0 bg-white z-50 hidden overflow-y-auto">
+    <!-- دکمه بازگشت -->
+    <button onclick="closeProductPage()" class="fixed top-4 right-4 bg-gray-200 p-2 rounded-full z-50">🔙 بازگشت</button>
 
-<div class="max-w-4xl mx-auto p-6">
+    <div class="container mx-auto p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            
+            <!-- بخش تصاویر (Slider) -->
+            <div class="space-y-4">
+                <div class="h-[400px] flex items-center justify-center bg-gray-100 rounded-xl">
+                    <img id="main-product-img" src="" class="max-h-full object-contain">
+                </div>
+                <div id="product-image-thumbnails" class="flex gap-4 overflow-x-auto pb-2">
+                    <!-- تصاویر کوچک اینجا ساخته می‌شوند -->
+                </div>
+            </div>
 
-  <a href="index.html" class="text-blue-600">⬅ بازگشت</a>
+            <!-- بخش اطلاعات و خرید -->
+            <div class="space-y-6">
+                <h1 id="detail-title" class="text-3xl font-bold text-gray-800">نام محصول</h1>
+                <p id="detail-price" class="text-2xl text-blue-600 font-bold">۰ تومان</p>
+                <p id="detail-description" class="text-gray-600 leading-relaxed">توضیحات محصول در اینجا قرار می‌گیرد...</p>
+                
+                <div class="border-t pt-6">
+                    <button id="detail-add-to-cart" class="w-full bg-blue-600 text-white py-4 rounded-xl text-xl font-bold hover:bg-blue-700 transition">
+                        افزودن به سبد خرید
+                    </button>
+                </div>
+            </div>
+        </div>
 
-  <div id="product-box" class="bg-white p-6 rounded-2xl mt-4"></div>
+        <!-- بخش نظرات (Reviews Section) -->
+        <div class="mt-20 border-t pt-10">
+            <h2 class="text-2xl font-bold mb-8">نظرات کاربران</h2>
+            
+            <!-- فرم ثبت نظر (فقط اگر کاربر وارد شده باشد) -->
+            <div id="review-form-container" class="bg-gray-50 p-6 rounded-xl mb-10">
+                <h3 class="font-bold mb-4">نظر خود را بنویسید</h3>
+                <textarea id="review-text" class="w-full p-4 border rounded-lg h-32" placeholder="تجربه خود را بنویسید..."></textarea>
+                <button onclick="submitReview()" class="mt-4 bg-green-600 text-white px-8 py-2 rounded-lg">ارسال نظر</button>
+            </div>
 
+            <!-- لیست نظرات -->
+            <div id="reviews-list" class="space-y-6">
+                <!-- نظرات از دیتابیس اینجا لود می‌شوند -->
+                <p class="text-gray-400 text-center">هنوز نظری ثبت نشده است.</p>
+            </div>
+        </div>
+    </div>
 </div>
-
-<script src="script.js"></script>
-<script>
-loadProductPage();
-</script>
-
 </body>
 </html>
