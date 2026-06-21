@@ -453,3 +453,23 @@ function renderCartItems() {
   `${total.toLocaleString()} تومان`;
 
 }
+
+function checkout(){
+
+  if(cart.length===0){
+
+    return alert(
+
+      'سبد خرید خالی است'
+
+    );
+
+  }
+
+  alert(
+
+    'سفارش شما ثبت شد'
+
+  );
+
+}
