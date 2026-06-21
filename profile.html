@@ -8,51 +8,197 @@
 
 <meta name="viewport"
 
-content="width=device-width,initial-scale=1">
+content="width=device-width, initial-scale=1.0">
 
-<title>پروفایل</title>
-
+<title>پروفایل | T-Choob</title>
+<link rel="icon" href="favicon.ico">
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<link rel="icon" href="favicon.ico">
+
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen">
+
+<!-- نوار بالا -->
+
+<nav class="bg-blue-600 shadow">
+
+<div class="max-w-7xl mx-auto p-4 flex justify-between items-center">
+
+<a
+
+href="index.html"
+
+class="text-white text-2xl font-bold"
+
+>
+
+T-Choob
+
+</a>
+
+<a
+
+href="index.html"
+
+class="text-white"
+
+>
+
+⬅ بازگشت به فروشگاه
+
+</a>
+
+</div>
+
+</nav>
+
+
+
+<!-- محتوا -->
+
+<div class="max-w-4xl mx-auto p-6">
 
 <div
 
-class="max-w-xl mx-auto mt-16 bg-white p-8 rounded-3xl shadow">
+class="bg-white rounded-3xl shadow p-8"
+
+>
+
+
 
 <div class="flex flex-col items-center">
 
+
+
 <img
 
-id="profile-avatar"
+id="avatar"
 
-class="w-28 h-28 rounded-full object-cover">
+src=""
+
+class="w-36 h-36 rounded-full object-cover border-4 border-blue-500"
+
+>
+
+
 
 <h1
 
-id="profile-name"
+id="username"
 
-class="text-2xl font-bold mt-4">
+class="text-3xl font-bold mt-5"
+
+>
 
 ...
 
 </h1>
 
-<p id="profile-phone"></p>
 
-<p id="profile-email"></p>
+
+<p
+
+id="email"
+
+class="text-gray-500 mt-2"
+
+>
+
+...
+
+</p>
+
+
+
+<p
+
+id="phone"
+
+class="text-gray-500 mt-2"
+
+>
+
+...
+
+</p>
+
+</div>
+
+
+
+<div class="border-t mt-10 pt-8">
+
+<h2
+
+class="text-2xl font-bold mb-5"
+
+>
+
+تنظیمات حساب
+
+</h2>
+
+
+
+<div class="space-y-4">
+
+
+
+<input
+
+id="edit-username"
+
+type="text"
+
+placeholder="نام کاربری"
+
+class="w-full border p-4 rounded-xl"
+
+>
+
+
+
+<input
+
+id="edit-phone"
+
+type="text"
+
+placeholder="شماره موبایل"
+
+class="w-full border p-4 rounded-xl"
+
+>
+
+
+
+<input
+
+id="edit-avatar"
+
+type="text"
+
+placeholder="لینک عکس پروفایل"
+
+class="w-full border p-4 rounded-xl"
+
+>
+
+
 
 <button
 
-onclick="logout()"
+onclick="saveProfile()"
 
-class="mt-8 bg-red-600 text-white px-10 py-3 rounded-xl">
+class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold"
 
-خروج
+>
+
+ذخیره تغییرات
 
 </button>
 
@@ -60,7 +206,319 @@ class="mt-8 bg-red-600 text-white px-10 py-3 rounded-xl">
 
 </div>
 
-<script src="script.js"></script>
+
+
+<div class="mt-8">
+
+<button
+
+onclick="logout()"
+
+class="w-full bg-red-500 text-white py-4 rounded-xl font-bold"
+
+>
+
+خروج از حساب
+
+</button>
+
+</div>
+
+
+
+</div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+
+'https://rlduutynqgevgzmayeit.supabase.co';
+
+
+
+const SUPABASE_KEY =
+
+'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
+
+
+
+const shopDB =
+
+window.supabase.createClient(
+
+SUPABASE_URL,
+
+SUPABASE_KEY
+
+);
+
+
+
+let currentUser = null;
+
+
+
+document.addEventListener(
+
+'DOMContentLoaded',
+
+loadProfile
+
+);
+
+
+
+async function loadProfile(){
+
+
+
+const {
+
+data:{user}
+
+}
+
+=
+
+await shopDB.auth.getUser();
+
+
+
+if(!user){
+
+location.href='login.html';
+
+return;
+
+}
+
+
+
+currentUser = user;
+
+
+
+document
+
+.getElementById('email')
+
+.innerText = user.email;
+
+
+
+const {
+
+data: profile
+
+}
+
+=
+
+await shopDB
+
+.from('profiles')
+
+.select('*')
+
+.eq('id', user.id)
+
+.single();
+
+
+
+if(!profile){
+
+alert(
+
+'پروفایل پیدا نشد'
+
+);
+
+return;
+
+}
+
+
+
+document
+
+.getElementById('avatar')
+
+.src =
+
+profile.avatar_url ||
+
+'https://ui-avatars.com/api/?name=User';
+
+
+
+document
+
+.getElementById('username')
+
+.innerText =
+
+profile.username || '';
+
+
+
+document
+
+.getElementById('phone')
+
+.innerText =
+
+profile.phone || '';
+
+
+
+document
+
+.getElementById('edit-username')
+
+.value =
+
+profile.username || '';
+
+
+
+document
+
+.getElementById('edit-phone')
+
+.value =
+
+profile.phone || '';
+
+
+
+document
+
+.getElementById('edit-avatar')
+
+.value =
+
+profile.avatar_url || '';
+
+}
+
+
+
+async function saveProfile(){
+
+
+
+const username =
+
+document
+
+.getElementById(
+
+'edit-username'
+
+).value.trim();
+
+
+
+const phone =
+
+document
+
+.getElementById(
+
+'edit-phone'
+
+).value.trim();
+
+
+
+const avatar_url =
+
+document
+
+.getElementById(
+
+'edit-avatar'
+
+).value.trim();
+
+
+
+const { error }
+
+=
+
+await shopDB
+
+.from('profiles')
+
+.update({
+
+username,
+
+phone,
+
+avatar_url
+
+})
+
+.eq(
+
+'id',
+
+currentUser.id
+
+);
+
+
+
+if(error){
+
+alert(
+
+'خطا در ذخیره اطلاعات'
+
+);
+
+return;
+
+}
+
+
+
+alert(
+
+'ذخیره شد'
+
+);
+
+
+
+loadProfile();
+
+}
+
+
+
+async function logout(){
+
+
+
+await shopDB
+
+.auth
+
+.signOut();
+
+
+
+location.href='login.html';
+
+}
+
+</script>
 
 </body>
 
