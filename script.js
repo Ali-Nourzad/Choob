@@ -267,6 +267,180 @@ function renderCartItems() {
   }
 }
 
+async function loadOrders(){
+
+  if(!currentUser){
+
+    return;
+
+  }
+
+
+
+  const {
+
+    data: orders,
+
+    error
+
+  }
+
+  = await shopDB
+
+  .from('orders')
+
+  .select('*')
+
+  .eq(
+
+    'user_id',
+
+    currentUser.id
+
+  )
+
+  .order(
+
+    'created_at',
+
+    {
+
+      ascending:false
+
+    }
+
+  );
+
+
+
+  const box =
+
+  document.getElementById(
+
+    'orders-list'
+
+  );
+
+
+
+  if(error){
+
+    box.innerHTML =
+
+    'خطا در دریافت سفارش‌ها';
+
+
+
+    return;
+
+  }
+
+
+
+  if(orders.length===0){
+
+    box.innerHTML =
+
+    'هنوز سفارشی ثبت نشده است.';
+
+
+
+    return;
+
+  }
+
+
+
+  box.innerHTML =
+
+  orders.map(order => `
+
+  <div
+
+  class="bg-gray-50 p-4 rounded-2xl flex items-center gap-4"
+
+  >
+
+  <img
+
+  src="${order.image_url}"
+
+  class="w-20 h-20 object-contain"
+
+  >
+
+  <div class="flex-1">
+
+  <div class="font-bold">
+
+  ${order.product_name}
+
+  </div>
+
+
+
+  <div class="text-gray-500">
+
+  ${order.quantity} عدد
+
+  </div>
+
+
+
+  <div class="text-blue-600">
+
+  ${Number(order.price)
+
+  .toLocaleString()} تومان
+
+  </div>
+
+
+
+  </div>
+
+
+
+  <div>
+
+  <div
+
+  class="text-sm text-gray-500"
+
+  >
+
+  ${order.status}
+
+  </div>
+
+
+
+  <div
+
+  class="text-xs"
+
+  >
+
+  ${new Date(
+
+    order.created_at
+
+  ).toLocaleDateString('fa-IR')}
+
+  </div>
+
+
+
+  </div>
+
+
+
+  </div>
+
+  `).join('');
+
+}
+
 async function updateUserNavbar() {
 
   const userSection =
