@@ -22,7 +22,7 @@ let currentProductId = null;
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchProducts();
     await checkUser();
-    updateCartCount();
+    updateCartUI();
     renderCartItems(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
 });
 
