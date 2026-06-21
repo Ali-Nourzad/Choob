@@ -4,7 +4,7 @@ const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
 
 if (!window.supabase || !window.supabase.createClient) {
-    throw new Error('Supabase JS library not loaded.');
+    console.log('Supabase JS library not loaded.');
 }
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
