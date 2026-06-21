@@ -367,3 +367,15 @@ window.location.href=
 './login.html';
 
 }
+
+function toggleCart() {
+
+  const modal = document.getElementById('cart-modal');
+
+  if (!modal) return;
+
+  modal.classList.toggle('hidden');
+
+  renderCartItems();
+
+}
