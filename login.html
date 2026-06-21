@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>ورود | T-Choob</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+<div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md">
+
+<h1 class="text-3xl font-bold text-center mb-8">
+
+ورود
+
+</h1>
+
+<input
+
+id="login-email"
+
+type="email"
+
+placeholder="ایمیل"
+
+class="w-full border p-4 rounded-xl mb-4">
+
+<input
+
+id="login-password"
+
+type="password"
+
+placeholder="رمز عبور"
+
+class="w-full border p-4 rounded-xl mb-6">
+
+<button
+
+onclick="handleLogin()"
+
+class="w-full bg-blue-600 text-white py-4 rounded-xl">
+
+ورود
+
+</button>
+
+<a
+
+href="./signup.html"
+
+class="block text-center text-blue-600 mt-6">
+
+ثبت‌نام
+
+</a>
+
+</div>
+
+<script src="auth.js"></script>
+
+</body>
+
+</html>
