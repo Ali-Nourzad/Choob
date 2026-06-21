@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await checkUser();
     await updateUserNavbar();
     await loadOrders();
+    await loadCartFromDB();
     updateCartUI();
     //toggleCart(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
 });
@@ -154,6 +155,60 @@ async function sendResetPasswordEmail() {
     'لینک تغییر رمز عبور به ایمیل شما ارسال شد.'
 
   );
+
+}
+
+async function saveCartToDB() {
+
+  const {
+
+    data: { user }
+
+  } = await shopDB.auth.getUser();
+
+  if (!user) return;
+
+  // حذف سبد خرید قبلی
+
+  await shopDB
+
+    .from('carts')
+
+    .delete()
+
+    .eq('user_id', user.id);
+
+  // ساخت آرایه جدید
+
+  const rows = [];
+
+  for (const item of cart) {
+
+    rows.push({
+
+      user_id: user.id,
+
+      product_id: item.id,
+
+      quantity: item.quantity
+
+    });
+
+  }
+
+  if (rows.length === 0) return;
+
+  const { error } = await shopDB
+
+    .from('carts')
+
+    .insert(rows);
+
+  if (error) {
+
+    console.error(error);
+
+  }
 
 }
 
@@ -717,6 +772,7 @@ function addToCart(id) {
 
   saveCart();
   updateCartUI();
+  saveCartToDB();
 }
 
 function changeQty(id, delta) {
@@ -746,6 +802,7 @@ function changeQty(id, delta) {
   updateCartCount();
 
   renderCartItems();
+  saveCartToDB();
 
 }
 
@@ -756,6 +813,55 @@ function removeItem(id) {
     i => String(i.id) !== String(id)
 
   );
+
+  saveCart();
+
+  updateCartCount();
+
+  renderCartItems();
+  saveCartToDB();
+
+}
+
+async function loadCartFromDB(){
+
+  const {
+
+    data:{user}
+
+  } = await shopDB.auth.getUser();
+
+  if(!user) return;
+
+  const {
+
+    data,
+
+    error
+
+  } = await shopDB
+
+  .from('carts')
+
+  .select('*')
+
+  .eq('user_id', user.id);
+
+  if(error){
+
+    console.error(error);
+
+    return;
+
+  }
+
+  cart = data.map(item => ({
+
+    id: item.product_id,
+
+    quantity: item.quantity
+
+  }));
 
   saveCart();
 
