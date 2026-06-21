@@ -21,6 +21,7 @@ let currentProductId = null;
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchProducts();
     await checkUser();
+    await updateUserNavbar();
     updateCartUI();
     //toggleCart(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
 });
@@ -214,6 +215,126 @@ function renderCartItems() {
       `${total.toLocaleString()} تومان`;
 
   }
+}
+
+async function updateUserNavbar() {
+
+  const userSection =
+
+    document.getElementById(
+
+      'user-section'
+
+    );
+
+
+
+  if (!userSection) return;
+
+
+
+  const {
+
+    data: { user }
+
+  } = await shopDB.auth.getUser();
+
+
+
+  // اگر لاگین نیست
+
+  if (!user) {
+
+    userSection.innerHTML = `
+
+      <a
+
+        href="login.html"
+
+        class="bg-white text-blue-600 px-4 py-2 rounded-xl font-medium hover:bg-gray-100 transition"
+
+      >
+
+        ورود / ثبت‌نام
+
+      </a>
+
+    `;
+
+
+
+    return;
+
+  }
+
+
+
+  // گرفتن پروفایل
+
+  const { data: profile } =
+
+  await shopDB
+
+  .from('profiles')
+
+  .select('*')
+
+  .eq('id', user.id)
+
+  .single();
+
+
+
+  const avatar =
+
+    profile?.avatar_url ||
+
+    'https://ui-avatars.com/api/?name=User';
+
+
+
+  const username =
+
+    profile?.username ||
+
+    user.email.split('@')[0];
+
+
+
+  userSection.innerHTML = `
+
+    <a
+
+      href="profile.html"
+
+      class="flex items-center gap-3"
+
+    >
+
+      <img
+
+        src="${avatar}"
+
+        class="w-10 h-10 rounded-full object-cover border-2 border-white"
+
+      >
+
+
+
+      <span
+
+        class="text-white font-medium"
+
+      >
+
+        ${username}
+
+      </span>
+
+    </a>
+
+  `;
+
 }
 
 async function checkout() {
