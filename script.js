@@ -50,7 +50,7 @@ function renderProducts(productsList) {
 
     container.innerHTML = productsList.map(product => `
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow p-4">
-            <div class="relative group cursor-pointer" onclick="showProductDetails('${product.id}')">
+            <div class="relative group cursor-pointer" onclick="goToProduct('${product.id}')">
                 <img src="${product.image_url}" alt="${product.name}" class="w-full h-48 object-contain mb-4">
                 <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
