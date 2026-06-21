@@ -216,15 +216,123 @@ function renderCartItems() {
   }
 }
 
-function checkout(){
+async function checkout() {
 
-    if(cart.length === 0){
+  if (cart.length === 0) {
 
-        return alert('سبد خرید خالی است');
+    return alert('سبد خرید خالی است');
 
-    }
+  }
 
-    alert('سفارش ثبت شد');
+  // گرفتن کاربر لاگین شده
+
+  const {
+
+    data: { user }
+
+  } = await shopDB.auth.getUser();
+
+
+
+  if (!user) {
+
+    return alert(
+
+      'ابتدا وارد حساب کاربری شوید'
+
+    );
+
+  }
+
+  // ساخت آرایه سفارش‌ها
+
+  const orders = [];
+
+
+
+  for (const item of cart) {
+
+    const product = products.find(
+
+      p => String(p.id) === String(item.id)
+
+    );
+
+
+
+    if (!product) continue;
+
+
+
+    orders.push({
+
+      product_name: product.name,
+
+      price: product.price,
+
+      image_url: product.image_url,
+
+      quantity: item.quantity,
+
+      user_id: user.id,
+
+      status: 'در انتظار پرداخت'
+
+    });
+
+  }
+
+
+
+  // ذخیره در سوپابیس
+
+  const { error } = await shopDB
+
+    .from('orders')
+
+    .insert(orders);
+
+
+
+  if (error) {
+
+    console.error(error);
+
+
+
+    return alert(
+
+      'خطا در ثبت سفارش'
+
+    );
+
+  }
+
+
+
+  // خالی کردن سبد خرید
+
+  cart = [];
+
+
+
+  saveCart();
+
+
+
+  updateCartCount();
+
+
+
+  renderCartItems();
+
+
+
+  alert(
+
+    'سفارش با موفقیت ثبت شد'
+
+  );
 
 }
 
