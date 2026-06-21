@@ -301,8 +301,12 @@ async function handleLogin() {
 }
 
 async function handleSignup() {
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
+
+    const email =
+        document.getElementById('login-email').value;
+
+    const password =
+        document.getElementById('login-password').value;
 
     if (!email || !password) return alert("لطفاً اطلاعات ثبت‌نام را کامل کنید");
 
