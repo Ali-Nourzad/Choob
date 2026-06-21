@@ -363,7 +363,7 @@ function updateUserUI() {
 async function loadProductPage() {
   const id = new URLSearchParams(window.location.search).get("id");
 
-  const { data } = await db.from("products").select("*").eq("id", id).single();
+  const { data } = await shopDB.from("products").select("*").eq("id", id).single();
 
   const box = document.getElementById("product-box");
 
