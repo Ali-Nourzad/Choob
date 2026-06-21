@@ -252,30 +252,60 @@ function addToCart(id) {
 
 function changeQty(id, delta) {
 
-  const item = cart.find(i => i.id === id);
+  const item = cart.find(
+
+    i => String(i.id) === String(id)
+
+  );
 
   if (!item) return;
 
-  item.qty += delta;
+  item.quantity = item.quantity || 1;
 
-  if (item.qty <= 0) {
-    cart = cart.filter(i => i.id !== id);
+  item.quantity += delta;
+
+  if (item.quantity <= 0) {
+
+    removeItem(id);
+
+    return;
+
   }
 
   saveCart();
-  updateCartUI();
+
+  updateCartCount();
+
+  renderCartItems();
+
 }
 
 function removeItem(id) {
 
-  cart = cart.filter(i => i.id !== id);
+  cart = cart.filter(
+
+    i => String(i.id) !== String(id)
+
+  );
 
   saveCart();
-  updateCartUI();
+
+  updateCartCount();
+
+  renderCartItems();
+
 }
 
 function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
+
+  localStorage.setItem(
+
+    'cart',
+
+    JSON.stringify(cart)
+
+  );
+
 }
 
 /* ---------------- CART UI ---------------- */
