@@ -1,143 +1,62 @@
 <!DOCTYPE html>
 
 <html lang="fa" dir="rtl">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>T-Choob</title>
-<link rel="icon" type="image/png" href="favicon.ico">
-<script src="https://cdn.tailwindcss.com"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-</head>
-
-<body class="bg-gray-100">
-
-    <!-- نوار ناوبری (Navbar) -->
-    <nav class="bg-blue-600 text-white shadow-md sticky top-0 z-40 p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold cursor-pointer" onclick="window.location.reload()">T-Choob</h1>
-            
-            <div class="flex items-center gap-4">
-                <!-- پروفایل/ورود -->
-                
-                <div id="user-section">
-                    <a href="login.html">
-                        <button onclick="openAuthModal()" class="font-medium">ورود / ثبت نام</button>
-                    </a>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>T-Choob</title>
+        <link rel="icon" type="image/png" href="favicon.ico">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    </head>
+    <body class="bg-gray-100">
+        <!-- نوار ناوبری (Navbar) -->
+        <nav class="bg-blue-600 text-white shadow-md sticky top-0 z-40 p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold cursor-pointer" onclick="window.location.reload()">T-Choob</h1>
+                <div class="flex items-center gap-4">
+                    <!-- پروفایل/ورود -->
+                    <div id="user-section">
+                        <a href="login.html">
+                            <button onclick="openAuthModal()" class="font-medium">ورود / ثبت نام</button>
+                        </a>
+                    </div>
+                    <!-- سبد خرید -->
+                    <button onclick="toggleCart()" class="relative p-2 bg-blue-50 rounded-full">
+                        <span class="text-xl">🛒</span>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </button>
                 </div>
-                
-
-                <!-- سبد خرید -->
-                <button onclick="toggleCart()" class="relative p-2 bg-blue-50 rounded-full">
-                    <span class="text-xl">🛒</span>
-                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                </button>
+            </div>
+        </nav>
+        <main class="container mx-auto p-6">
+            <header class="text-center my-10">
+                <h2 class="text-3xl font-bold text-gray-800">محصولات برتر ما</h2>
+                <p class="text-gray-500 mt-2">کیفیت تضمین شده برای شما</p>
+            </header>
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <h2>در حال بارگذاری ...</h2>
+                <!-- محصولات توسط JS اینجا ساخته می‌شوند -->
+            </div>
+        </main>
+        <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
+            <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold">سبد خرید</h2>
+                    <button onclick="toggleCart()" class="text-3xl">&times;</button>
+                </div>
+                <div id="cart-items-list" class="flex-1 overflow-y-auto">
+                    <h2>nothing</h2>
+                </div>
+                <div class="border-t pt-4">
+                    <div class="flex justify-between text-lg font-bold mb-4">
+                        <span>جمع کل</span>
+                        <span id="cart-total">۰ تومان</span>
+                    </div>
+                    <button onclick="checkout()" class="w-full bg-green-600 text-white py-4 rounded-xl">ثبت سفارش</button>
+                </div>
             </div>
         </div>
-    </nav>
-
-    <!-- بخش اصلی محصولات -->
-    <main class="container mx-auto p-6">
-        <header class="text-center my-10">
-            <h2 class="text-3xl font-bold text-gray-800">محصولات برتر ما</h2>
-            <p class="text-gray-500 mt-2">کیفیت تضمین شده برای شما</p>
-        </header>
-
-        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <h2>در حال بارگذاری ...</h2>
-            <!-- محصولات توسط JS اینجا ساخته می‌شوند -->
-        </div>
-    </main>
-
-<div
-
-id="cart-modal"
-
-class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end"
-
->
-
-<div
-
-class="bg-white w-full max-w-md h-full shadow-2xl p-6 flex flex-col"
-
->
-
-<div class="flex justify-between items-center mb-6">
-
-<h2 class="text-xl font-bold">
-
-سبد خرید
-
-</h2>
-
-<button
-
-onclick="toggleCart()"
-
-class="text-3xl"
-
->
-
-&times;
-
-</button>
-
-</div>
-
-<div id="cart-items-list" class="flex-1 overflow-y-auto">
-<h2>nothing</h2>
-</div>
-
-<div class="border-t pt-4">
-<div
-
-class="flex justify-between text-lg font-bold mb-4"
-
->
-
-<span>
-
-جمع کل
-
-</span>
-
-<span id="cart-total">
-
-۰ تومان
-
-</span>
-
-</div>
-
-<button
-
-onclick="checkout()"
-
-class="w-full bg-green-600 text-white py-4 rounded-xl"
-
->
-
-ثبت سفارش
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script src="script.js"></script>
-
-</body>
-
+        <script src="script.js"></script>
+    </body>
 </html>
