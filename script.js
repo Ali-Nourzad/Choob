@@ -262,11 +262,17 @@ user.id
 
 .single();
 
-const data=
+if (!profile.data) {
 
-profile.data;
+  console.log('پروفایل کاربر پیدا نشد');
 
-const avatar=
+  return;
+
+}
+
+const data = profile.data;
+
+const avatar =
 
 data.avatar_url ||
 
