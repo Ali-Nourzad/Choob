@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchProducts();
     await checkUser();
     updateCartUI();
-    renderCartItems(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
+    toggleCart(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
 });
 
 // --- ۳. مدیریت محصولات ---
