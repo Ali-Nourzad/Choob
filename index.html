@@ -25,13 +25,7 @@
             <div class="flex items-center gap-4">
                 <!-- پروفایل/ورود -->
                 <div id="user-section">
-                    <button onclick="openAuthModal()" class="text-gray-600 hover:text-blue-600 font-medium">ورود</button>
-                    <button
-                        onclick="handleSignup()"
-                        class="w-full mt-3 bg-green-600 text-white py-4 rounded-xl font-bold text-lg"
-                    >
-                    ثبت‌نام
-                    </button>
+                    <button onclick="openAuthModal()" class="text-gray-600 hover:text-blue-600 font-medium">ورود / ثبت نام</button>
                 </div>
 
                 <!-- سبد خرید -->
@@ -118,6 +112,7 @@
                 <input type="email" id="login-email" placeholder="ایمیل" class="w-full p-4 mb-4 border rounded-xl outline-none focus:border-blue-500">
                 <input type="password" id="login-password" placeholder="رمز عبور" class="w-full p-4 mb-6 border rounded-xl outline-none focus:border-blue-500">
                 <button onclick="handleLogin()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg">ورود</button>
+                <button onclick="handleSignup()"class="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg">ثبت‌نام</button>
             </div>
         </div>
     </div>
