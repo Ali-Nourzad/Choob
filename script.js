@@ -455,6 +455,7 @@ async function loadOrders() {
       </div>
 
     `).join('');
+    console.log("تمام")
 
 }
 async function updateUserNavbar() {
