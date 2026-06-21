@@ -101,7 +101,7 @@ function toggleCart() {
 
   modal.classList.toggle('hidden');
 
-  renderCartItems();
+  renderCart();
 
 }
 
