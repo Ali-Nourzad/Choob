@@ -57,7 +57,7 @@ function renderProducts(productsList) {
             </div>
             <h3 class="font-bold text-gray-800 mb-2">${product.name}</h3>
             <p class="text-blue-600 font-bold mb-4">${Number(product.price).toLocaleString()} تومان</p>
-            <button onclick="addToCart('${product.id}')" class="w-full bg-gray-900 text-white py-2 rounded-xl hover:bg-blue-600 transition-colors">
+            <button onclick="event.stopPropagation(); addToCart('${product.id}')" class="w-full bg-gray-900 text-white py-2 rounded-xl hover:bg-blue-600 transition-colors">
                 افزودن به سبد خرید
             </button>
         </div>
