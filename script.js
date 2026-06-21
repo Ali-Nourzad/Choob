@@ -41,7 +41,7 @@ async function fetchProducts() {
 }
 
 function renderProducts(productsList) {
-    const container = document.getElementById('products-grid');
+    const container = document.getElementById('product-grid');
     if (!container) return;
 
     if (productsList.length === 0) {
@@ -65,21 +65,57 @@ function renderProducts(productsList) {
 }
 
 async function showProductDetails(productId) {
+
     currentProductId = productId;
+
     const product = products.find(p => p.id == productId);
+
     if (!product) return;
 
-    // پر کردن اطلاعات در بخش جزئیات (اگر المان‌ها در HTML وجود داشته باشند)
-    document.getElementById('product-detail-name').innerText = product.name;
-    document.getElementById('product-detail-price').innerText = `${Number(product.price).toLocaleString()} تومان`;
-    document.getElementById('product-detail-desc').innerText = product.description;
-    document.getElementById('product-detail-img').src = product.image_url;
+    document.getElementById('detail-title').innerText =
+        product.name;
 
-    // اسکرول به بخش جزئیات
-    document.getElementById('product-details-section').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('detail-price').innerText =
+        `${Number(product.price).toLocaleString()} تومان`;
 
-    // بارگذاری نظرات مربوط به این محصول
+    document.getElementById('detail-description').innerText =
+        product.description;
+
+    document.getElementById('main-product-img').src =
+        product.image_url;
+
+    document.getElementById('product-detail-page')
+        .classList.remove('hidden');
+
     loadReviews(productId);
+}
+
+function toggleCart() {
+
+    document
+        .getElementById('cart-modal')
+        .classList.toggle('hidden');
+
+}
+
+function checkout(){
+
+    if(cart.length === 0){
+
+        return alert('سبد خرید خالی است');
+
+    }
+
+    alert('سفارش ثبت شد');
+
+}
+
+function closeProductPage() {
+
+    document
+        .getElementById('product-detail-page')
+        .classList.add('hidden');
+
 }
 
 // --- ۴. مدیریت سبد خرید (Cart) ---
