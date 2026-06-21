@@ -106,6 +106,56 @@ function toggleCart() {
 
 }
 
+async function sendResetPasswordEmail() {
+
+  const {
+
+    data: { user }
+
+  } = await shopDB.auth.getUser();
+
+
+
+  if (!user) {
+
+    return alert('ابتدا وارد حساب شوید');
+
+  }
+
+
+
+  const { error } = await shopDB.auth.resetPasswordForEmail(
+
+    user.email,
+
+    {
+
+      redirectTo:
+
+      'https://ali-nourzad.github.io/Choob/reset-password.html'
+
+    }
+
+  );
+
+
+
+  if (error) {
+
+    return alert(error.message);
+
+  }
+
+
+
+  alert(
+
+    'لینک تغییر رمز عبور به ایمیل شما ارسال شد.'
+
+  );
+
+}
+
 function renderCartItems() {
   const list = document.getElementById('cart-items-list');
   const totalEl = document.getElementById('cart-total');
