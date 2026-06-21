@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchProducts();
     await checkUser();
     updateCartUI();
-    toggleCart(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
+    //toggleCart(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
 });
 
 // --- ۳. مدیریت محصولات ---
@@ -88,6 +88,10 @@ async function showProductDetails(productId) {
         .classList.remove('hidden');
 
     loadReviews(productId);
+}
+
+function goToProduct(id) {
+  window.location.href = `product.html?id=${id}`;
 }
 
 function toggleCart() {
