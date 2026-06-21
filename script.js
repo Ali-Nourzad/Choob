@@ -2,474 +2,195 @@ const SUPABASE_URL='https://rlduutynqgevgzmayeit.supabase.co';
 
 const SUPABASE_KEY='sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
 
-const shopDB=
+const SUPABASE_URL = "YOUR_URL";
+const SUPABASE_KEY = "YOUR_KEY";
 
-window.supabase.createClient(
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-SUPABASE_URL,
+let products = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-SUPABASE_KEY
+/* ---------------- INIT ---------------- */
 
-);
-
-let products=[];
-
-let cart=
-
-JSON.parse(
-
-localStorage.getItem('cart')
-
-)||[];
-
-document.addEventListener(
-
-'DOMContentLoaded',
-
-init
-
-);
-
-async function init(){
-
-await loadUser();
-
-await loadProducts();
-
-updateCart();
-
-}
-
-async function loadProducts(){
-
-const result=
-
-await shopDB
-
-.from('products')
-
-.select('*');
-
-if(result.error){
-
-return;
-
-}
-
-products=result.data;
-
-renderProducts();
-
-}
-
-function renderProducts(){
-
-const grid=
-
-document.getElementById(
-
-'product-grid'
-
-);
-
-if(!grid){
-
-return;
-
-}
-
-grid.innerHTML=
-
-products.map(p=>`
-
-<div
-
-class="bg-white p-4 rounded-2xl shadow">
-
-<img
-
-src="${p.image_url}"
-
-class="w-full h-48 object-contain">
-
-<h3
-
-class="font-bold mt-4">
-
-${p.name}
-
-</h3>
-
-<p
-
-class="text-blue-600 my-3">
-
-${Number(
-
-p.price
-
-).toLocaleString()}
-
-تومان
-
-</p>
-
-<button
-
-onclick="addToCart('${p.id}')"
-
-class="w-full bg-blue-600 text-white py-3 rounded-xl">
-
-افزودن به سبد خرید
-
-</button>
-
-</div>
-
-`).join('');
-
-}
-
-function addToCart(id){
-
-const item=
-
-cart.find(
-
-i=>i.id==id
-
-);
-
-if(item){
-
-item.quantity++;
-
-}else{
-
-cart.push({
-
-id,
-
-quantity:1
-
+document.addEventListener("DOMContentLoaded", () => {
+  loadProducts();
+  updateCartUI();
 });
 
+/* ---------------- PRODUCTS ---------------- */
+
+async function loadProducts() {
+  const { data } = await db.from("products").select("*");
+  products = data || [];
+  renderProducts();
 }
 
-localStorage.setItem(
+function renderProducts() {
+  const box = document.getElementById("product-grid");
+  if (!box) return;
 
-'cart',
+  box.innerHTML = products.map(p => `
+    <div class="bg-white p-4 rounded-xl shadow">
+      
+      <img src="${p.image_url}" class="h-48 w-full object-contain">
 
-JSON.stringify(cart)
+      <h3 class="font-bold mt-2">${p.name}</h3>
 
-);
+      <p class="text-blue-600">${Number(p.price).toLocaleString()} تومان</p>
 
-updateCart();
+      <button onclick="addToCart(${p.id})"
+      class="w-full mt-3 bg-blue-600 text-white py-2 rounded-xl">
 
+        افزودن به سبد
+
+      </button>
+
+    </div>
+  `).join("");
 }
 
-function updateCart(){
+/* ---------------- PRODUCT PAGE ---------------- */
 
-const el=
-
-document.getElementById(
-
-'cart-count'
-
-);
-
-if(!el){
-
-return;
-
+function goToProduct(id) {
+  window.location.href = `product.html?id=${id}`;
 }
 
-const total=
+async function loadProductPage() {
+  const id = new URLSearchParams(window.location.search).get("id");
 
-cart.reduce(
+  const { data } = await db.from("products").select("*").eq("id", id).single();
 
-(a,b)=>a+b.quantity,
+  const box = document.getElementById("product-box");
 
-0
+  if (!data) return;
 
-);
+  let images = [];
 
-el.innerText=total;
-
-}
-
-async function loadUser(){
-
-const result=
-
-await shopDB.auth
-
-.getUser();
-
-const user=
-
-result.data.user;
-
-if(!user){
-
-const sec=
-
-document.getElementById(
-
-'user-section'
-
-);
-
-if(sec){
-
-sec.innerHTML=
-
-`
-
-<a
-
-href="./login.html"
-
-class="text-blue-600">
-
-ورود
-
-</a>
-
-`;
-
-}
-
-return;
-
-}
-
-const profile=
-
-await shopDB
-
-.from('profiles')
-
-.select('*')
-
-.eq(
-
-'id',
-
-user.id
-
-)
-
-.single();
-
-if (!profile.data) {
-
-  console.log('پروفایل کاربر پیدا نشد');
-
-  return;
-
-}
-
-const data = profile.data;
-
-const avatar =
-
-data.avatar_url ||
-
-'https://ui-avatars.com/api/?name=User';
-
-const sec=
-
-document.getElementById(
-
-'user-section'
-
-);
-
-if(sec){
-
-sec.innerHTML=
-
-`
-
-<a
-
-href="./profile.html"
-
-class="flex items-center gap-3">
-
-<img
-
-src="${avatar}"
-
-class="w-10 h-10 rounded-full">
-
-<span>
-
-${data.username}
-
-</span>
-
-</a>
-
-`;
-
-}
-
-const img=
-
-document.getElementById(
-
-'profile-avatar'
-
-);
-
-if(img){
-
-img.src=avatar;
-
-document.getElementById(
-
-'profile-name'
-
-).innerText=
-
-data.username;
-
-document.getElementById(
-
-'profile-phone'
-
-).innerText=
-
-data.phone;
-
-document.getElementById(
-
-'profile-email'
-
-).innerText=
-
-user.email;
-
-}
-
-}
-
-async function logout(){
-
-await shopDB.auth
-
-.signOut();
-
-window.location.href=
-
-'./login.html';
-
-}
-
-function toggleCart() {
-
-  const modal = document.getElementById('cart-modal');
-
-  if (!modal) return;
-
-  modal.classList.toggle('hidden');
-
-  renderCartItems();
-
-}
-
-function renderCartItems() {
-
-  const list = document.getElementById('cart-items-list');
-
-  const totalEl = document.getElementById('cart-total');
-
-  if (!list) return;
-
-  if (cart.length === 0) {
-
-    list.innerHTML = `
-      <p class="text-center text-gray-500">
-        سبد خرید شما خالی است
-      </p>
-    `;
-
-    totalEl.innerText = '۰ تومان';
-
-    return;
-
+  try {
+    images = data.images ? data.images.split("|") : [];
+  } catch {
+    images = [];
   }
 
-  let total = 0;
+  box.innerHTML = `
+    <img id="main-img" src="${data.image_url}" class="w-full h-96 object-contain">
 
-  list.innerHTML = cart.map(item => {
+    <div class="flex gap-2 mt-4 overflow-x-auto">
+      ${images.map(img => `
+        <img src="${img}" onclick="document.getElementById('main-img').src='${img}'"
+        class="w-20 h-20 object-cover border cursor-pointer">
+      `).join("")}
+    </div>
 
-    const product = products.find(
-      p => p.id == item.id
-    );
+    <h1 class="text-2xl font-bold mt-4">${data.name}</h1>
 
-    if (!product) return '';
+    <p class="text-gray-600 mt-2">${data.description || ""}</p>
 
-    total += product.price * item.quantity;
+    <p class="text-blue-600 text-xl mt-3">
+      ${Number(data.price).toLocaleString()} تومان
+    </p>
+
+    <button onclick="addToCart(${data.id})"
+    class="w-full bg-green-600 text-white py-3 mt-4 rounded-xl">
+
+      افزودن به سبد خرید
+
+    </button>
+  `;
+}
+
+/* ---------------- CART ---------------- */
+
+function addToCart(id) {
+
+  const item = cart.find(i => i.id === id);
+
+  if (item) {
+    item.qty++;
+  } else {
+    cart.push({ id, qty: 1 });
+  }
+
+  saveCart();
+  updateCartUI();
+}
+
+function changeQty(id, delta) {
+
+  const item = cart.find(i => i.id === id);
+
+  if (!item) return;
+
+  item.qty += delta;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
+  }
+
+  saveCart();
+  updateCartUI();
+}
+
+function removeItem(id) {
+
+  cart = cart.filter(i => i.id !== id);
+
+  saveCart();
+  updateCartUI();
+}
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+/* ---------------- CART UI ---------------- */
+
+function updateCartUI() {
+
+  const el = document.getElementById("cart-count");
+
+  if (!el) return;
+
+  el.innerText = cart.reduce((a, b) => a + b.qty, 0);
+
+}
+
+/* ---------------- CART PAGE (optional modal) ---------------- */
+
+function renderCart() {
+
+  const box = document.getElementById("cart-items");
+
+  if (!box) return;
+
+  box.innerHTML = cart.map(i => {
+
+    const p = products.find(x => x.id === i.id);
+
+    if (!p) return "";
 
     return `
-
-      <div class="flex items-center justify-between border-b py-3">
+      <div class="flex justify-between items-center border-b py-2">
 
         <div>
-
-          <div class="font-bold">
-
-            ${product.name}
-
-          </div>
+          <div class="font-bold">${p.name}</div>
 
           <div class="text-sm text-gray-500">
-
-            ${item.quantity} عدد
-
+            ${i.qty} عدد
           </div>
-
         </div>
 
-        <div>
+        <div class="flex gap-2 items-center">
 
-          ${(
-            product.price * item.quantity
-          ).toLocaleString()} تومان
+          <button onclick="changeQty(${i.id}, -1)">➖</button>
+
+          <button onclick="changeQty(${i.id}, 1)">➕</button>
+
+          <button onclick="removeItem(${i.id})" class="text-red-500">❌</button>
 
         </div>
 
       </div>
-
     `;
-
-  }).join('');
-
-  totalEl.innerText =
-
-  `${total.toLocaleString()} تومان`;
-
-}
-
-function checkout(){
-
-  if(cart.length===0){
-
-    return alert(
-
-      'سبد خرید خالی است'
-
-    );
-
-  }
-
-  alert(
-
-    'سفارش شما ثبت شد'
-
-  );
-
+  }).join("");
 }
