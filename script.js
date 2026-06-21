@@ -118,92 +118,98 @@ function closeProductPage() {
 
 }
 
-// --- ۴. مدیریت سبد خرید (Cart) ---
-function updateCartCount() {
-    const countEl = document.getElementById('cart-count');
-    if (countEl) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        countEl.innerText = totalItems;
-    }
+function addToCart(id) {
+
+  const item = cart.find(i => i.id === id);
+
+  if (item) {
+    item.qty++;
+  } else {
+    cart.push({ id, qty: 1 });
+  }
+
+  saveCart();
+  updateCartUI();
 }
 
-function addToCart(productId) {
-    const product = products.find(p => p.id == productId);
-    if (!product) return;
+function changeQty(id, delta) {
 
-    const existingItem = cart.find(item => item.id == productId);
+  const item = cart.find(i => i.id === id);
 
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image_url: product.image_url,
-            quantity: 1
-        });
-    }
+  if (!item) return;
 
-    saveCart();
-    updateCartCount();
-    alert('محصول به سبد خرید اضافه شد!');
+  item.qty += delta;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
+  }
+
+  saveCart();
+  updateCartUI();
+}
+
+function removeItem(id) {
+
+  cart = cart.filter(i => i.id !== id);
+
+  saveCart();
+  updateCartUI();
 }
 
 function saveCart() {
-    localStorage.setItem('cart', JSON.stringify(cart));
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-function renderCartItems() {
-    const list = document.getElementById('cart-items-list');
-    const totalEl = document.getElementById('cart-total');
-    if (!list) return;
+/* ---------------- CART UI ---------------- */
 
-    if (cart.length === 0) {
-        list.innerHTML = '<p class="text-center text-gray-400 py-4">سبد خرید شما خالی است.</p>';
-        if (totalEl) totalEl.innerText = '۰ تومان';
-        return;
-    }
+function updateCartUI() {
 
-    let total = 0;
-    list.innerHTML = cart.map(item => {
-        total += item.price * item.quantity;
-        return `
-            <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl mb-2">
-                <img src="${item.image_url}" class="w-12 h-12 object-contain bg-white rounded-lg">
-                <div class="flex-1">
-                    <h4 class="font-bold text-xs">${item.name}</h4>
-                    <p class="text-xs text-blue-600">${Number(item.price).toLocaleString()} تومان</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="updateQty('${item.id}', -1)" class="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">-</button>
-                    <span class="text-xs">${item.quantity}</span>
-                    <button onclick="updateQty('${item.id}', 1)" class="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">+</button>
-                </div>
-                <button onclick="removeFromCart('${item.id}')" class="text-red-400 text-lg">&times;</button>
-            </div>
-        `;
-    }).join('');
+  const el = document.getElementById("cart-count");
 
-    if (totalEl) totalEl.innerText = `${total.toLocaleString()} تومان`;
+  if (!el) return;
+
+  el.innerText = cart.reduce((a, b) => a + b.qty, 0);
+
 }
 
-function updateQty(id, delta) {
-    const item = cart.find(i => i.id == id);
-    if (item) {
-        item.quantity += delta;
-        if (item.quantity <= 0) return removeFromCart(id);
-        saveCart();
-        updateCartCount();
-        renderCartItems();
-    }
-}
+/* ---------------- CART PAGE (optional modal) ---------------- */
 
-function removeFromCart(id) {
-    cart = cart.filter(i => i.id != id);
-    saveCart();
-    updateCartCount();
-    renderCartItems();
+function renderCart() {
+
+  const box = document.getElementById("cart-items");
+
+  if (!box) return;
+
+  box.innerHTML = cart.map(i => {
+
+    const p = products.find(x => x.id === i.id);
+
+    if (!p) return "";
+
+    return `
+      <div class="flex justify-between items-center border-b py-2">
+
+        <div>
+          <div class="font-bold">${p.name}</div>
+
+          <div class="text-sm text-gray-500">
+            ${i.qty} عدد
+          </div>
+        </div>
+
+        <div class="flex gap-2 items-center">
+
+          <button onclick="changeQty(${i.id}, -1)">➖</button>
+
+          <button onclick="changeQty(${i.id}, 1)">➕</button>
+
+          <button onclick="removeItem(${i.id})" class="text-red-500">❌</button>
+
+        </div>
+
+      </div>
+    `;
+  }).join("");
 }
 
 // --- ۵. مدیریت نظرات (Reviews) ---
