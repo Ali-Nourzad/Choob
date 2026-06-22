@@ -1035,10 +1035,12 @@ async function handleSignup() {
     }
 }
 
-async function handleLogout() {
-    await shopDB.auth.signOut();
-    currentUser = null;
-    updateUserUI();
+async function handleLogout(){
+
+  await shopDB.auth.signOut();
+
+  location.href = 'login.html';
+
 }
 
 async function checkUser() {
