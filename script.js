@@ -1010,7 +1010,7 @@ async function handleLogin() {
         alert("خطا در ورود: " + error.message);
     } else {
         currentUser = data.user;
-        updateUserUI();
+        //updateUserUI();
         toggleAuthModal();
     }
 }
@@ -1047,7 +1047,7 @@ async function checkUser() {
     const { data: { user } } = await shopDB.auth.getUser();
     if (user) {
         currentUser = user;
-        updateUserUI();
+        //updateUserUI();
     }
 }
 
