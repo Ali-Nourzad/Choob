@@ -52,148 +52,158 @@ window.location.href='./index.html';
 
 }
 
-async function handleSignup(){
+async function handleSignup() {
 
-const username=
+  const btn = document.getElementById('signup-btn');
 
-document.getElementById(
+  btn.disabled = true;
 
-'signup-username'
+  btn.innerText = 'در حال ثبت‌نام...';
 
-).value.trim();
+  try {
 
-const phone=
+    const username = document
+      .getElementById('signup-username')
+      .value.trim();
 
-document.getElementById(
+    const phone = document
+      .getElementById('signup-phone')
+      .value.trim();
 
-'signup-phone'
+    const email = document
+      .getElementById('signup-email')
+      .value.trim();
 
-).value.trim();
+    const password = document
+      .getElementById('signup-password')
+      .value;
 
-const email=
+    const avatar = document
+      .getElementById('signup-avatar')
+      .files[0];
 
-document.getElementById(
+    if (
+      !username ||
+      !phone ||
+      !email ||
+      !password
+    ) {
 
-'signup-email'
+      throw new Error(
+        'همه فیلدها را تکمیل کنید'
+      );
 
-).value.trim();
+    }
 
-const password=
+    // ثبت‌نام
 
-document.getElementById(
+    const {
+      data,
+      error
+    } = await shopDB.auth.signUp({
 
-'signup-password'
+      email,
 
-).value;
+      password
 
-const avatar=
+    });
 
-document.getElementById(
+    if (error) {
 
-'signup-avatar'
+      throw error;
 
-).files[0];
+    }
 
-if(
+    if (!data.user) {
 
-!username ||
+      throw new Error(
+        'ثبت‌نام انجام نشد'
+      );
 
-!phone ||
+    }
 
-!email ||
+    const userId = data.user.id;
 
-!password
+    // آپلود عکس
 
-){
+    let avatarUrl = '';
 
-return alert(
+    if (avatar) {
 
-'همه فیلدها را تکمیل کنید'
+      const fileName =
 
-);
+        `${userId}-${Date.now()}`;
 
-}
+      const upload =
 
-const signup=
+      await shopDB.storage
 
-await shopDB.auth.signUp({
+      .from('avatars')
 
-email,
+      .upload(fileName, avatar);
 
-password
+      if (!upload.error) {
 
-});
+        avatarUrl =
 
-if(signup.error){
+        `${SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`;
 
-return alert(
+      }
 
-signup.error.message
+    }
 
-);
+    // ساخت پروفایل
 
-}
+    const {
+      error: profileError
+    } = await shopDB
 
-let avatarUrl='';
+    .from('profiles')
 
-if(avatar){
+    .insert([{
 
-const fileName=
+      id: userId,
 
-`${signup.data.user.id}-${Date.now()}-${avatar.name}`;
+      username,
 
-const upload=
+      phone,
 
-await shopDB.storage
+      avatar_url: avatarUrl
 
-.from('avatars')
+    }]);
 
-.upload(fileName,avatar);
+    if (profileError) {
 
-if(!upload.error){
+      throw profileError;
 
-avatarUrl=
+    }
 
-`${SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`;
+    alert(
+      'ثبت‌نام با موفقیت انجام شد'
+    );
 
-}
+    location.href = './login.html';
 
-}
+  }
 
-const profile=
+  catch (err) {
 
-await shopDB
+    console.error(err);
 
-.from('profiles')
+    alert(
+      err.message
+    );
 
-.insert([{
+  }
 
-id:signup.data.user.id,
+  finally {
 
-username,
+    btn.disabled = false;
 
-phone,
+    btn.innerText =
 
-avatar_url:avatarUrl
+    'ثبت‌نام';
 
-}]);
-
-if(profile.error){
-
-return alert(
-
-profile.error.message
-
-);
-
-}
-
-alert(
-
-'ثبت‌نام انجام شد'
-
-);
-
-window.location.href='./login.html';
+  }
 
 }
