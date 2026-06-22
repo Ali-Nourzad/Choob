@@ -1,106 +1,222 @@
-const SUPABASE_URL='https://rlduutynqgevgzmayeit.supabase.co';
+const SUPABASE_URL =
+'https://rlduutynqgevgzmayeit.supabase.co';
 
-const SUPABASE_KEY='sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
+const SUPABASE_KEY =
+'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
 
-const shopDB=
-
+const shopDB =
 window.supabase.createClient(
-
-SUPABASE_URL,
-
-SUPABASE_KEY
-
+  SUPABASE_URL,
+  SUPABASE_KEY
 );
+
+// =================== ورود ===================
 
 async function handleLogin(){
 
-const email=
+  const email =
+  document
+  .getElementById('login-email')
+  ?.value
+  .trim();
 
-document.getElementById(
+  const password =
+  document
+  .getElementById('login-password')
+  ?.value;
 
-'login-email'
+  if(!email || !password){
 
-).value.trim();
+    return alert(
+      'ایمیل و رمز عبور را وارد کنید'
+    );
 
-const password=
+  }
 
-document.getElementById(
+  const { error } =
 
-'login-password'
+  await shopDB.auth
 
-).value;
+  .signInWithPassword({
 
-const {error}=
+    email,
 
-await shopDB.auth
+    password
 
-.signInWithPassword({
+  });
 
-email,
+  if(error){
 
-password
+    return alert(
 
-});
+      error.message
 
-if(error){
+    );
 
-return alert(error.message);
+  }
+
+  location.href='index.html';
 
 }
 
-window.location.href='./index.html';
 
-}
+// =================== ثبت نام ===================
 
-async function handleSignup() {
+async function handleSignup(){
 
-  const btn = document.getElementById('signup-btn');
+  const btn =
 
-  btn.disabled = true;
+  document.getElementById(
 
-  btn.innerText = 'در حال ثبت‌نام...';
+    'signup-btn'
 
-  try {
+  );
 
-    const username = document
-      .getElementById('signup-username')
-      .value.trim();
+  if(btn){
 
-    const phone = document
-      .getElementById('signup-phone')
-      .value.trim();
+    btn.disabled = true;
 
-    const email = document
-      .getElementById('signup-email')
-      .value.trim();
+    btn.innerText =
 
-    const password = document
-      .getElementById('signup-password')
-      .value;
+    'در حال ثبت‌نام...';
 
-    const avatar = document
-      .getElementById('signup-avatar')
-      .files[0];
+  }
 
-    if (
+  try{
+
+    const username =
+
+    document
+
+    .getElementById(
+
+      'signup-username'
+
+    )
+
+    ?.value
+
+    .trim();
+
+
+
+    const phone =
+
+    document
+
+    .getElementById(
+
+      'signup-phone'
+
+    )
+
+    ?.value
+
+    .trim();
+
+
+
+    const email =
+
+    document
+
+    .getElementById(
+
+      'signup-email'
+
+    )
+
+    ?.value
+
+    .trim();
+
+
+
+    const password =
+
+    document
+
+    .getElementById(
+
+      'signup-password'
+
+    )
+
+    ?.value;
+
+
+
+    const avatarInput =
+
+    document.getElementById(
+
+      'signup-avatar'
+
+    );
+
+
+
+    const avatar =
+
+    avatarInput
+
+    ? avatarInput.files[0]
+
+    : null;
+
+
+
+    if(
+
       !username ||
+
       !phone ||
+
       !email ||
+
       !password
-    ) {
+
+    ){
 
       throw new Error(
+
         'همه فیلدها را تکمیل کنید'
+
       );
 
     }
 
-    // ثبت‌نام
+
+
+    if(password.length < 6){
+
+      throw new Error(
+
+        'رمز عبور باید حداقل ۶ کاراکتر باشد'
+
+      );
+
+    }
+
+
+
+    // ثبت نام
 
     const {
+
       data,
+
       error
-    } = await shopDB.auth.signUp({
+
+    }
+
+    =
+
+    await shopDB
+
+    .auth
+
+    .signUp({
 
       email,
 
@@ -108,31 +224,65 @@ async function handleSignup() {
 
     });
 
-    if (error) {
+
+
+    // محدودیت تعداد درخواست
+
+    if(
+
+      error?.status === 429
+
+    ){
+
+      throw new Error(
+
+        'درخواست‌های زیادی ارسال شده است. لطفاً چند دقیقه دیگر دوباره تلاش کنید.'
+
+      );
+
+    }
+
+
+
+    if(error){
 
       throw error;
 
     }
 
-    if (!data.user) {
+
+
+    if(!data.user){
 
       throw new Error(
-        'ثبت‌نام انجام نشد'
+
+        'کاربر ساخته نشد'
+
       );
 
     }
 
-    const userId = data.user.id;
+
+
+    const userId =
+
+    data.user.id;
+
+
 
     // آپلود عکس
 
     let avatarUrl = '';
 
-    if (avatar) {
+
+
+    if(avatar){
 
       const fileName =
 
-        `${userId}-${Date.now()}`;
+      `${userId}-${Date.now()}-${avatar.name}`;
+
+
 
       const upload =
 
@@ -140,9 +290,21 @@ async function handleSignup() {
 
       .from('avatars')
 
-      .upload(fileName, avatar);
+      .upload(
 
-      if (!upload.error) {
+        fileName,
+
+        avatar
+
+      );
+
+
+
+      if(
+
+        !upload.error
+
+      ){
 
         avatarUrl =
 
@@ -152,11 +314,19 @@ async function handleSignup() {
 
     }
 
+
+
     // ساخت پروفایل
 
     const {
+
       error: profileError
-    } = await shopDB
+
+    }
+
+    =
+
+    await shopDB
 
     .from('profiles')
 
@@ -172,37 +342,57 @@ async function handleSignup() {
 
     }]);
 
-    if (profileError) {
+
+
+    if(profileError){
 
       throw profileError;
 
     }
 
+
+
     alert(
+
       'ثبت‌نام با موفقیت انجام شد'
+
     );
 
-    location.href = './login.html';
+
+
+    location.href =
+
+    'login.html';
 
   }
 
-  catch (err) {
+  catch(err){
 
     console.error(err);
 
+
+
     alert(
-      err.message
+
+      err.message ||
+
+      'خطایی رخ داد'
+
     );
 
   }
 
-  finally {
+  finally{
 
-    btn.disabled = false;
+    if(btn){
 
-    btn.innerText =
+      btn.disabled = false;
 
-    'ثبت‌نام';
+      btn.innerText =
+
+      'ثبت‌نام';
+
+    }
 
   }
 
