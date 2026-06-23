@@ -1161,7 +1161,7 @@ async function loadProductPage() {
       ${Number(data.price).toLocaleString()} تومان
     </p>
 
-    <button onclick="addToCart(${data.id})"
+    <button onclick="addToCart('${data.id}')"
     class="w-full bg-green-600 text-white py-3 mt-4 rounded-xl">
 
       افزودن به سبد خرید
