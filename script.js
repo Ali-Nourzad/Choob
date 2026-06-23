@@ -1,5 +1,5 @@
 // --- ۱. تنظیمات اولیه و اتصال به Supabase ---
-const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co'; 
+const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
 
 if (!window.supabase || !window.supabase.createClient) {
@@ -31,7 +31,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // --- ۳. مدیریت محصولات ---
 async function fetchProducts() {
-    const { data, error } = await shopDB
+    const {
+        data,
+        error
+    } = await shopDB
         .from('products')
         .select('*');
 
@@ -45,23 +48,23 @@ async function fetchProducts() {
 
 function renderProducts(productsList) {
 
-  const container = document.getElementById('product-grid');
+    const container = document.getElementById('product-grid');
 
-  if (!container) return;
+    if (!container) return;
 
-  if (productsList.length === 0) {
+    if (productsList.length === 0) {
 
-    container.innerHTML = `
+        container.innerHTML = `
       <p class="col-span-full text-center text-gray-500">
         محصولی یافت نشد.
       </p>
     `;
 
-    return;
+        return;
 
-  }
+    }
 
-  container.innerHTML = productsList.map(product => `
+    container.innerHTML = productsList.map(product => `
 
     <div
       class="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition duration-300"
@@ -154,129 +157,129 @@ async function showProductDetails(productId) {
 }
 
 function goToProduct(id) {
-  window.location.href = `product.html?id=${id}`;
+    window.location.href = `product.html?id=${id}`;
 }
 
 function toggleCart() {
 
-  const modal = document.getElementById('cart-modal');
+    const modal = document.getElementById('cart-modal');
 
-  if (!modal) return;
+    if (!modal) return;
 
-  modal.classList.toggle('hidden');
+    modal.classList.toggle('hidden');
 
-  renderCartItems();
+    renderCartItems();
 
 }
 
 async function sendResetPasswordEmail() {
 
-  const {
+    const {
 
-    data: { user }
+        data: {
+            user
+        }
 
-  } = await shopDB.auth.getUser();
+    } = await shopDB.auth.getUser();
 
+    if (!user) {
 
-
-  if (!user) {
-
-    return alert('ابتدا وارد حساب شوید');
-
-  }
-
-
-
-  const { error } = await shopDB.auth.resetPasswordForEmail(
-
-    user.email,
-
-    {
-
-      redirectTo:
-
-      'https://ali-nourzad.github.io/Choob/reset-password.html'
+        return alert('ابتدا وارد حساب شوید');
 
     }
 
-  );
+    const {
+        error
+    } = await shopDB.auth.resetPasswordForEmail(
 
+        user.email,
 
+        {
 
-  if (error) {
+            redirectTo:
 
-    return alert(error.message);
+                'https://ali-nourzad.github.io/Choob/reset-password.html'
 
-  }
+        }
 
+    );
 
+    if (error) {
 
-  alert(
+        return alert(error.message);
 
-    'لینک تغییر رمز عبور به ایمیل شما ارسال شد.'
+    }
 
-  );
+    alert(
+
+        'لینک تغییر رمز عبور به ایمیل شما ارسال شد.'
+
+    );
 
 }
 
 async function saveCartToDB() {
 
-  const {
+    const {
 
-    data: { user }
+        data: {
+            user
+        }
 
-  } = await shopDB.auth.getUser();
+    } = await shopDB.auth.getUser();
 
-  if (!user) return;
+    if (!user) return;
 
-  // حذف سبد خرید قبلی
+    // حذف سبد خرید قبلی
 
-  await shopDB
+    await shopDB
 
-    .from('carts')
+        .from('carts')
 
-    .delete()
+        .delete()
 
-    .eq('user_id', user.id);
+        .eq('user_id', user.id);
 
-  // ساخت آرایه جدید
+    // ساخت آرایه جدید
 
-  const rows = [];
+    const rows = [];
 
-  for (const item of cart) {
+    for (const item of cart) {
 
-    rows.push({
+        rows.push({
 
-      user_id: user.id,
+            user_id: user.id,
 
-      product_id: item.id,
+            product_id: item.id,
 
-      quantity: item.quantity
+            quantity: item.quantity
 
-    });
+        });
 
-  }
+    }
 
-  if (rows.length === 0) return;
+    if (rows.length === 0) return;
 
-  const { error } = await shopDB
+    const {
+        error
+    } = await shopDB
 
-    .from('carts')
+        .from('carts')
 
-    .insert(rows);
+        .insert(rows);
 
-  if (error) {
+    if (error) {
 
-    console.error(error);
+        console.error(error);
 
-  }
+    }
 
 }
 
 function renderCartItems() {
-  const list = document.getElementById('cart-items-list');
-  const totalEl = document.getElementById('cart-total');
-  if (!list) return;
+    const list = document.getElementById('cart-items-list');
+    const totalEl = document.getElementById('cart-total');
+    if (!list) return;
     if (!totalEl) {
         console.warn('cart-total پیدا نشد');
     }
@@ -288,10 +291,10 @@ function renderCartItems() {
         </p>
         `;
         if (totalEl) {
-          totalEl.innerText = '۰ تومان';
-        } 
+            totalEl.innerText = '۰ تومان';
+        }
         return;
-      }
+    }
     let total = 0;
     list.innerHTML = cart.map(item => {
         const product = products.find(
@@ -373,114 +376,96 @@ function renderCartItems() {
 
     `;
 
-  }).join('');
+    }).join('');
 
-  if (totalEl) {
+    if (totalEl) {
 
-    totalEl.innerText =
+        totalEl.innerText =
 
-      `${total.toLocaleString()} تومان`;
+            `${total.toLocaleString()} تومان`;
 
-  }
+    }
 }
 
 async function loadOrders() {
 
-  const ordersBox =
+    const ordersBox =
 
-    document.getElementById(
+        document.getElementById(
 
-      'orders-list'
+            'orders-list'
 
-    );
+        );
 
+    if (!ordersBox) return;
 
+    const {
 
-  if (!ordersBox) return;
+        data: {
+            user
+        }
 
+    } = await shopDB.auth.getUser();
 
+    if (!user) {
 
-  const {
+        ordersBox.innerHTML =
 
-    data: { user }
+            '<p>ابتدا وارد حساب شوید.</p>';
 
-  } = await shopDB.auth.getUser();
+        return;
 
+    }
 
+    const {
 
-  if (!user) {
+        data: orders,
 
-    ordersBox.innerHTML =
+        error
 
-      '<p>ابتدا وارد حساب شوید.</p>';
+    } = await shopDB
 
+        .from('orders')
 
+        .select('*')
 
-    return;
+        .eq('user_id', user.id)
 
-  }
+        .order(
 
+            'created_at',
 
+            {
 
-  const {
+                ascending: false
 
-    data: orders,
+            }
 
-    error
+        );
 
-  } = await shopDB
+    if (error) {
 
-    .from('orders')
+        ordersBox.innerHTML =
 
-    .select('*')
+            '<p>خطا در دریافت سفارش‌ها</p>';
 
-    .eq('user_id', user.id)
+        return;
 
-    .order(
+    }
 
-      'created_at',
+    if (!orders || orders.length === 0) {
 
-      {
+        ordersBox.innerHTML =
 
-        ascending: false
+            '<p>هنوز سفارشی ثبت نشده است.</p>';
 
-      }
+        return;
 
-    );
-
-
-
-  if (error) {
-
-    ordersBox.innerHTML =
-
-      '<p>خطا در دریافت سفارش‌ها</p>';
-
-
-
-    return;
-
-  }
-
-
-
-  if (!orders || orders.length === 0) {
+    }
 
     ordersBox.innerHTML =
 
-      '<p>هنوز سفارشی ثبت نشده است.</p>';
-
-
-
-    return;
-
-  }
-
-
-
-  ordersBox.innerHTML =
-
-    orders.map(order => `
+        orders.map(order => `
 
       <div
 
@@ -575,33 +560,29 @@ async function loadOrders() {
 }
 async function updateUserNavbar() {
 
-  const userSection =
+    const userSection =
 
-    document.getElementById(
+        document.getElementById(
 
-      'user-section'
+            'user-section'
 
-    );
+        );
 
+    if (!userSection) return;
 
+    const {
 
-  if (!userSection) return;
+        data: {
+            user
+        }
 
+    } = await shopDB.auth.getUser();
 
+    // اگر لاگین نیست
 
-  const {
+    if (!user) {
 
-    data: { user }
-
-  } = await shopDB.auth.getUser();
-
-
-
-  // اگر لاگین نیست
-
-  if (!user) {
-
-    userSection.innerHTML = `
+        userSection.innerHTML = `
 
       <a
 
@@ -617,47 +598,39 @@ async function updateUserNavbar() {
 
     `;
 
+        return;
 
+    }
 
-    return;
+    // گرفتن پروفایل
 
-  }
+    const {
+        data: profile
+    } =
 
+    await shopDB
 
+        .from('profiles')
 
-  // گرفتن پروفایل
+        .select('*')
 
-  const { data: profile } =
+        .eq('id', user.id)
 
-  await shopDB
+        .single();
 
-  .from('profiles')
+    const avatar =
 
-  .select('*')
+        profile?.avatar_url ||
 
-  .eq('id', user.id)
+        'https://ui-avatars.com/api/?name=User';
 
-  .single();
+    const username =
 
+        profile?.username ||
 
+        user.email.split('@')[0];
 
-  const avatar =
-
-    profile?.avatar_url ||
-
-    'https://ui-avatars.com/api/?name=User';
-
-
-
-  const username =
-
-    profile?.username ||
-
-    user.email.split('@')[0];
-
-
-
-  userSection.innerHTML = `
+    userSection.innerHTML = `
 
     <a
 
@@ -695,121 +668,101 @@ async function updateUserNavbar() {
 
 async function checkout() {
 
-  if (cart.length === 0) {
+    if (cart.length === 0) {
 
-    return alert('سبد خرید خالی است');
+        return alert('سبد خرید خالی است');
 
-  }
+    }
 
-  // گرفتن کاربر لاگین شده
+    // گرفتن کاربر لاگین شده
 
-  const {
+    const {
 
-    data: { user }
+        data: {
+            user
+        }
 
-  } = await shopDB.auth.getUser();
+    } = await shopDB.auth.getUser();
 
+    if (!user) {
 
+        return alert(
 
-  if (!user) {
+            'ابتدا وارد حساب کاربری شوید'
 
-    return alert(
+        );
 
-      'ابتدا وارد حساب کاربری شوید'
+    }
+
+    // ساخت آرایه سفارش‌ها
+
+    const orders = [];
+
+    for (const item of cart) {
+
+        const product = products.find(
+
+            p => String(p.id) === String(item.id)
+
+        );
+
+        if (!product) continue;
+
+        orders.push({
+
+            product_name: product.name,
+
+            price: product.price,
+
+            image_url: product.image_url,
+
+            quantity: item.quantity,
+
+            user_id: user.id,
+
+            status: 'در انتظار پرداخت'
+
+        });
+
+    }
+
+    // ذخیره در سوپابیس
+
+    const {
+        error
+    } = await shopDB
+
+        .from('orders')
+
+        .insert(orders);
+
+    if (error) {
+
+        console.error(error);
+
+        return alert(
+
+            'خطا در ثبت سفارش'
+
+        );
+
+    }
+
+    // خالی کردن سبد خرید
+
+    cart = [];
+
+    saveCart();
+
+    updateCartCount();
+
+    renderCartItems();
+
+    alert(
+
+        'سفارش با موفقیت ثبت شد'
 
     );
-
-  }
-
-  // ساخت آرایه سفارش‌ها
-
-  const orders = [];
-
-
-
-  for (const item of cart) {
-
-    const product = products.find(
-
-      p => String(p.id) === String(item.id)
-
-    );
-
-
-
-    if (!product) continue;
-
-
-
-    orders.push({
-
-      product_name: product.name,
-
-      price: product.price,
-
-      image_url: product.image_url,
-
-      quantity: item.quantity,
-
-      user_id: user.id,
-
-      status: 'در انتظار پرداخت'
-
-    });
-
-  }
-
-
-
-  // ذخیره در سوپابیس
-
-  const { error } = await shopDB
-
-    .from('orders')
-
-    .insert(orders);
-
-
-
-  if (error) {
-
-    console.error(error);
-
-
-
-    return alert(
-
-      'خطا در ثبت سفارش'
-
-    );
-
-  }
-
-
-
-  // خالی کردن سبد خرید
-
-  cart = [];
-
-
-
-  saveCart();
-
-
-
-  updateCartCount();
-
-
-
-  renderCartItems();
-
-
-
-  alert(
-
-    'سفارش با موفقیت ثبت شد'
-
-  );
 
 }
 
@@ -821,149 +774,149 @@ function closeProductPage() {
 
 }
 
-function addToCart(id){
+function addToCart(id) {
 
-  id = String(id);
+    id = String(id);
 
-  const item = cart.find(
+    const item = cart.find(
 
-    i => String(i.id) === id
+        i => String(i.id) === id
 
-  );
+    );
 
-  if(item){
+    if (item) {
 
-    item.quantity++;
+        item.quantity++;
 
-  }
+    } else {
 
-  else{
+        cart.push({
 
-    cart.push({
+            id,
 
-      id,
+            quantity: 1
 
-      quantity:1
+        });
 
-    });
+    }
 
-  }
+    saveCart();
 
-  saveCart();
+    updateCartCount();
 
-  updateCartCount();
+    renderCartItems();
 
-  renderCartItems();
-
-  saveCartToDB();
+    saveCartToDB();
 
 }
 
 function changeQty(id, delta) {
 
-  const item = cart.find(
+    const item = cart.find(
 
-    i => String(i.id) === String(id)
+        i => String(i.id) === String(id)
 
-  );
+    );
 
-  if (!item) return;
+    if (!item) return;
 
-  item.quantity = item.quantity || 1;
+    item.quantity = item.quantity || 1;
 
-  item.quantity += delta;
+    item.quantity += delta;
 
-  if (item.quantity <= 0) {
+    if (item.quantity <= 0) {
 
-    removeItem(id);
+        removeItem(id);
 
-    return;
+        return;
 
-  }
+    }
 
-  saveCart();
+    saveCart();
 
-  updateCartCount();
+    updateCartCount();
 
-  renderCartItems();
-  saveCartToDB();
+    renderCartItems();
+    saveCartToDB();
 
 }
 
 function removeItem(id) {
 
-  cart = cart.filter(
+    cart = cart.filter(
 
-    i => String(i.id) !== String(id)
+        i => String(i.id) !== String(id)
 
-  );
+    );
 
-  saveCart();
+    saveCart();
 
-  updateCartCount();
+    updateCartCount();
 
-  renderCartItems();
-  saveCartToDB();
+    renderCartItems();
+    saveCartToDB();
 
 }
 
-async function loadCartFromDB(){
+async function loadCartFromDB() {
 
-  const {
+    const {
 
-    data:{user}
+        data: {
+            user
+        }
 
-  } = await shopDB.auth.getUser();
+    } = await shopDB.auth.getUser();
 
-  if(!user) return;
+    if (!user) return;
 
-  const {
+    const {
 
-    data,
+        data,
 
-    error
+        error
 
-  } = await shopDB
+    } = await shopDB
 
-  .from('carts')
+        .from('carts')
 
-  .select('*')
+        .select('*')
 
-  .eq('user_id', user.id);
+        .eq('user_id', user.id);
 
-  if(error){
+    if (error) {
 
-    console.error(error);
+        console.error(error);
 
-    return;
+        return;
 
-  }
+    }
 
-  cart = data.map(item => ({
+    cart = data.map(item => ({
 
-    id: item.product_id,
+        id: item.product_id,
 
-    quantity: item.quantity
+        quantity: item.quantity
 
-  }));
+    }));
 
-  saveCart();
+    saveCart();
 
-  updateCartCount();
+    updateCartCount();
 
-  renderCartItems();
+    renderCartItems();
 
 }
 
 function saveCart() {
 
-  localStorage.setItem(
+    localStorage.setItem(
 
-    'cart',
+        'cart',
 
-    JSON.stringify(cart)
+        JSON.stringify(cart)
 
-  );
+    );
 
 }
 
@@ -971,53 +924,53 @@ function saveCart() {
 
 function updateCartCount() {
 
-  const countEl = document.getElementById('cart-count');
+    const countEl = document.getElementById('cart-count');
 
-  if (!countEl) return;
+    if (!countEl) return;
 
-  const totalItems = cart.reduce(
+    const totalItems = cart.reduce(
 
-    (sum, item) => {
+        (sum, item) => {
 
-      const quantity = item.quantity || item.qty || 1;
+            const quantity = item.quantity || item.qty || 1;
 
-      return sum + quantity;
+            return sum + quantity;
 
-    },
+        },
 
-    0
+        0
 
-  );
+    );
 
-  countEl.innerText = totalItems;
+    countEl.innerText = totalItems;
 
 }
 
-function updateCartUI(){
+function updateCartUI() {
 
-  const el =
+    const el =
 
-  document.getElementById(
+        document.getElementById(
 
-    'cart-count'
+            'cart-count'
 
-  );
+        );
 
-  if(!el) return;
+    if (!el) return;
 
-  el.innerText =
+    el.innerText =
 
-  cart.reduce(
+        cart.reduce(
 
-    (sum,item)=>
+            (sum, item) =>
 
-      sum +
+            sum +
 
-      (item.quantity || 1),
+            (item.quantity || 1),
 
-    0
+            0
 
-  );
+        );
 
 }
 
@@ -1038,11 +991,16 @@ async function loadReviews(productId) {
         }
     }
 
-    const { data: reviews, error } = await shopDB
+    const {
+        data: reviews,
+        error
+    } = await shopDB
         .from('reviews')
         .select('*')
         .eq('product_id', productId)
-        .order('created_at', { ascending: false });
+        .order('created_at', {
+            ascending: false
+        });
 
     if (error) {
         list.innerHTML = '<p class="text-red-500 text-sm">خطا در بارگذاری نظرات</p>';
@@ -1072,13 +1030,15 @@ async function submitReview() {
     if (!text) return alert("لطفاً متن نظر را وارد کنید");
     else if (!currentUser) return alert("ابتدا باید وارد حساب خود شوید");
 
-    const { error } = await shopDB
+    const {
+        error
+    } = await shopDB
         .from('reviews')
-        .insert([{ 
-            product_id: currentProductId, 
-            comment: text, 
+        .insert([{
+            product_id: currentProductId,
+            comment: text,
             user_id: currentUser.id,
-            user_name: currentUser.email.split('@')[0] 
+            user_name: currentUser.email.split('@')[0]
         }]);
 
     if (error) {
@@ -1106,7 +1066,13 @@ async function handleLogin() {
 
     if (!email || !password) return alert("لطفاً ایمیل و رمز عبور را وارد کنید");
 
-    const { data, error } = await shopDB.auth.signInWithPassword({ email, password });
+    const {
+        data,
+        error
+    } = await shopDB.auth.signInWithPassword({
+        email,
+        password
+    });
 
     if (error) {
         alert("خطا در ورود: " + error.message);
@@ -1127,7 +1093,13 @@ async function handleSignup() {
 
     if (!email || !password) return alert("لطفاً اطلاعات ثبت‌نام را کامل کنید");
 
-    const { data, error } = await shopDB.auth.signUp({ email, password });
+    const {
+        data,
+        error
+    } = await shopDB.auth.signUp({
+        email,
+        password
+    });
 
     if (error) {
         alert("خطا در ثبت‌نام: " + error.message);
@@ -1137,16 +1109,20 @@ async function handleSignup() {
     }
 }
 
-async function handleLogout(){
+async function handleLogout() {
 
-  await shopDB.auth.signOut();
+    await shopDB.auth.signOut();
 
-  location.href = 'login.html';
+    location.href = 'login.html';
 
 }
 
 async function checkUser() {
-    const { data: { user } } = await shopDB.auth.getUser();
+    const {
+        data: {
+            user
+        }
+    } = await shopDB.auth.getUser();
     if (user) {
         currentUser = user;
         //updateUserUI();
@@ -1170,23 +1146,25 @@ function updateUserUI() {
 }
 
 async function loadProductPage() {
-  const id = new URLSearchParams(window.location.search).get("id");
+    const id = new URLSearchParams(window.location.search).get("id");
 
-  const { data } = await shopDB.from("products").select("*").eq("id", id).single();
+    const {
+        data
+    } = await shopDB.from("products").select("*").eq("id", id).single();
 
-  const box = document.getElementById("product-box");
+    const box = document.getElementById("product-box");
 
-  if (!data) return;
+    if (!data) return;
 
-  let images = [];
+    let images = [];
 
-  try {
-    images = data.images ? data.images.split("|") : [];
-  } catch {
-    images = [];
-  }
+    try {
+        images = data.images ? data.images.split("|") : [];
+    } catch {
+        images = [];
+    }
 
-  box.innerHTML = `
+    box.innerHTML = `
     <img id="main-img" src="${data.image_url}" class="w-full h-96 object-contain">
 
     <div class="flex gap-2 mt-4 overflow-x-auto">
