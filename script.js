@@ -605,8 +605,8 @@ async function updateUserNavbar() {
 
         href="login.html"
 
-        class="bg-white text-blue-600 px-4 py-2 rounded-xl font-medium hover:bg-gray-100 transition"
-
+        class="bg-white text-[#E6D5B8] px-4 py-2 rounded-xl font-medium hover:bg-gray-100 transition"
+        <button
       >
 
         ورود / ثبت‌نام
