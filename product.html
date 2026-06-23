@@ -68,10 +68,6 @@
                         </div>
                 </div>
                 <script>
-                        const shopDB = window.supabase.createClient(
-                                SUPABASE_URL,
-                                SUPABASE_KEY
-                        );
                         let currentProduct = null;
                         document.addEventListener('DOMContentLoaded', loadProduct);
                         async function loadProduct(){
