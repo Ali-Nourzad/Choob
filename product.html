@@ -107,18 +107,19 @@
                                 if(!currentProduct){
                                         return;
                                 }
-                                let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                                const item = cart.find(i => i.id == currentProduct.id);
-                                if(item){
-                                        item.quantity++;
-                                }
-                                else{
-                                        cart.push({
-                                                id: currentProduct.id,
-                                                quantity: 1
-                                        });
-                                }
-                                localStorage.setItem('cart', JSON.stringify(cart));
+                                addToCart(currentProduct.id);
+                                // let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                                // const item = cart.find(i => i.id == currentProduct.id);
+                                // if(item){
+                                //         item.quantity++;
+                                // }
+                                // else{
+                                //         cart.push({
+                                //                 id: currentProduct.id,
+                                //                 quantity: 1
+                                //         });
+                                // }
+                                // localStorage.setItem('cart', JSON.stringify(cart));
                                 alert('محصول به سبد خرید اضافه شد.');
                         }
                         updateCartCount();
