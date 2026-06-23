@@ -1122,7 +1122,7 @@ function updateUserUI() {
             </div>
         `;
     } else {
-        userSection.innerHTML = `<button onclick="openAuthModal()" class="text-gray-600 hover:text-blue-600 font-medium text-sm">ورود / ثبت‌نام</button>`;
+        userSection.innerHTML = `<button onclick="openAuthModal()" class="text-[#E6D5B8] font-medium text-sm">ورود / ثبت‌نام</button>`;
     }
 }
 
