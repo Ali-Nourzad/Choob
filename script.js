@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadOrders();
     await loadCartFromDB();
     updateCartUI();
+    updateCartCount();
     //toggleCart(); // برای نمایش سبد خرید در صورت لود شدن مجدد صفحه
 });
 
