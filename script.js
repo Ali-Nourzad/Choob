@@ -77,7 +77,8 @@ function renderProducts(productsList) {
       >
 
         <img
-
+        
+          loading="lazy"
           src="${product.image_url}"
 
           alt="${product.name}"
