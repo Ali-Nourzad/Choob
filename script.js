@@ -43,27 +43,86 @@ async function fetchProducts() {
 }
 
 function renderProducts(productsList) {
-    const container = document.getElementById('product-grid');
-    if (!container) return;
 
-    if (productsList.length === 0) {
-        container.innerHTML = '<p class="col-span-full text-center text-gray-500">محصولی یافت نشد.</p>';
-        return;
-    }
+  const container = document.getElementById('product-grid');
 
-    container.innerHTML = productsList.map(product => `
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow p-4">
-            <div class="relative group cursor-pointer" onclick="goToProduct('${product.id}')">
-                <img src="${product.image_url}" alt="${product.name}" class="w-full h-48 object-contain mb-4">
-                <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </div>
-            <h3 class="font-bold text-gray-800 mb-2">${product.name}</h3>
-            <p class="text-blue-600 font-bold mb-4">${Number(product.price).toLocaleString()} تومان</p>
-            <button onclick="event.stopPropagation(); addToCart('${product.id}')" class="w-full bg-gray-900 text-white py-2 rounded-xl hover:bg-blue-600 transition-colors">
-                افزودن به سبد خرید
-            </button>
-        </div>
-    `).join('');
+  if (!container) return;
+
+  if (productsList.length === 0) {
+
+    container.innerHTML = `
+      <p class="col-span-full text-center text-gray-500">
+        محصولی یافت نشد.
+      </p>
+    `;
+
+    return;
+
+  }
+
+  container.innerHTML = productsList.map(product => `
+
+    <div
+      class="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition duration-300"
+    >
+
+      <!-- عکس -->
+
+      <div
+        class="cursor-pointer"
+
+        onclick="goToProduct('${product.id}')"
+
+      >
+
+        <img
+
+          src="${product.image_url}"
+
+          alt="${product.name}"
+
+          class="w-full h-64 object-cover rounded-t-3xl"
+
+        >
+
+      </div>
+
+      <!-- اطلاعات -->
+
+      <div class="p-5">
+
+        <h3 class="text-xl font-bold mb-3">
+
+          ${product.name}
+
+        </h3>
+
+        <p class="text-blue-600 text-2xl font-bold mb-6">
+
+          ${Number(product.price).toLocaleString()}
+
+          تومان
+
+        </p>
+
+        <button
+
+          onclick="event.stopPropagation();addToCart('${product.id}')"
+
+          class="w-full bg-slate-900 hover:bg-blue-600 text-white py-4 rounded-2xl font-bold transition"
+
+        >
+
+          افزودن به سبد خرید
+
+        </button>
+
+      </div>
+
+    </div>
+
+  `).join('');
+
 }
 
 async function showProductDetails(productId) {
