@@ -81,7 +81,7 @@ function renderProducts(productsList) {
 
           alt="${product.name}"
 
-          class="w-full h-64 object-cover rounded-t-3xl"
+          class="w-full h-56 object-cover rounded-t-3xl"
 
         >
 
@@ -89,15 +89,15 @@ function renderProducts(productsList) {
 
       <!-- اطلاعات -->
 
-      <div class="p-5">
+      <div class="p-4">
 
-        <h3 class="text-xl font-bold mb-3">
+        <h3 class="text-lg font-bold mb-3">
 
           ${product.name}
 
         </h3>
 
-        <p class="text-blue-600 text-2xl font-bold mb-6">
+        <p class="text-blue-600 text-xl font-bold mb-6">
 
           ${Number(product.price).toLocaleString()}
 
@@ -109,7 +109,7 @@ function renderProducts(productsList) {
 
           onclick="event.stopPropagation();addToCart('${product.id}')"
 
-          class="w-full bg-slate-900 hover:bg-blue-600 text-white py-4 rounded-2xl font-bold transition"
+          class="w-full bg-slate-900 hover:bg-blue-600 text-white py-3 rounded-2xl font-bold transition"
 
         >
 
