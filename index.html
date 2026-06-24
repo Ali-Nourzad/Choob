@@ -1,81 +1,281 @@
 <!DOCTYPE html>
 
 <html lang="fa" dir="rtl">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>T-Choob</title>
-        <link rel="icon" type="image/png" href="favicon.ico">
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <style>
-            @font-face{
-                font-family:'Lalezar';
-                src:url('./Lalezar-Regular.ttf') format('truetype');
-            }
-            *{
-                font-family:'Lalezar', sans-serif;
-            }
-        </style>
-    </head>
-    <body class="bg-gray-100">
-        <!-- نوار ناوبری (Navbar) -->
-        <nav class="text-black shadow-md sticky top-0 z-40 p-4" style="background:#E6D5B8">
-            <div class="container mx-auto flex justify-between items-center">
-                <h1 class="text-2xl font-bold cursor-pointer" onclick="window.location.reload()">T-Choob</h1>
-                <div class="flex items-center gap-4">
-                    <!-- سبد خرید -->
-                    <button onclick="toggleCart()" class="relative p-2 bg-white/20 rounded-full hover:bg-white/30 transition">
-                        <span class="text-2xl">🛒</span>
-                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                    </button>
-                    <!-- پروفایل / ورود -->
-                    <div id="user-section"></div>
-                </div>
-            </div>
-        </nav>
-        <section class="text-right container mx-auto px-6 mt-8">
-            <div class="text-right relative overflow-hidden rounded-[40px] h-[420px]" style="
-                background-image:url('https://cdn.yjcnews.ir/files/fa/news/1396/7/4/6818535_125.jpg');
-                background-size:cover;
-                background-position:center;
-                ">
-                <div class="absolute inset-0 z-10">
-                    <div class="absolute right-12 top-1/2 -translate-y-1/2 text-right">
-                        <h1 class="text-5xl font-black text-white mb-6">چوب گالری</h1>
-                        <p class="text-2xl text-gray-800">T-Choob</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <main class="container mx-auto p-6">
-            <header class="text-center my-10">
-                <h2 class="text-3xl font-bold text-gray-800">محصولات برتر ما</h2>
-                <p class="text-gray-500 mt-2">کیفیت تضمین شده برای شما</p>
-            </header>
-            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <h2>در حال بارگذاری ...</h2>
-                <!-- محصولات توسط JS اینجا ساخته می‌شوند -->
-            </div>
-        </main>
-        <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
-            <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 flex flex-col">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-bold">سبد خرید</h2>
-                    <button onclick="toggleCart()" class="text-3xl">&times;</button>
-                </div>
-                <div id="cart-items-list" class="flex-1 overflow-y-auto">
-                    <h2>nothing</h2>
-                </div>
-                <div class="border-t pt-4">
-                    <div class="flex justify-between text-lg font-bold mb-4">
-                        <span>جمع کل</span>
-                        <span id="cart-total">۰ تومان</span>
-                    </div>
-                    <button onclick="checkout()" class="w-full bg-green-600 text-white py-4 rounded-xl">ثبت سفارش</button>
-                </div>
-            </div>
-        </div>
-        <script src="script.js"></script>
-    </body>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>T-Choob</title>
+
+<link rel="icon" href="favicon.ico">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+<!-- ناوبار -->
+
+<nav class="navbar">
+
+<div class="navbar-container">
+
+<h1 class="logo" onclick="window.location.reload()">
+
+T-Choob
+
+</h1>
+
+<div class="navbar-actions">
+
+<button onclick="toggleCart()" class="cart-btn">
+
+🛒
+
+<span id="cart-count">0</span>
+
+</button>
+
+<div id="user-section"></div>
+
+</div>
+
+</div>
+
+</nav>
+
+
+<!-- بنر -->
+
+<section class="hero">
+
+<div class="hero-overlay">
+
+<div class="hero-text">
+
+<h1>چوب گالری</h1>
+
+<p>T-Choob</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- سرچ و فیلتر -->
+
+<section class="search-section">
+
+<input
+
+type="text"
+
+id="search-input"
+
+placeholder="جستجوی محصول..."
+
+onkeyup="searchProducts()"
+
+>
+
+<select id="sort-select" onchange="sortProducts()">
+
+<option value="">مرتب سازی</option>
+
+<option value="cheap">ارزان‌ترین</option>
+
+<option value="expensive">گران‌ترین</option>
+
+<option value="name">بر اساس نام</option>
+
+</select>
+
+</section>
+
+
+<!-- محصولات -->
+
+<main class="main-container">
+
+<header class="products-header">
+
+<h2>محصولات برتر ما</h2>
+
+<p>کیفیت تضمین شده برای شما</p>
+
+</header>
+
+
+<div id="product-grid" class="products-grid">
+
+<h2>در حال بارگذاری...</h2>
+
+</div>
+
+</main>
+
+
+<!-- سبد خرید -->
+
+<div id="cart-modal" class="cart-modal hidden">
+
+<div class="cart-panel">
+
+<div class="cart-header">
+
+<h2>سبد خرید</h2>
+
+<button onclick="toggleCart()">
+
+×
+
+</button>
+
+</div>
+
+
+<div id="cart-items-list" class="cart-items">
+
+<h2>nothing</h2>
+
+</div>
+
+
+<div class="cart-footer">
+
+<div class="cart-total">
+
+<span>جمع کل</span>
+
+<span id="cart-total">
+
+۰ تومان
+
+</span>
+
+</div>
+
+<button onclick="checkout()">
+
+ثبت سفارش
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+
+<script>
+
+function searchProducts(){
+
+const keyword =
+
+document.getElementById(
+
+'search-input'
+
+)
+
+.value
+
+.toLowerCase();
+
+
+const filtered = products.filter(
+
+p =>
+
+p.name
+
+.toLowerCase()
+
+.includes(keyword)
+
+);
+
+
+renderProducts(filtered);
+
+}
+
+
+
+function sortProducts(){
+
+const value =
+
+document.getElementById(
+
+'sort-select'
+
+).value;
+
+
+let sorted = [...products];
+
+
+if(value==="cheap"){
+
+sorted.sort(
+
+(a,b)=>a.price-b.price
+
+);
+
+}
+
+
+if(value==="expensive"){
+
+sorted.sort(
+
+(a,b)=>b.price-a.price
+
+);
+
+}
+
+
+if(value==="name"){
+
+sorted.sort(
+
+(a,b)=>
+
+a.name.localeCompare(
+
+b.name,
+
+'fa'
+
+)
+
+);
+
+}
+
+
+renderProducts(sorted);
+
+}
+
+</script>
+
+</body>
+
 </html>
