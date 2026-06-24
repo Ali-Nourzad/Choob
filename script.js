@@ -1190,3 +1190,69 @@ async function loadProductPage() {
     </button>
   `;
 }
+function filterProducts(){
+
+  const search = document
+    .getElementById('search-input')
+    .value
+    .toLowerCase();
+
+  const sort = document
+    .getElementById('sort-select')
+    .value;
+
+  let filtered = [...products];
+
+  // جستجو
+
+  filtered = filtered.filter(product =>
+
+    product.name
+      .toLowerCase()
+      .includes(search)
+
+  );
+
+  // مرتب سازی
+
+  if(sort === 'cheap'){
+
+    filtered.sort(
+
+      (a,b)=>a.price-b.price
+
+    );
+
+  }
+
+  if(sort === 'expensive'){
+
+    filtered.sort(
+
+      (a,b)=>b.price-a.price
+
+    );
+
+  }
+
+  if(sort === 'name'){
+
+    filtered.sort(
+
+      (a,b)=>
+
+      a.name.localeCompare(
+
+        b.name,
+
+        'fa'
+
+      )
+
+    );
+
+  }
+
+  renderProducts(filtered);
+
+}
