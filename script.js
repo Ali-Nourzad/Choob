@@ -637,7 +637,7 @@ userSection.innerHTML = `
 </a>
 
 `;
-
+}
 async function checkout() {
 
     if (cart.length === 0) {
