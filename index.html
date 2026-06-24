@@ -12,7 +12,7 @@
 <link rel="icon" href="favicon.ico">
 
 <link rel="stylesheet" href="style.css">
-
+<script src="https://cdn.jsdelivr.net/npm/fuse.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
@@ -201,36 +201,29 @@ onchange="filterProducts()"
 
 
 <script>
+const fuse = new Fuse(allProducts, {
 
-function searchProducts(){
+  keys: [
+    'name',
+    'description',
+    'category'
+  ],
 
-const keyword =
+  threshold: 0.4
 
-document.getElementById(
+});
 
-'search-input'
+function searchProducts(search){
 
-)
+  if(!search){
 
-.value
+    return allProducts;
 
-.toLowerCase();
+  }
 
-
-const filtered = products.filter(
-
-p =>
-
-p.name
-
-.toLowerCase()
-
-.includes(keyword)
-
-);
-
-
-renderProducts(filtered);
+  return fuse
+    .search(search)
+    .map(item => item.item);
 
 }
 
