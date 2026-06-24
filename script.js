@@ -606,57 +606,38 @@ async function updateUserNavbar() {
 
     user.email.split('@')[0];
 
-  userSection.innerHTML = `
+userSection.innerHTML = `
 
-    <a
-      href="profile.html"
+<a
 
-      style="
-        display:flex;
-        align-items:center;
-        gap:10px;
-        text-decoration:none;
-        color:#222;
-      "
+  href="profile.html"
 
-    >
+  class="user-link"
 
-      <img
+>
 
-        src="${avatar}"
+  <img
 
-        alt="profile"
+    src="${avatar}"
 
-        style="
-          width:48px;
-          height:48px;
-          border-radius:50%;
-          object-fit:cover;
-          border:2px solid rgba(255,255,255,.8);
-        "
+    class="user-avatar"
 
-      >
+  >
 
-      <span
+  <span
 
-        style="
-          font-size:16px;
-          font-weight:500;
-          text-decoration:none;
-          color:#222;
-          white-space:nowrap;
-        "
+    class="user-name"
 
-      >
+  >
 
-        ${username}
+    ${username}
 
-      </span>
+  </span>
 
-    </a>
+</a>
 
-  `;
-}
+`;
+
 async function checkout() {
 
     if (cart.length === 0) {
