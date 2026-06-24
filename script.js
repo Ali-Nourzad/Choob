@@ -16,6 +16,7 @@ let products = [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let currentUser = null;
 let currentProductId = null;
+let displayedProducts = [];
 
 // --- ۲. شروع برنامه (Initialization) ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -43,7 +44,8 @@ async function fetchProducts() {
         return;
     }
     products = data;
-    renderProducts(products);
+    displayedProducts = [...products];
+    renderProducts(displayedProducts);
 }
 
 function renderProducts(productsList) {
@@ -1165,66 +1167,98 @@ async function loadProductPage() {
 function filterProducts(){
 
   const search = document
+
     .getElementById('search-input')
+
     .value
-    .toLowerCase();
+
+    .toLowerCase()
+
+    .trim();
+
+
 
   const sort = document
+
     .getElementById('sort-select')
+
     .value;
 
-  let filtered = [...products];
+
+
+  let result = [...products];
+
+
 
   // جستجو
 
-  filtered = filtered.filter(product =>
+  if(search){
 
-    product.name
+    result = result.filter(product=>
+
+      product.name
+
       .toLowerCase()
+
       .includes(search)
 
-  );
+    );
+
+  }
+
+
 
   // مرتب سازی
 
-  if(sort === 'cheap'){
+  switch(sort){
 
-    filtered.sort(
+    case 'cheap':
 
-      (a,b)=>a.price-b.price
+      result.sort(
 
-    );
+        (a,b)=>a.price-b.price
+
+      );
+
+      break;
+
+
+
+    case 'expensive':
+
+      result.sort(
+
+        (a,b)=>b.price-a.price
+
+      );
+
+      break;
+
+
+
+    case 'name':
+
+      result.sort(
+
+        (a,b)=>
+
+        a.name.localeCompare(
+
+          b.name,
+
+          'fa'
+
+        )
+
+      );
+
+      break;
 
   }
 
-  if(sort === 'expensive'){
 
-    filtered.sort(
 
-      (a,b)=>b.price-a.price
-
-    );
-
-  }
-
-  if(sort === 'name'){
-
-    filtered.sort(
-
-      (a,b)=>
-
-      a.name.localeCompare(
-
-        b.name,
-
-        'fa'
-
-      )
-
-    );
-
-  }
-
-  renderProducts(filtered);
+  displayedProducts = result;
+  renderProducts(displayedProducts);
 
 }
