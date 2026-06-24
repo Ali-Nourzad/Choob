@@ -301,77 +301,72 @@ function renderCartItems() {
         item.quantity = item.quantity || item.qty || 1;
         total += product.price * item.quantity;
         return `
-        <div class="flex items-center gap-4 border-b py-4">
-        <img
-          src="${product.image_url}"
-          class="w-16 h-16 object-contain rounded-lg bg-gray-100"
-        >
-        <div class="flex-1">
-            <h4 class="font-bold">
-                ${product.name}
-            </h4>
-            <p class="text-sm text-gray-500">
-            ${Number(product.price).toLocaleString()} تومان
-            </p>
-        </div>
-        <div class="flex items-center gap-2">
+<div class="cart-item">
 
-          <button
+<img
+src="${product.image_url}"
+class="cart-item-image">
 
-            onclick="changeQty('${item.id}', -1)"
+<div class="cart-item-info">
 
-            class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300"
+<h4 class="cart-item-name">
 
-          >
+${product.name}
 
-            ➖
+</h4>
 
-          </button>
+<p class="cart-item-price">
 
-          <span class="font-bold">
+${Number(product.price).toLocaleString()}
+تومان
 
-            ${item.quantity}
+</p>
 
-          </span>
+</div>
 
-          <button
+<div class="cart-item-quantity">
 
-            onclick="changeQty('${item.id}', 1)"
+<button
+onclick="changeQty('${item.id}',-1)"
+class="qty-btn">
 
-            class="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300"
+➖
 
-          >
+</button>
 
-            ➕
+<span class="qty-number">
 
-          </button>
+${item.quantity}
 
-        </div>
+</span>
 
-        <div class="w-28 text-center font-bold">
+<button
+onclick="changeQty('${item.id}',1)"
+class="qty-btn">
 
-          ${(product.price * item.quantity).toLocaleString()}
+➕
 
-          تومان
+</button>
 
-        </div>
+</div>
 
-        <button
+<div class="cart-item-total">
 
-          onclick="removeItem('${item.id}')"
+${(product.price*item.quantity).toLocaleString()}
+تومان
 
-          class="text-red-500 text-2xl hover:text-red-700"
+</div>
 
-        >
+<button
+onclick="removeItem('${item.id}')"
+class="remove-btn">
 
-          🗑️
+🗑️
 
-        </button>
+</button>
 
-      </div>
-
-    `;
-
+</div>
+`;
     }).join('');
 
     if (totalEl) {
