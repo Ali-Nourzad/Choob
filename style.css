@@ -869,13 +869,17 @@ width:80px;
 
 height:80px;
 
-object-fit:contain;
+object-fit:cover;
 
-background:#f5f5f5;
+border-radius:14px;
 
-border-radius:12px;
+display:block;
 
-padding:8px;
+background:none;
+
+padding:0;
+
+flex-shrink:0;
 
 }
 
