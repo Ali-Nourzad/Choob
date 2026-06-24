@@ -64,69 +64,63 @@ function renderProducts(productsList) {
 
     }
 
-    container.innerHTML = productsList.map(product => `
+container.innerHTML = productsList.map(product => `
+
+<div class="product-card">
 
     <div
-      class="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition duration-300"
-    >
 
-      <!-- عکس -->
-
-      <div
-        class="cursor-pointer"
+        class="product-image-box"
 
         onclick="goToProduct('${product.id}')"
 
-      >
+    >
 
         <img
-        
-          loading="lazy"
-          src="${product.image_url}"
 
-          alt="${product.name}"
+            src="${product.image_url}"
 
-          class="w-full h-56 object-cover rounded-t-3xl"
+            alt="${product.name}"
+
+            class="product-image"
 
         >
 
-      </div>
+    </div>
 
-      <!-- اطلاعات -->
+    <div class="product-info">
 
-      <div class="p-4">
+        <h3 class="product-name">
 
-        <h3 class="text-lg font-bold mb-3">
-
-          ${product.name}
+            ${product.name}
 
         </h3>
 
-        <p class="text-blue-600 text-xl font-bold mb-6">
+        <p class="product-price">
 
-          ${Number(product.price).toLocaleString()}
+            ${Number(product.price).toLocaleString()}
 
-          تومان
+            تومان
 
         </p>
 
         <button
 
-          onclick="event.stopPropagation();addToCart('${product.id}')"
+            onclick="event.stopPropagation();addToCart('${product.id}')"
 
-          class="w-full bg-slate-900 hover:bg-blue-600 text-white py-3 rounded-2xl font-bold transition"
+            class="product-btn"
 
         >
 
-          افزودن به سبد خرید
+            افزودن به سبد خرید
 
         </button>
 
-      </div>
-
     </div>
 
-  `).join('');
+</div>
+
+`).join('');
 
 }
 
