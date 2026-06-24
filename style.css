@@ -811,3 +811,38 @@ width:100%;
 
   gap:18px;
 }
+
+/* بازگشت */
+
+.back-link{
+
+  text-decoration:none;
+
+  color:#111;
+
+  font-size:24px;
+}
+
+
+/* حذف حالت لینک */
+
+.logo:visited,
+
+.back-link:visited{
+
+  color:#111;
+}
+
+.logo:hover,
+
+.back-link:hover{
+
+  color:#111;
+}
+
+.logo:active,
+
+.back-link:active{
+
+  color:#111;
+}
