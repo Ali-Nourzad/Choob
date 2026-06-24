@@ -77,23 +77,45 @@ T-Choob
 
 type="text"
 
-id="search-input"
-
 placeholder="جستجوی محصول..."
 
-onkeyup="searchProducts()"
+id="search-input"
+
+oninput="filterProducts()"
 
 >
 
-<select id="sort-select" onchange="sortProducts()">
+<select
 
-<option value="">مرتب سازی</option>
+id="sort-select"
 
-<option value="cheap">ارزان‌ترین</option>
+onchange="filterProducts()"
 
-<option value="expensive">گران‌ترین</option>
+>
 
-<option value="name">بر اساس نام</option>
+<option value="">
+
+همه
+
+</option>
+
+<option value="cheap">
+
+ارزان‌ترین
+
+</option>
+
+<option value="expensive">
+
+گران‌ترین
+
+</option>
+
+<option value="name">
+
+الفبا
+
+</option>
 
 </select>
 
