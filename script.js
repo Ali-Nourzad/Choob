@@ -554,36 +554,23 @@ async function loadOrders() {
 }
 async function updateUserNavbar() {
 
-    const userSection =
+  const userSection =
+    document.getElementById('user-section');
 
-        document.getElementById(
+  if (!userSection) return;
 
-            'user-section'
+  const {
+    data:{ user }
+  } = await shopDB.auth.getUser();
 
-        );
+  // اگر لاگین نیست
+  if (!user) {
 
-    if (!userSection) return;
-
-    const {
-
-        data: {
-            user
-        }
-
-    } = await shopDB.auth.getUser();
-
-    // اگر لاگین نیست
-
-    if (!user) {
-
-        userSection.innerHTML = `
+    userSection.innerHTML = `
 
       <a
-
         href="login.html"
-
-        class="bg-white text-[#E6D5B8] px-4 py-2 rounded-xl font-medium hover:bg-gray-100 transition"
-        <button
+        class="login-btn"
       >
 
         ورود / ثبت‌نام
@@ -592,45 +579,45 @@ async function updateUserNavbar() {
 
     `;
 
-        return;
+    return;
+  }
 
-    }
+  // دریافت پروفایل
 
-    // گرفتن پروفایل
+  const { data: profile } = await shopDB
 
-    const {
-        data: profile
-    } =
+    .from('profiles')
 
-    await shopDB
+    .select('*')
 
-        .from('profiles')
+    .eq('id', user.id)
 
-        .select('*')
+    .single();
 
-        .eq('id', user.id)
+  const avatar =
 
-        .single();
+    profile?.avatar_url ||
 
-    const avatar =
+    'https://ui-avatars.com/api/?name=User';
 
-        profile?.avatar_url ||
+  const username =
 
-        'https://ui-avatars.com/api/?name=User';
+    profile?.username ||
 
-    const username =
+    user.email.split('@')[0];
 
-        profile?.username ||
-
-        user.email.split('@')[0];
-
-    userSection.innerHTML = `
+  userSection.innerHTML = `
 
     <a
-
       href="profile.html"
 
-      class="flex items-center gap-3"
+      style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        text-decoration:none;
+        color:#222;
+      "
 
     >
 
@@ -638,15 +625,27 @@ async function updateUserNavbar() {
 
         src="${avatar}"
 
-        class="w-10 h-10 rounded-full object-cover border-2 border-white"
+        alt="profile"
+
+        style="
+          width:48px;
+          height:48px;
+          border-radius:50%;
+          object-fit:cover;
+          border:2px solid rgba(255,255,255,.8);
+        "
 
       >
 
-
-
       <span
 
-        class="text-white font-medium"
+        style="
+          font-size:16px;
+          font-weight:500;
+          text-decoration:none;
+          color:#222;
+          white-space:nowrap;
+        "
 
       >
 
@@ -657,9 +656,7 @@ async function updateUserNavbar() {
     </a>
 
   `;
-
 }
-
 async function checkout() {
 
     if (cart.length === 0) {
