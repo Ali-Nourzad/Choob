@@ -201,7 +201,7 @@ onchange="filterProducts()"
 
 
 <script>
-const fuse = new Fuse(allProducts, {
+const fuse = new Fuse(products, {
 
   keys: [
     'name',
@@ -217,7 +217,7 @@ function searchProducts(search){
 
   if(!search){
 
-    return allProducts;
+    return products;
 
   }
 
