@@ -513,14 +513,9 @@ async function updateUserNavbar() {
 
     userSection.innerHTML = `
 
-      <h4
-        href="login.html"
-        class="login-btn"
-      >
-
-        ورود / ثبت‌نام
-
-      </h4>
+        <button onclick="window.location.href='profile.html'" class="login-btn">
+            ورود / ثبت&zwnj;نام
+        </button>
 
     `;
 
@@ -995,7 +990,6 @@ async function handleLogin() {
         alert("خطا در ورود: " + error.message);
     } else {
         currentUser = data.user;
-        //updateUserUI();
         toggleAuthModal();
     }
 }
@@ -1042,23 +1036,6 @@ async function checkUser() {
     } = await shopDB.auth.getUser();
     if (user) {
         currentUser = user;
-        //updateUserUI();
-    }
-}
-
-function updateUserUI() {
-    const userSection = document.getElementById('user-section');
-    if (!userSection) return;
-
-    if (currentUser) {
-        userSection.innerHTML = `
-            <div class="flex items-center gap-3">
-                <span class="text-sm font-medium text-gray-700">${currentUser.email.split('@')[0]}</span>
-                <button onclick="handleLogout()" class="text-xs text-red-500 hover:underline">خروج</button>
-            </div>
-        `;
-    } else {
-        userSection.innerHTML = `<button onclick="openAuthModal()" class="text-[#E6D5B8] font-medium text-sm">ورود / ثبت‌نام</button>`;
     }
 }
 
