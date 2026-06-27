@@ -1008,3 +1008,167 @@ width:auto;
 }
 
 }
+#orders-list{
+    display:grid;
+    gap:20px;
+    margin-top:20px;
+}
+
+.order-card{
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+    transition:.25s;
+}
+
+.order-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 14px 35px rgba(0,0,0,.12);
+
+}
+
+.order-image{
+
+    width:120px;
+
+    height:120px;
+
+    object-fit:cover;
+
+    border-radius:16px;
+
+    flex-shrink:0;
+
+    background:#f7f7f7;
+
+    border:1px solid #eee;
+
+}
+
+.order-content{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+.order-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#222;
+
+}
+
+.order-meta{
+
+    display:flex;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    color:#666;
+
+    font-size:15px;
+
+}
+
+.order-meta span:last-child{
+
+    color:#0f9d58;
+
+    font-weight:700;
+
+    font-size:18px;
+
+}
+
+.order-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:auto;
+
+}
+
+.order-status{
+
+    background:#ecfdf3;
+
+    color:#15803d;
+
+    padding:7px 14px;
+
+    border-radius:999px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+}
+
+.order-date{
+
+    color:#999;
+
+    font-size:14px;
+
+}
+@media (max-width:700px){
+
+.order-card{
+
+    flex-direction:column;
+
+    text-align:center;
+
+}
+
+.order-image{
+
+    width:100%;
+
+    max-width:220px;
+
+    height:220px;
+
+}
+
+.order-footer{
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+.order-meta{
+
+    justify-content:center;
+
+}
+
+}
