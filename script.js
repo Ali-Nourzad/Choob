@@ -513,14 +513,14 @@ async function updateUserNavbar() {
 
     userSection.innerHTML = `
 
-      <a
+      <h4
         href="login.html"
         class="login-btn"
       >
 
         ورود / ثبت‌نام
 
-      </a>
+      </h4>
 
     `;
 
