@@ -1172,3 +1172,24 @@ width:auto;
 }
 
 }
+
+.login-btn{
+
+    width:100%;
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:12px;
+
+    border-radius:15px;
+
+    background:#9CA777;
+
+    color:#fff;
+
+    font-size:15px;
+
+    transition:.25s;
+}
