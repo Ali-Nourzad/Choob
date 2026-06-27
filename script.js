@@ -454,99 +454,47 @@ async function loadOrders() {
 
     }
 
-    ordersBox.innerHTML =
+ordersBox.innerHTML = orders.map(order => `
+<div class="order-card">
 
-        orders.map(order => `
-
-      <div
-
-      class="bg-white shadow rounded-2xl p-4 mb-4 flex items-center gap-4"
-
-      >
-
-        <img
-
+    <img
         src="${order.image_url}"
+        class="order-image"
+        alt="${order.product_name}"
+    >
 
-        class="w-20 h-20 object-contain"
+    <div class="order-content">
 
-        >
-
-
-
-        <div class="flex-1">
-
-          <h3 class="font-bold">
-
+        <h3 class="order-title">
             ${order.product_name}
+        </h3>
 
-          </h3>
+        <div class="order-meta">
 
+            <span>تعداد: ${order.quantity}</span>
 
-
-          <div class="text-gray-500 text-sm">
-
-            تعداد:
-
-            ${order.quantity}
-
-          </div>
-
-
-
-          <div class="text-blue-600 font-bold">
-
-            ${Number(
-
-              order.price
-
-            ).toLocaleString()}
-
-            تومان
-
-          </div>
+            <span>
+                ${Number(order.price).toLocaleString()} تومان
+            </span>
 
         </div>
 
+        <div class="order-footer">
 
+            <span class="order-status">
+                ${order.status}
+            </span>
 
-        <div class="text-left">
-
-          <div
-
-          class="text-green-600"
-
-          >
-
-            ${order.status}
-
-          </div>
-
-
-
-          <div
-
-          class="text-xs text-gray-400"
-
-          >
-
-            ${new Date(
-
-              order.created_at
-
-            ).toLocaleDateString(
-
-              'fa-IR'
-
-            )}
-
-          </div>
+            <span class="order-date">
+                ${new Date(order.created_at).toLocaleDateString('fa-IR')}
+            </span>
 
         </div>
 
-      </div>
+    </div>
 
-    `).join('');
+</div>
+`).join('');
 
 }
 async function updateUserNavbar() {
