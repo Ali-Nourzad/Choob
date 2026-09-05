@@ -12,72 +12,91 @@ window.supabase.createClient(
 
 // =================== ورود ===================
 
-async function handleLogin(){
+async function handleLogin() {
+  const email = document
+    .getElementById('login-email')
+    ?.value
+    .trim();
 
-  const email =
-  document
-  .getElementById('login-email')
-  ?.value
-  .trim();
+  const password = document
+    .getElementById('login-password')
+    ?.value;
 
-  const password =
-  document
-  .getElementById('login-password')
-  ?.value;
-
-  if(!email || !password){
-
-    return alert(
-      'ایمیل و رمز عبور را وارد کنید'
-    );
-
+  if (!email || !password) {
+    alert('ایمیل و رمز عبور را وارد کنید');
+    return;
   }
 
-  // ۱. ورود کاربر
-  const { data, error } =
+  const loginButton = document.getElementById('login-btn');
 
-  await shopDB.auth
+  try {
+    if (loginButton) {
+      loginButton.disabled = true;
+      loginButton.innerText = 'در حال ورود...';
+    }
 
-  .signInWithPassword({
+    // ورود با ایمیل و رمز عبور
+    const { data: authData, error: authError } =
+      await shopDB.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    email,
+    if (authError) {
+      throw authError;
+    }
 
-    password
+    if (!authData?.user) {
+      throw new Error('کاربر دریافت نشد');
+    }
 
-  });
+    const userId = authData.user.id;
 
-  if(error){
+    // اطمینان از ذخیره شدن Session
+    const { data: sessionData, error: sessionError } =
+      await shopDB.auth.getSession();
 
-    return alert(
+    if (sessionError || !sessionData?.session) {
+      throw new Error('جلسه ورود ذخیره نشد');
+    }
 
-      error.message
+    // گرفتن نام کاربری از جدول profiles
+    const {
+      data: profile,
+      error: profileError
+    } = await shopDB
+      .from('profiles')
+      .select('username')
+      .eq('id', userId)
+      .maybeSingle();
 
-    );
+    if (profileError) {
+      console.error('Profile error:', profileError);
+      throw new Error(
+        'ورود انجام شد، اما اطلاعات پروفایل پیدا نشد'
+      );
+    }
 
+    // برای بررسی دقیق مقدار username
+    console.log('Profile:', profile);
+
+    if (profile?.username?.trim().toLowerCase() === 'admin') {
+      window.location.replace('./admin.html');
+    } else {
+      window.location.replace('./index.html');
+    }
+
+  } catch (error) {
+    console.error('Login error:', error);
+
+    alert(error.message || 'خطا در ورود');
+
+    if (loginButton) {
+      loginButton.disabled = false;
+      loginButton.innerText = 'ورود';
+    }
   }
-
-  const userId = data.user.id;
-
-  // ۲. استعلام نام کاربری از جدول profiles برای بررسی ادمین بودن
-  const { data: profile, error: profileError } = await shopDB
-    .from('profiles')
-    .select('username')
-    .eq('id', userId)
-    .single();
-
-  if(profileError){
-    console.error('Profile fetch error:', profileError);
-  }
-
-  // ۳. بررسی نام کاربری و هدایت به صفحه مناسب
-  if(profile && profile.username === 'admin'){
-    location.href = 'admin.html';
-  } else {
-    location.href = 'index.html';
-  }
-
 }
-
 
 // =================== ثبت نام ===================
 
