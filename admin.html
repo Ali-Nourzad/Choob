@@ -291,32 +291,35 @@
         const SUPABASE_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD'; // 👈 کلید Anon عمومی خودت رو قرار بده
         const shopDB = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ۱. احراز هویت ادمین
-        async function checkAdminAuth() {
-            const { data: { user } } = await shopDB.auth.getUser();
-
-            if (!user) {
-                location.href = 'login.html';
-                return;
-            }
-
-            const { data: profile } = await shopDB
-                .from('profiles')
-                .select('username, avatar_url')
-                .eq('id', user.id)
-                .single();
-
-            if (!profile || profile.username !== 'admin') {
-                alert('شما دسترسی به این صفحه را ندارید!');
-                location.href = 'index.html';
-                return;
-            }
-
-            document.getElementById('admin-name').textContent = profile.username;
-            if (profile.avatar_url) {
-                document.getElementById('admin-avatar').src = profile.avatar_url;
-            }
+    // ۱. احراز هویت ادمین
+    async function checkAdminAuth() {
+        const { data: { user } } = await shopDB.auth.getUser();
+    
+        if (!user) {
+            location.href = 'login.html';
+            return false;
         }
+    
+        const { data: profile, error } = await shopDB
+            .from('profiles')
+            .select('username, avatar_url')
+            .eq('id', user.id)
+            .single();
+    
+        if (error || !profile || profile.username !== 'admin') {
+            alert('شما دسترسی به این صفحه را ندارید!');
+            location.href = 'index.html';
+            return false;
+        }
+    
+        document.getElementById('admin-name').textContent = profile.username;
+    
+        if (profile.avatar_url) {
+            document.getElementById('admin-avatar').src = profile.avatar_url;
+        }
+    
+        return true;
+    }
 
         // ۲. خروج
         async function handleLogout() {
@@ -374,8 +377,304 @@
                 element.className = "sidebar-btn w-full text-right px-4 py-3 rounded-xl font-medium text-blue-600 bg-blue-50 flex items-center justify-between";
             }
         }
+        const COMPLETED_STATUS = 'completed';
+        let currentOrders = [];
+        
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[char]));
+        }
+        
+        function formatPrice(price) {
+            return Number(price || 0).toLocaleString('fa-IR') + ' تومان';
+        }
+        
+        function formatDate(date) {
+            if (!date) return '---';
+        
+            return new Intl.DateTimeFormat('fa-IR', {
+                dateStyle: 'medium',
+                timeStyle: 'short'
+            }).format(new Date(date));
+        }
+        
+        async function loadOrders() {
+            const loading = document.getElementById('orders-loading');
+            const errorBox = document.getElementById('orders-error');
+            const emptyBox = document.getElementById('orders-empty');
+            const tableWrapper = document.getElementById('orders-table-wrapper');
+            const tableBody = document.getElementById('orders-table-body');
+        
+            loading.classList.remove('hidden');
+            errorBox.classList.add('hidden');
+            emptyBox.classList.add('hidden');
+            tableWrapper.classList.add('hidden');
+            tableBody.innerHTML = '';
+        
+            const { data: orders, error } = await shopDB
+                .from('orders')
+                .select(`
+                    id,
+                    price,
+                    image_url,
+                    status,
+                    created_at,
+                    user_id,
+                    quantity,
+                    code
+                `)
+                .order('created_at', { ascending: false });
+        
+            if (error) {
+                loading.classList.add('hidden');
+                errorBox.textContent = 'خطا در دریافت سفارشات: ' + error.message;
+                errorBox.classList.remove('hidden');
+                return;
+            }
+        
+            currentOrders = (orders || []).filter(
+                order => order.status !== COMPLETED_STATUS
+            );
+        
+            const userIds = [
+                ...new Set(
+                    currentOrders
+                        .map(order => order.user_id)
+                        .filter(Boolean)
+                )
+            ];
+        
+            let profilesMap = {};
+        
+            if (userIds.length > 0) {
+                const { data: profiles, error: profilesError } = await shopDB
+                    .from('profiles')
+                    .select('id, username')
+                    .in('id', userIds);
+        
+                if (profilesError) {
+                    loading.classList.add('hidden');
+                    errorBox.textContent =
+                        'خطا در دریافت اطلاعات کاربران: ' + profilesError.message;
+                    errorBox.classList.remove('hidden');
+                    return;
+                }
+        
+                profilesMap = Object.fromEntries(
+                    (profiles || []).map(profile => [profile.id, profile.username])
+                );
+            }
+        
+            loading.classList.add('hidden');
+        
+            document.getElementById('orders-count').textContent =
+                `${currentOrders.length.toLocaleString('fa-IR')} سفارش`;
+        
+            if (currentOrders.length === 0) {
+                emptyBox.classList.remove('hidden');
+                return;
+            }
+        
+            currentOrders.forEach(order => {
+                const username = profilesMap[order.user_id] || 'کاربر ناشناس';
+                const row = document.createElement('tr');
+        
+                row.className = 'hover:bg-gray-50';
+        
+                row.innerHTML = `
+                    <td class="p-3 max-w-[130px] truncate" title="${escapeHtml(order.id)}">
+                        ${escapeHtml(order.id)}
+                    </td>
+        
+                    <td class="p-3 font-medium">
+                        ${escapeHtml(order.code || '---')}
+                    </td>
+        
+                    <td class="p-3">
+                        ${order.image_url ? `
+                            <img
+                                src="${escapeHtml(order.image_url)}"
+                                alt="تصویر سفارش"
+                                class="w-14 h-14 object-cover rounded-lg border cursor-pointer"
+                                onclick="openImageModal('${escapeHtml(order.id)}')"
+                                onerror="this.style.display='none'"
+                            >
+                        ` : '<span class="text-gray-400">بدون تصویر</span>'}
+                    </td>
+        
+                    <td class="p-3">${escapeHtml(username)}</td>
+                    <td class="p-3 whitespace-nowrap">${formatPrice(order.price)}</td>
+                    <td class="p-3">${Number(order.quantity || 0).toLocaleString('fa-IR')}</td>
+                    <td class="p-3">${escapeHtml(order.status || '---')}</td>
+                    <td class="p-3 whitespace-nowrap">${formatDate(order.created_at)}</td>
+        
+                    <td class="p-3">
+                        <div class="flex gap-2">
+                            <button
+                                onclick="openEditModal('${escapeHtml(order.id)}')"
+                                class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg">
+                                ویرایش
+                            </button>
+        
+                            <button
+                                onclick="completeOrder('${escapeHtml(order.id)}')"
+                                class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg">
+                                تکمیل
+                            </button>
+        
+                            <button
+                                onclick="deleteOrder('${escapeHtml(order.id)}')"
+                                class="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg">
+                                حذف
+                            </button>
+                        </div>
+                    </td>
+                `;
+        
+                tableBody.appendChild(row);
+            });
+        
+            tableWrapper.classList.remove('hidden');
+        }
+        
+        function openImageModal(orderId) {
+            const order = currentOrders.find(item => String(item.id) === String(orderId));
+        
+            if (!order?.image_url) return;
+        
+            document.getElementById('large-order-image').src = order.image_url;
+        
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        function closeImageModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+        
+            const modal = document.getElementById('image-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        
+            document.getElementById('large-order-image').src = '';
+        }
+        
+        async function completeOrder(orderId) {
+            if (!confirm('این سفارش تکمیل شود؟')) return;
+        
+            const { error } = await shopDB
+                .from('orders')
+                .update({ status: COMPLETED_STATUS })
+                .eq('id', orderId);
+        
+            if (error) {
+                alert('خطا در تکمیل سفارش: ' + error.message);
+                return;
+            }
+        
+            await loadOrders();
+        }
+        
+        async function deleteOrder(orderId) {
+            if (!confirm('این سفارش برای همیشه حذف شود؟')) return;
+        
+            const { error } = await shopDB
+                .from('orders')
+                .delete()
+                .eq('id', orderId);
+        
+            if (error) {
+                alert('خطا در حذف سفارش: ' + error.message);
+                return;
+            }
+        
+            await loadOrders();
+        }
+        
+        function openEditModal(orderId) {
+            const order = currentOrders.find(item => String(item.id) === String(orderId));
+        
+            if (!order) return;
+        
+            document.getElementById('edit-order-id').value = order.id;
+            document.getElementById('edit-code').value = order.code || '';
+            document.getElementById('edit-price').value = order.price ?? 0;
+            document.getElementById('edit-quantity').value = order.quantity ?? 1;
+            document.getElementById('edit-status').value = order.status || '';
+            document.getElementById('edit-image-url').value = order.image_url || '';
+        
+            const modal = document.getElementById('edit-order-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        function closeEditModal() {
+            const modal = document.getElementById('edit-order-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        document.getElementById('edit-order-form').addEventListener('submit', async event => {
+            event.preventDefault();
+        
+            const id = document.getElementById('edit-order-id').value;
+            const submitButton = document.getElementById('edit-submit');
+            const errorBox = document.getElementById('edit-error');
+        
+            const changes = {
+                code: document.getElementById('edit-code').value.trim(),
+                price: Number(document.getElementById('edit-price').value),
+                quantity: Number(document.getElementById('edit-quantity').value),
+                status: document.getElementById('edit-status').value.trim(),
+                image_url: document.getElementById('edit-image-url').value.trim() || null
+            };
+        
+            if (
+                !changes.code ||
+                !changes.status ||
+                changes.price < 0 ||
+                !Number.isInteger(changes.quantity) ||
+                changes.quantity < 1
+            ) {
+                errorBox.textContent = 'اطلاعات واردشده معتبر نیست.';
+                errorBox.classList.remove('hidden');
+                return;
+            }
+        
+            submitButton.disabled = true;
+            submitButton.textContent = 'در حال ذخیره...';
+            errorBox.classList.add('hidden');
+        
+            const { error } = await shopDB
+                .from('orders')
+                .update(changes)
+                .eq('id', id);
+        
+            submitButton.disabled = false;
+            submitButton.textContent = 'ذخیره تغییرات';
+        
+            if (error) {
+                errorBox.textContent = 'خطا در ویرایش سفارش: ' + error.message;
+                errorBox.classList.remove('hidden');
+                return;
+            }
+        
+            closeEditModal();
+            await loadOrders();
+        });
 
-        window.addEventListener('DOMContentLoaded', checkAdminAuth);
+        window.addEventListener('DOMContentLoaded', async () => {
+            const isAdmin = await checkAdminAuth();
+        
+            if (isAdmin) {
+                await loadOrders();
+            }
+        });
     </script>
 </body>
 </html>
