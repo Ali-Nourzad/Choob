@@ -114,11 +114,54 @@
         <!-- بخش محتوای اصلی -->
         <main class="flex-grow bg-white rounded-2xl p-6 shadow-sm border border-gray-100 min-h-[500px]">
             
-            <!-- محتوای بخش سفارشات -->
-            <div id="tab-orders-list" class="tab-content">
-                <h2 class="text-xl font-bold mb-4 text-gray-800">لیست سفارشات</h2>
-                <p class="text-gray-500">در این بخش لیست تمام سفارشات ثبت‌شده قرار می‌گیرد.</p>
+        <!-- محتوای بخش سفارشات -->
+        <div id="tab-orders-list" class="tab-content">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">سفارشات در جریان</h2>
+                    <p id="orders-count" class="text-sm text-gray-500 mt-1"></p>
+                </div>
+        
+                <button onclick="loadOrders()"
+                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm">
+                    بروزرسانی
+                </button>
             </div>
+        
+            <div id="orders-loading" class="py-12 text-center text-gray-500">
+                در حال دریافت سفارشات...
+            </div>
+        
+            <div id="orders-error"
+                class="hidden p-4 mb-4 bg-red-50 text-red-700 rounded-lg"></div>
+        
+            <div id="orders-empty"
+                class="hidden py-12 text-center text-gray-500">
+                سفارش در جریانی وجود ندارد.
+            </div>
+        
+            <div id="orders-table-wrapper"
+                class="hidden overflow-x-auto border border-gray-200 rounded-lg">
+        
+                <table class="w-full min-w-[1100px] text-sm text-right">
+                    <thead class="bg-gray-50 text-gray-600">
+                        <tr>
+                            <th class="p-3">شناسه</th>
+                            <th class="p-3">کد سفارش</th>
+                            <th class="p-3">تصویر</th>
+                            <th class="p-3">نام کاربر</th>
+                            <th class="p-3">قیمت</th>
+                            <th class="p-3">تعداد</th>
+                            <th class="p-3">وضعیت</th>
+                            <th class="p-3">تاریخ ثبت</th>
+                            <th class="p-3">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body"
+                        class="divide-y divide-gray-200 bg-white"></tbody>
+                </table>
+            </div>
+        </div>
 
             <div id="tab-orders-completed" class="tab-content hidden">
                 <h2 class="text-xl font-bold mb-4 text-gray-800">سفارشات تکمیل شده</h2>
@@ -166,6 +209,82 @@
         </div>
     </footer>
 
+    <!-- مودال نمایش تصویر -->
+    <div id="image-modal"
+        class="hidden fixed inset-0 z-[100] bg-black/70 p-4 items-center justify-center"
+        onclick="closeImageModal(event)">
+    
+        <div class="relative max-w-4xl max-h-[90vh]">
+            <button onclick="closeImageModal()"
+                class="absolute -top-10 left-0 text-white text-3xl">×</button>
+    
+            <img id="large-order-image"
+                class="max-w-full max-h-[85vh] object-contain rounded-lg"
+                alt="تصویر سفارش">
+        </div>
+    </div>
+    
+    <!-- مودال ویرایش سفارش -->
+    <div id="edit-order-modal"
+        class="hidden fixed inset-0 z-[100] bg-black/50 p-4 items-center justify-center">
+    
+        <div class="bg-white rounded-lg w-full max-w-lg p-6">
+            <div class="flex items-center justify-between mb-5">
+                <h3 class="font-bold text-lg">ویرایش سفارش</h3>
+                <button onclick="closeEditModal()"
+                    class="text-2xl text-gray-500">×</button>
+            </div>
+    
+            <form id="edit-order-form" class="space-y-4">
+                <input type="hidden" id="edit-order-id">
+    
+                <div>
+                    <label class="block text-sm mb-1">کد سفارش</label>
+                    <input id="edit-code" required
+                        class="w-full border rounded-lg p-2.5">
+                </div>
+    
+                <div>
+                    <label class="block text-sm mb-1">قیمت</label>
+                    <input id="edit-price" type="number" min="0" required
+                        class="w-full border rounded-lg p-2.5">
+                </div>
+    
+                <div>
+                    <label class="block text-sm mb-1">تعداد</label>
+                    <input id="edit-quantity" type="number" min="1" required
+                        class="w-full border rounded-lg p-2.5">
+                </div>
+    
+                <div>
+                    <label class="block text-sm mb-1">وضعیت</label>
+                    <input id="edit-status" required
+                        class="w-full border rounded-lg p-2.5">
+                </div>
+    
+                <div>
+                    <label class="block text-sm mb-1">آدرس تصویر</label>
+                    <input id="edit-image-url" type="url"
+                        class="w-full border rounded-lg p-2.5" dir="ltr">
+                </div>
+    
+                <div id="edit-error"
+                    class="hidden p-3 bg-red-50 text-red-700 rounded-lg text-sm"></div>
+    
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeEditModal()"
+                        class="px-4 py-2 bg-gray-100 rounded-lg">
+                        انصراف
+                    </button>
+    
+                    <button id="edit-submit" type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                        ذخیره تغییرات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     <!-- اسکریپت‌ها -->
     <script>
         const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co';
