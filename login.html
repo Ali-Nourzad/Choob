@@ -17,53 +17,46 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
 
     <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md">
-        <h1 class="text-3xl font-bold text-center mb-8">ورود به حساب</h1>
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">ورود</h1>
 
-        <!-- پیام خطا یا موفقیت -->
-        <div id="message-box" class="hidden mb-4 p-4 rounded-xl text-center text-sm font-medium"></div>
+        <!-- باکس نمایش پیام خطا یا موفقیت -->
+        <div id="message-box" class="hidden mb-4 p-3 rounded-xl text-center text-sm font-medium"></div>
 
-        <!-- ورودی نام کاربری -->
         <div class="mb-4">
-            <label class="block text-gray-700 mb-2 text-sm font-medium">نام کاربری</label>
-            <input 
-                id="login-username" 
-                type="text" 
-                placeholder="نام کاربری خود را وارد کنید" 
+            <input
+                id="login-email"
+                type="email"
+                placeholder="ایمیل خود را وارد کنید"
                 class="w-full border p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition"
             >
         </div>
 
-        <!-- ورودی رمز عبور -->
-        <div class="mb-6">
-            <label class="block text-gray-700 mb-2 text-sm font-medium">رمز عبور</label>
-            <div class="relative">
-                <input 
-                    id="login-password" 
-                    type="password" 
-                    placeholder="رمز عبور" 
-                    class="w-full border p-4 rounded-xl pl-14 outline-none focus:ring-2 focus:ring-blue-500 transition"
-                >
-                <button 
-                    type="button" 
-                    onclick="togglePassword()" 
-                    class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                    👁️
-                </button>
-            </div>
+        <div class="relative mb-6">
+            <input
+                id="login-password"
+                type="password"
+                placeholder="رمز عبور"
+                class="w-full border p-4 rounded-xl pl-14 outline-none focus:ring-2 focus:ring-blue-500 transition"
+            >
+            <button
+                type="button"
+                onclick="togglePassword()"
+                class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+                👁️
+            </button>
         </div>
 
-        <!-- دکمه ورود -->
-        <button 
+        <button
             id="login-btn"
-            onclick="handleLogin()" 
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition flex items-center justify-center gap-2"
+            onclick="handleLogin()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition shadow-lg shadow-blue-500/30"
         >
-            <span>ورود</span>
+            ورود
         </button>
 
         <a href="./signup.html" class="block text-center text-blue-600 mt-6 hover:underline">
-            ثبت‌نام در سایت
+            ثبت‌نام
         </a>
 
         <a href="./index.html" class="block text-center mt-4 text-gray-600 hover:text-blue-600">
@@ -77,8 +70,6 @@
             input.type = input.type === 'password' ? 'text' : 'password';
         }
     </script>
-    
-    <!-- اسکریپت اصلی احراز هویت -->
     <script src="auth.js"></script>
 </body>
 </html>
