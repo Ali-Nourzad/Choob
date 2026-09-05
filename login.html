@@ -1,151 +1,84 @@
 <!DOCTYPE html>
-
 <html lang="fa" dir="rtl">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>ورود | T-Choob</title>
-<link rel="icon" type="image/png" href="favicon.ico">
-<script src="https://cdn.tailwindcss.com"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
-
-body{
-
-font-family:'Vazirmatn',sans-serif;
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود | T-Choob</title>
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+        }
+    </style>
 </head>
-
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
 
-<div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md">
+    <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md">
+        <h1 class="text-3xl font-bold text-center mb-8">ورود به حساب</h1>
 
-<h1 class="text-3xl font-bold text-center mb-8">
+        <!-- پیام خطا یا موفقیت -->
+        <div id="message-box" class="hidden mb-4 p-4 rounded-xl text-center text-sm font-medium"></div>
 
-ورود
+        <!-- ورودی نام کاربری -->
+        <div class="mb-4">
+            <label class="block text-gray-700 mb-2 text-sm font-medium">نام کاربری</label>
+            <input 
+                id="login-username" 
+                type="text" 
+                placeholder="نام کاربری خود را وارد کنید" 
+                class="w-full border p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition"
+            >
+        </div>
 
-</h1>
+        <!-- ورودی رمز عبور -->
+        <div class="mb-6">
+            <label class="block text-gray-700 mb-2 text-sm font-medium">رمز عبور</label>
+            <div class="relative">
+                <input 
+                    id="login-password" 
+                    type="password" 
+                    placeholder="رمز عبور" 
+                    class="w-full border p-4 rounded-xl pl-14 outline-none focus:ring-2 focus:ring-blue-500 transition"
+                >
+                <button 
+                    type="button" 
+                    onclick="togglePassword()" 
+                    class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                    👁️
+                </button>
+            </div>
+        </div>
 
-<input
+        <!-- دکمه ورود -->
+        <button 
+            id="login-btn"
+            onclick="handleLogin()" 
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition flex items-center justify-center gap-2"
+        >
+            <span>ورود</span>
+        </button>
 
-id="login-email"
+        <a href="./signup.html" class="block text-center text-blue-600 mt-6 hover:underline">
+            ثبت‌نام در سایت
+        </a>
 
-type="email"
+        <a href="./index.html" class="block text-center mt-4 text-gray-600 hover:text-blue-600">
+            ⬅️ بازگشت به فروشگاه
+        </a>
+    </div>
 
-placeholder="ایمیل"
-
-class="w-full border p-4 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-blue-500"
-
->
-
-<div class="relative mb-6">
-
-<input
-
-id="login-password"
-
-type="password"
-
-placeholder="رمز عبور"
-
-class="w-full border p-4 rounded-xl pl-14 outline-none focus:ring-2 focus:ring-blue-500"
-
->
-
-<button
-
-type="button"
-
-onclick="togglePassword()"
-
-class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
-
->
-
-👁️
-
-</button>
-
-</div>
-
-<button
-
-onclick="handleLogin()"
-
-class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition"
-
->
-
-ورود
-
-</button>
-
-<a
-
-href="./signup.html"
-
-class="block text-center text-blue-600 mt-6 hover:underline"
-
->
-
-ثبت‌نام
-
-</a>
-
-<a
-
-href="./index.html"
-
-class="block text-center mt-4 text-gray-600 hover:text-blue-600"
-
->
-
-⬅️ بازگشت به فروشگاه
-
-</a>
-
-</div>
-
-<script>
-
-function togglePassword(){
-
-const input =
-
-document.getElementById(
-
-'login-password'
-
-);
-
-
-
-input.type =
-
-input.type==='password'
-
-? 'text'
-
-: 'password';
-
-}
-
-</script>
-
-<script src="auth.js"></script>
-
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('login-password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+    </script>
+    
+    <!-- اسکریپت اصلی احراز هویت -->
+    <script src="auth.js"></script>
 </body>
-
 </html>
