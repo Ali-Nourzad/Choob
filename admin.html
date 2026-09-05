@@ -54,11 +54,12 @@
                         <div id="admin-name" class="text-sm font-bold text-gray-800">در حال بارگذاری...</div>
                         <div class="text-xs text-gray-400">مدیر سیستم</div>
                     </div>
+                    <!-- عکس آواتار جایگزین درون‌برنامه‌ای SVG -->
                     <img 
                         id="admin-avatar" 
-                        src="https://via.placeholder.com/40" 
+                        src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%239CA3AF' class='w-6 h-6'><path stroke-linecap='round' stroke-linejoin='round' d='M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z' /></svg>" 
                         alt="Admin Avatar" 
-                        class="w-10 h-10 rounded-full border-2 border-amber-600 object-cover"
+                        class="w-10 h-10 rounded-full border-2 border-amber-600 object-cover bg-gray-100"
                     >
                 </div>
 
@@ -66,7 +67,7 @@
         </div>
     </header>
 
-    <!-- بدنه اصلی (سایدبار + محتوا) -->
+    <!-- بدنه اصلی -->
     <div class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6">
 
         <!-- ۲. نوار سمت راست (Sidebar) -->
@@ -110,7 +111,7 @@
             </div>
         </aside>
 
-        <!-- بخش محتوای اصلی (Main Content Window) -->
+        <!-- بخش محتوای اصلی -->
         <main class="flex-grow bg-white rounded-2xl p-6 shadow-sm border border-gray-100 min-h-[500px]">
             
             <!-- محتوای بخش سفارشات -->
@@ -165,13 +166,13 @@
         </div>
     </footer>
 
-    <!-- اسکریپت‌های مدیریت UI و Supabase -->
+    <!-- اسکریپت‌ها -->
     <script>
         const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD'; // 👈 کلید Anon عمومی خودت رو بذار
+        const SUPABASE_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD'; // 👈 کلید Anon عمومی خودت رو قرار بده
         const shopDB = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ۱. بررسی ورود کاربر و خواندن مشخصات ادمین
+        // ۱. احراز هویت ادمین
         async function checkAdminAuth() {
             const { data: { user } } = await shopDB.auth.getUser();
 
@@ -192,7 +193,6 @@
                 return;
             }
 
-            // نمایش اطلاعات در ناوبار
             document.getElementById('admin-name').textContent = profile.username;
             if (profile.avatar_url) {
                 document.getElementById('admin-avatar').src = profile.avatar_url;
@@ -205,12 +205,14 @@
             location.href = 'login.html';
         }
 
-        // ۳. تغییر بخش اصلی ناوبار بالا (سفارشات / محصولات)
+        // ۳. سوئیچ اصلی منو بالا (سفارشات / محصولات)
         function switchSection(section) {
-            coOrders = document.getElementById('top-nav-orders');
+            const btnOrders = document.getElementById('top-nav-orders');
             const btnProducts = document.getElementById('top-nav-products');
             const sidebarOrders = document.getElementById('sidebar-orders');
             const sidebarProducts = document.getElementById('sidebar-products');
+
+            if (!btnOrders || !btnProducts || !sidebarOrders || !sidebarProducts) return;
 
             if (section === 'orders') {
                 btnOrders.className = "px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 text-blue-600 bg-blue-50";
@@ -219,38 +221,41 @@
                 sidebarOrders.classList.remove('hidden');
                 sidebarProducts.classList.add('hidden');
 
-                // نمایش اولین تب سفارشات
-                showTab('orders-list', sidebarOrders.querySelector('.sidebar-btn'));
-            } else {
+                const firstBtn = sidebarOrders.querySelector('.sidebar-btn');
+                if(firstBtn) showTab('orders-list', firstBtn);
+
+            } else if (section === 'products') {
                 btnProducts.className = "px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 text-blue-600 bg-blue-50";
                 btnOrders.className = "px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 text-gray-600 hover:bg-gray-100";
                 
                 sidebarProducts.classList.remove('hidden');
                 sidebarOrders.classList.add('hidden');
 
-                // نمایش اولین تب محصولات
-                showTab('products-active', sidebarProducts.querySelector('.sidebar-btn'));
+                const firstBtn = sidebarProducts.querySelector('.sidebar-btn');
+                if(firstBtn) showTab('products-active', firstBtn);
             }
         }
 
-        // ۴. تغییر تب‌های داخل سایدبار
+        // ۴. تغییر تب‌های سایدبار
         function showTab(tabId, element) {
-            // مخفی کردن همه تب‌ها
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             
-            // نمایش تب انتخاب شده
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+            }
 
-            // استایل‌دهی به دکمه فعال سایدبار
-            const currentSidebar = element.closest('#sidebar-orders, #sidebar-products');
-            currentSidebar.querySelectorAll('.sidebar-btn').forEach(btn => {
-                btn.className = "sidebar-btn w-full text-right px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 flex items-center justify-between";
-            });
-
-            element.className = "sidebar-btn w-full text-right px-4 py-3 rounded-xl font-medium text-blue-600 bg-blue-50 flex items-center justify-between";
+            if (element) {
+                const parentSidebar = element.closest('#sidebar-orders, #sidebar-products');
+                if (parentSidebar) {
+                    parentSidebar.querySelectorAll('.sidebar-btn').forEach(btn => {
+                        btn.className = "sidebar-btn w-full text-right px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50 flex items-center justify-between";
+                    });
+                }
+                element.className = "sidebar-btn w-full text-right px-4 py-3 rounded-xl font-medium text-blue-600 bg-blue-50 flex items-center justify-between";
+            }
         }
 
-        // اجرا هنگام لود شدن صفحه
         window.addEventListener('DOMContentLoaded', checkAdminAuth);
     </script>
 </body>
