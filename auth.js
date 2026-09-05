@@ -33,7 +33,8 @@ async function handleLogin(){
 
   }
 
-  const { error } =
+  // ۱. ورود کاربر
+  const { data, error } =
 
   await shopDB.auth
 
@@ -55,7 +56,25 @@ async function handleLogin(){
 
   }
 
-  location.href='index.html';
+  const userId = data.user.id;
+
+  // ۲. استعلام نام کاربری از جدول profiles برای بررسی ادمین بودن
+  const { data: profile, error: profileError } = await shopDB
+    .from('profiles')
+    .select('username')
+    .eq('id', userId)
+    .single();
+
+  if(profileError){
+    console.error('Profile fetch error:', profileError);
+  }
+
+  // ۳. بررسی نام کاربری و هدایت به صفحه مناسب
+  if(profile && profile.username === 'admin'){
+    location.href = 'admin.html';
+  } else {
+    location.href = 'index.html';
+  }
 
 }
 
