@@ -1,296 +1,521 @@
 <!DOCTYPE html>
-
 <html lang="fa" dir="rtl">
-  
+
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>T-Choob</title>
+    <title>T-Choob</title>
 
-<link rel="icon" href="favicon.ico">
+    <link
+        rel="icon"
+        href="favicon.ico"
+    >
 
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <!-- Fuse.js -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
 
+
 <body>
 
-<!-- ناوبار -->
+
+<!-- =========================================
+     ناوبار
+========================================= -->
 
 <nav class="navbar">
 
-<div class="navbar-container">
+    <div class="navbar-container">
 
-<h1 class="logo" onclick="window.location.reload()">
+        <h1
+            class="logo"
+            onclick="window.location.reload()"
+        >
+            T-Choob
+        </h1>
 
-T-Choob
 
-</h1>
+        <div class="navbar-actions">
 
-<div class="navbar-actions">
+            <button
+                type="button"
+                onclick="toggleCart()"
+                class="cart-btn"
+                aria-label="سبد خرید"
+            >
 
-<button onclick="toggleCart()" class="cart-btn">
+                🛒
 
-🛒
+                <span id="cart-count">
+                    0
+                </span>
 
-<span id="cart-count">0</span>
+            </button>
 
-</button>
 
-<div id="user-section"></div>
+            <div id="user-section"></div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </nav>
 
 
-<!-- بنر -->
+
+<!-- =========================================
+     بنر
+========================================= -->
 
 <section class="hero">
 
-<div class="hero-overlay">
+    <div class="hero-overlay">
 
-<div class="hero-text">
+        <div class="hero-text">
 
-<h1>چوب گالری</h1>
+            <h1>
+                چوب گالری
+            </h1>
 
-<p>T-Choob</p>
+            <p>
+                T-Choob
+            </p>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </section>
 
 
-<!-- سرچ و فیلتر -->
+
+<!-- =========================================
+     جستجو و فیلتر
+========================================= -->
 
 <section class="search-section">
 
-<input
 
-type="text"
+    <!-- جستجو -->
 
-placeholder="جستجو ..."
+    <div class="search-box">
 
-id="search-input"
+        <input
+            type="text"
+            id="search-input"
+            placeholder="جستجوی محصول..."
+            autocomplete="off"
+        >
 
-oninput="filterProducts()"
+    </div>
 
->
 
-<select
 
-id="sort-select"
+    <!-- نوع محصول -->
 
-onchange="filterProducts()"
+    <select id="product-type-filter">
 
->
+        <option value="">
+            همه محصولات
+        </option>
 
-<option value="">
+        <option value="JK">
+            جاکلیدی
+        </option>
 
-مرتب سازی ...
+        <option value="JS">
+            جاسوئیچی
+        </option>
 
-</option>
+        <option value="TB">
+            تابلو
+        </option>
 
-<option value="cheap">
+        <option value="CL">
+            ساعت
+        </option>
 
-ارزان‌ترین
+        <option value="OT">
+            غیره
+        </option>
 
-</option>
+    </select>
 
-<option value="expensive">
 
-گران‌ترین
 
-</option>
+    <!-- مرتب سازی -->
 
-<option value="name">
+    <select id="sort-select">
 
-الفبا
+        <option value="">
+            مرتب سازی...
+        </option>
 
-</option>
+        <option value="cheap">
+            ارزان‌ترین
+        </option>
 
-</select>
+        <option value="expensive">
+            گران‌ترین
+        </option>
+
+        <option value="name">
+            الفبا
+        </option>
+
+    </select>
+
+
+
+    <!-- =====================================
+         فیلترهای پیشرفته
+    ====================================== -->
+
+    <div
+        id="advanced-filters"
+        class="advanced-filters"
+    >
+
+
+        <!-- =================================
+             جاسوئیچی
+        ================================== -->
+
+        <div
+            id="js-filters"
+            class="type-filters hidden"
+        >
+
+            <select id="js-wood-filter">
+
+                <option value="">
+                    همه چوب‌ها
+                </option>
+
+                <option value="گردو">
+                    گردو
+                </option>
+
+                <option value="عناب">
+                    عناب
+                </option>
+
+                <option value="کرات">
+                    کرات
+                </option>
+
+                <option value="نارنج">
+                    نارنج
+                </option>
+
+                <option value="گردو سوخته">
+                    گردو سوخته
+                </option>
+
+                <option value="سنجد">
+                    سنجد
+                </option>
+
+                <option value="متفرقه">
+                    متفرقه
+                </option>
+
+            </select>
+
+
+
+            <select id="js-size-filter">
+
+                <option value="">
+                    همه اندازه‌ها
+                </option>
+
+                <option value="کوچک">
+                    کوچک
+                </option>
+
+                <option value="متوسط">
+                    متوسط
+                </option>
+
+                <option value="بزرگ">
+                    بزرگ
+                </option>
+
+            </select>
+
+
+
+            <select id="js-font-filter">
+
+                <option value="">
+                    همه فونت‌ها
+                </option>
+
+                <option value="1">
+                    فونت ۱
+                </option>
+
+                <option value="2">
+                    فونت ۲
+                </option>
+
+                <option value="3">
+                    فونت ۳
+                </option>
+
+                <option value="4">
+                    فونت ۴
+                </option>
+
+                <option value="ندارد">
+                    بدون فونت
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- =================================
+             جاکلیدی
+        ================================== -->
+
+        <div
+            id="jk-filters"
+            class="type-filters hidden"
+        >
+
+            <select id="jk-wood-filter">
+
+                <option value="">
+                    همه چوب‌ها
+                </option>
+
+                <option value="گردو">
+                    گردو
+                </option>
+
+                <option value="عناب">
+                    عناب
+                </option>
+
+                <option value="کرات">
+                    کرات
+                </option>
+
+                <option value="نارنج">
+                    نارنج
+                </option>
+
+                <option value="گردو سوخته">
+                    گردو سوخته
+                </option>
+
+                <option value="سنجد">
+                    سنجد
+                </option>
+
+                <option value="متفرقه">
+                    متفرقه
+                </option>
+
+            </select>
+
+
+
+            <input
+                type="number"
+                id="jk-hook-filter"
+                min="1"
+                placeholder="تعداد قلاب"
+            >
+
+        </div>
+
+
+
+        <!-- =================================
+             تابلو
+        ================================== -->
+
+        <div
+            id="tb-filters"
+            class="type-filters hidden"
+        >
+
+            <input
+                type="number"
+                id="tb-width-filter"
+                min="0"
+                placeholder="عرض"
+            >
+
+            <input
+                type="number"
+                id="tb-length-filter"
+                min="0"
+                placeholder="طول"
+            >
+
+        </div>
+
+
+
+        <!-- =================================
+             ساعت
+        ================================== -->
+
+        <div
+            id="cl-filters"
+            class="type-filters hidden"
+        >
+
+            <input
+                type="number"
+                id="cl-width-filter"
+                min="0"
+                placeholder="عرض"
+            >
+
+            <input
+                type="number"
+                id="cl-length-filter"
+                min="0"
+                placeholder="طول"
+            >
+
+        </div>
+
+
+    </div>
 
 </section>
 
 
-<!-- محصولات -->
+
+<!-- =========================================
+     محصولات
+========================================= -->
 
 <main class="main-container">
 
-<header class="products-header">
 
-<h2>محصولات برتر ما</h2>
+    <header class="products-header">
 
-<p>کیفیت تضمین شده برای شما</p>
+        <h2>
+            محصولات برتر ما
+        </h2>
 
-</header>
+        <p>
+            کیفیت تضمین شده برای شما
+        </p>
+
+    </header>
 
 
-<div id="product-grid" class="products-grid">
 
-<h2>در حال بارگذاری...</h2>
+    <div
+        id="product-grid"
+        class="products-grid"
+    ></div>
 
-</div>
 
 </main>
 
 
-<!-- سبد خرید -->
 
-<div id="cart-modal" class="cart-modal hidden">
+<!-- =========================================
+     سبد خرید
+========================================= -->
 
-<div class="cart-panel">
+<div
+    id="cart-modal"
+    class="cart-modal hidden"
+>
 
-<div class="cart-header">
+    <div class="cart-panel">
 
-<h2>سبد خرید</h2>
 
-<button onclick="toggleCart()">
+        <div class="cart-header">
 
-×
+            <h2>
+                سبد خرید
+            </h2>
 
-</button>
+
+            <button
+                type="button"
+                onclick="toggleCart()"
+                aria-label="بستن سبد خرید"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <div
+            id="cart-items-list"
+            class="cart-items"
+        ></div>
+
+
+
+        <div class="cart-footer">
+
+            <div class="cart-total">
+
+                <span>
+                    جمع کل
+                </span>
+
+                <span id="cart-total">
+                    ۰ تومان
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                onclick="checkout()"
+            >
+                ثبت سفارش
+            </button>
+
+        </div>
+
+
+    </div>
 
 </div>
 
 
-<div id="cart-items-list" class="cart-items">
 
-<h2>nothing</h2>
-
-</div>
-
-
-<div class="cart-footer">
-
-<div class="cart-total">
-
-<span>جمع کل</span>
-
-<span id="cart-total">
-
-۰ تومان
-
-</span>
-
-</div>
-
-<button onclick="checkout()">
-
-ثبت سفارش
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
+<!-- =========================================
+     اسکریپت اصلی
+========================================= -->
 
 <script src="script.js"></script>
 
 
-<script>
-const fuse = new Fuse(products, {
-
-  keys: [
-    'name',
-    'description',
-    'category'
-  ],
-
-  threshold: 0.4
-
-});
-
-function searchProducts(search){
-
-  if(!search){
-
-    return products;
-
-  }
-
-  return fuse
-    .search(search)
-    .map(item => item.item);
-
-}
-
-
-
-function sortProducts(){
-
-const value =
-
-document.getElementById(
-
-'sort-select'
-
-).value;
-
-
-let sorted = [...products];
-
-
-if(value==="cheap"){
-
-sorted.sort(
-
-(a,b)=>a.price-b.price
-
-);
-
-}
-
-
-if(value==="expensive"){
-
-sorted.sort(
-
-(a,b)=>b.price-a.price
-
-);
-
-}
-
-
-if(value==="name"){
-
-sorted.sort(
-
-(a,b)=>
-
-a.name.localeCompare(
-
-b.name,
-
-'fa'
-
-)
-
-);
-
-}
-
-
-renderProducts(sorted);
-
-}
-
-</script>
-
 </body>
-
 </html>
