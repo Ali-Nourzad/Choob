@@ -54,7 +54,7 @@ let fuse = null;
 // ============================================================
 
 const DEFAULT_PRODUCT_IMAGE =
-    './default-product.jpg';
+    'default-product.jpg';
 
 
 
