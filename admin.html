@@ -1873,7 +1873,7 @@
             } = await shopDB
                 .from('orders')
                 .update({
-                    status: 'pending'
+                    status: 'in progress'
                 })
                 .eq(
                     'id',
