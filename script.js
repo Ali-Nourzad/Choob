@@ -632,7 +632,7 @@ async function checkout() {
 
             user_id: user.id,
 
-            status: 'در انتظار پرداخت'
+            status: 'in progress'
 
         });
 
