@@ -95,14 +95,10 @@ document.addEventListener(
 
 async function fetchProducts() {
 
-    const {
-        data,
-        error
-    } = await shopDB
+    const { data, error } = await shopDB
         .from('products')
-        .select('*');
-
-
+        .select('*')
+        .eq('status', 'active');
 
     if (error) {
 
