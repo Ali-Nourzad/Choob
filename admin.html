@@ -833,16 +833,10 @@
            وضعیت سفارش
         ========================== */
 
-        const COMPLETED_STATUS =
-            'completed';
-
-
-
+        const COMPLETED_STATUS = 'completed';
         let currentOrders = [];
-
         let completedOrders = [];
-
-
+        let customerCarts = [];
 
         /* =========================
            احراز هویت ادمین
@@ -1088,12 +1082,12 @@
 
             /* وقتی وارد تب سفارشات تکمیل‌شده شدیم */
 
-            if (
-                tabId === 'orders-completed'
-            ) {
-
-                loadCompletedOrders();
-
+            if (tabId === 'orders-completed') {
+              loadCompletedOrders();
+            }
+            
+            if (tabId === 'orders-cart') {
+              loadCarts();
             }
 
         }
@@ -1213,9 +1207,500 @@
             return profilesMap;
 
         }
+        async function loadCarts() {
+          const loading = document.getElementById('carts-loading');
+          const errorBox = document.getElementById('carts-error');
+          const emptyBox = document.getElementById('carts-empty');
+          const container = document.getElementById('carts-container');
+          const countText = document.getElementById('carts-count');
+        
+          loading.classList.remove('hidden');
+          errorBox.classList.add('hidden');
+          emptyBox.classList.add('hidden');
+          container.innerHTML = '';
+        
+          countText.textContent = 'در حال دریافت سبدهای خرید...';
+        
+          try {
+        
+            // ----------------------------------------
+            // 1. دریافت آیتم‌های سبد خرید
+            // ----------------------------------------
+        
+            const {
+              data: carts,
+              error: cartsError
+            } = await shopDB
+              .from('carts')
+              .select('id, user_id, product_id, quantity, created_at')
+              .order('created_at', { ascending: false });
+        
+            if (cartsError) {
+              throw cartsError;
+            }
+        
+            // اگر هیچ آیتمی در سبدها وجود ندارد
+            if (!carts || carts.length === 0) {
+              customerCarts = [];
+        
+              countText.textContent = '۰ سبد فعال';
+              emptyBox.classList.remove('hidden');
+        
+              return;
+            }
+        
+            // ----------------------------------------
+            // 2. گرفتن ID محصولات
+            // ----------------------------------------
+        
+            const productIds = [
+              ...new Set(
+                carts
+                  .map(cart => cart.product_id)
+                  .filter(Boolean)
+              )
+            ];
+        
+            // ----------------------------------------
+            // 3. دریافت محصولات
+            // ----------------------------------------
+        
+            let productsMap = {};
+        
+            if (productIds.length > 0) {
+        
+              const {
+                data: products,
+                error: productsError
+              } = await shopDB
+                .from('products')
+                .select('id, name, price, image_url, description, images')
+                .in('id', productIds);
+        
+              if (productsError) {
+                throw productsError;
+              }
+        
+              productsMap = Object.fromEntries(
+                (products || []).map(product => [
+                  String(product.id),
+                  product
+                ])
+              );
+            }
+        
+            // ----------------------------------------
+            // 4. گرفتن نام مشتری‌ها
+            // ----------------------------------------
+        
+            const userIds = [
+              ...new Set(
+                carts
+                  .map(cart => cart.user_id)
+                  .filter(Boolean)
+              )
+            ];
+        
+            let profilesMap = {};
+        
+            if (userIds.length > 0) {
+        
+              const {
+                data: profiles,
+                error: profilesError
+              } = await shopDB
+                .from('profiles')
+                .select('id, username')
+                .in('id', userIds);
+        
+              if (profilesError) {
+                throw profilesError;
+              }
+        
+              profilesMap = Object.fromEntries(
+                (profiles || []).map(profile => [
+                  String(profile.id),
+                  profile.username
+                ])
+              );
+            }
+        
+            // ----------------------------------------
+            // 5. اضافه کردن اطلاعات محصول و مشتری
+            // ----------------------------------------
+        
+            const enrichedCarts = carts.map(cart => {
+        
+              const product = productsMap[String(cart.product_id)] || null;
+        
+              return {
+                ...cart,
+        
+                product,
+        
+                username:
+                  profilesMap[String(cart.user_id)] ||
+                  'کاربر ناشناس'
+              };
+            });
+        
+            // ----------------------------------------
+            // 6. گروه‌بندی بر اساس مشتری
+            // ----------------------------------------
+        
+            const groupedCarts = {};
+        
+            enrichedCarts.forEach(cart => {
+        
+              const userId = String(
+                cart.user_id || 'unknown'
+              );
+        
+              if (!groupedCarts[userId]) {
+        
+                groupedCarts[userId] = {
+                  user_id: cart.user_id,
+                  username: cart.username,
+                  items: [],
+                  lastUpdated: cart.created_at
+                };
+              }
+        
+              groupedCarts[userId].items.push(cart);
+        
+              // جدیدترین تاریخ
+              if (
+                cart.created_at &&
+                new Date(cart.created_at) >
+                new Date(groupedCarts[userId].lastUpdated)
+              ) {
+                groupedCarts[userId].lastUpdated =
+                  cart.created_at;
+              }
+            });
+        
+            // ----------------------------------------
+            // 7. تبدیل به آرایه
+            // ----------------------------------------
+        
+            customerCarts = Object.values(groupedCarts);
+        
+            // جدیدترین سبدها اول
+            customerCarts.sort((a, b) => {
+              return new Date(b.lastUpdated) -
+                     new Date(a.lastUpdated);
+            });
+        
+            // ----------------------------------------
+            // 8. نمایش
+            // ----------------------------------------
+        
+            countText.textContent =
+              `${customerCarts.length.toLocaleString('fa-IR')} سبد فعال`;
+        
+            customerCarts.forEach(cart => {
+              container.insertAdjacentHTML(
+                'beforeend',
+                createCartCard(cart)
+              );
+            });
+        
+          } catch (error) {
+        
+            console.error('loadCarts error:', error);
+        
+            errorBox.textContent =
+              'خطا در دریافت سبدهای خرید: ' +
+              (error.message || 'خطای نامشخص');
+        
+            errorBox.classList.remove('hidden');
+        
+            countText.textContent =
+              'خطا در دریافت اطلاعات';
+        
+          } finally {
+        
+            loading.classList.add('hidden');
+          }
+        }
 
-
-
+        function createCartCard(cart) {
+        
+          const username =
+            escapeHtml(cart.username || 'کاربر ناشناس');
+        
+          const userId =
+            escapeHtml(cart.user_id || '---');
+        
+          let totalPrice = 0;
+        
+          let itemsHtml = '';
+        
+          cart.items.forEach(item => {
+        
+            const product = item.product;
+        
+            // اگر محصول دیگر در جدول products وجود نداشته باشد
+            if (!product) {
+        
+              itemsHtml += `
+                <div class="cart-item">
+        
+                  <div
+                    class="cart-product-image"
+                    style="
+                      display:flex;
+                      align-items:center;
+                      justify-content:center;
+                      font-size:25px;
+                    "
+                  >
+                    ❓
+                  </div>
+        
+                  <div class="cart-product-info">
+        
+                    <div class="cart-product-name">
+                      محصول حذف شده
+                    </div>
+        
+                    <div class="cart-product-price">
+                      شناسه محصول:
+                      ${escapeHtml(item.product_id)}
+                    </div>
+        
+                  </div>
+        
+                  <div class="cart-product-quantity">
+                    × ${Number(item.quantity || 0).toLocaleString('fa-IR')}
+                  </div>
+        
+                </div>
+              `;
+        
+              return;
+            }
+        
+            const quantity =
+              Math.max(0, Number(item.quantity || 0));
+        
+            const price =
+              Math.max(0, Number(product.price || 0));
+        
+            const lineTotal =
+              price * quantity;
+        
+            totalPrice += lineTotal;
+        
+            const productName =
+              escapeHtml(product.name || 'بدون نام');
+        
+            const imageUrl =
+              product.image_url
+                ? escapeHtml(product.image_url)
+                : '';
+        
+            const imageHtml = imageUrl
+        
+              ? `
+                <img
+                  src="${imageUrl}"
+                  alt="${productName}"
+                  class="cart-product-image clickable"
+                  onclick="openCartProductImage('${escapeHtml(product.id)}')"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                >
+        
+                <div
+                  style="
+                    display:none;
+                    width:68px;
+                    height:68px;
+                    min-width:68px;
+                    border-radius:10px;
+                    background:#f5f5f5;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:24px;
+                  "
+                >
+                  🖼️
+                </div>
+              `
+        
+              : `
+                <div
+                  class="cart-product-image"
+                  style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:24px;
+                  "
+                >
+                  🖼️
+                </div>
+              `;
+        
+            itemsHtml += `
+        
+              <div class="cart-item">
+        
+                ${imageHtml}
+        
+                <div class="cart-product-info">
+        
+                  <div
+                    class="cart-product-name"
+                    title="${productName}"
+                  >
+                    ${productName}
+                  </div>
+        
+                  <div class="cart-product-price">
+        
+                    ${formatPrice(price)}
+        
+                    <span class="cart-product-quantity">
+                      × ${quantity.toLocaleString('fa-IR')}
+                    </span>
+        
+                  </div>
+        
+                </div>
+        
+                <div class="cart-product-total">
+                  ${formatPrice(lineTotal)}
+                </div>
+        
+              </div>
+        
+            `;
+          });
+        
+          const itemCount = cart.items.reduce(
+            (sum, item) =>
+              sum + Number(item.quantity || 0),
+            0
+          );
+        
+          return `
+        
+            <div class="cart-card">
+        
+              <!-- Header -->
+        
+              <div class="cart-card-header">
+        
+                <div class="cart-customer">
+        
+                  <div class="cart-customer-avatar">
+                    👤
+                  </div>
+        
+                  <div class="cart-customer-info">
+        
+                    <div class="cart-customer-name">
+                      ${username}
+                    </div>
+        
+                    <div
+                      class="cart-customer-id"
+                      title="${userId}"
+                    >
+                      ${userId}
+                    </div>
+        
+                  </div>
+        
+                </div>
+        
+                <div class="cart-items-count">
+        
+                  ${cart.items.length.toLocaleString('fa-IR')}
+                  محصول
+        
+                  ·
+        
+                  ${itemCount.toLocaleString('fa-IR')}
+                  عدد
+        
+                </div>
+        
+              </div>
+        
+        
+              <!-- Items -->
+        
+              <div class="cart-items">
+        
+                ${itemsHtml}
+        
+              </div>
+        
+        
+              <!-- Footer -->
+        
+              <div class="cart-card-footer">
+        
+                <div class="cart-total-row">
+        
+                  <div class="cart-total-label">
+                    مجموع سبد خرید
+                  </div>
+        
+                  <div class="cart-total-price">
+                    ${formatPrice(totalPrice)}
+                  </div>
+        
+                </div>
+        
+                <div class="cart-last-update">
+                  آخرین تغییر:
+                  ${formatDate(cart.lastUpdated)}
+                </div>
+        
+              </div>
+        
+            </div>
+        
+          `;
+        }
+        function openCartProductImage(productId) {
+        
+          let product = null;
+        
+          for (const cart of customerCarts) {
+        
+            const item = cart.items.find(
+              item =>
+                String(item.product_id) ===
+                String(productId)
+            );
+        
+            if (item && item.product) {
+              product = item.product;
+              break;
+            }
+          }
+        
+          if (!product || !product.image_url) {
+            return;
+          }
+        
+          const image =
+            document.getElementById('large-order-image');
+        
+          if (!image) {
+            return;
+          }
+        
+          image.src = product.image_url;
+        
+          document
+            .getElementById('image-modal')
+            .classList.add('show');
+        }
         /* =========================
            دریافت سفارشات
         ========================== */
