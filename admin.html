@@ -445,27 +445,45 @@
 
             </div>
 
-
-
-            <!-- =========================
-                 سبد خرید
-            ========================== -->
-
-            <div
-                id="tab-orders-cart"
-                class="tab-content hidden"
-            >
-
-                <h2>
-                    سبد خرید فعلی
-                </h2>
-
+            <!-- ==================== CARTS ==================== -->
+            <div id="tab-orders-cart" class="tab-content hidden">
+            
+              <div class="page-header">
+                <div>
+                  <h2>🛒 سبد خرید مشتریان</h2>
+                  <p id="carts-count">در حال دریافت سبدهای خرید...</p>
+                </div>
+            
+                <button
+                  type="button"
+                  class="btn btn-refresh"
+                  onclick="loadCarts()"
+                >
+                  🔄 بروزرسانی
+                </button>
+              </div>
+            
+              <!-- Loading -->
+              <div id="carts-loading" class="loading hidden">
+                در حال دریافت سبدهای خرید...
+              </div>
+            
+              <!-- Error -->
+              <div id="carts-error" class="error-box hidden"></div>
+            
+              <!-- Empty -->
+              <div id="carts-empty" class="empty hidden">
+                <div style="font-size: 48px; margin-bottom: 12px;">🛒</div>
+                <h3>سبد خرید فعالی وجود ندارد</h3>
                 <p>
-                    مشاهده و مدیریت سبدهای خرید فعال.
+                  در حال حاضر هیچ مشتری‌ای محصولی در سبد خرید خود ندارد.
                 </p>
-
+              </div>
+            
+              <!-- Cart Cards -->
+              <div id="carts-container" class="carts-container"></div>
+            
             </div>
-
 
 
             <!-- =========================
