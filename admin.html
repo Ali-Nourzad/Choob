@@ -1,138 +1,269 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>پنل مدیریت | T-Choob</title>
 
-    <link rel="icon" type="image/png" href="favicon.ico">
-    <link rel="stylesheet" href="admin.css">
+    <link
+        rel="icon"
+        type="image/png"
+        href="favicon.ico"
+    >
+
+    <link
+        rel="stylesheet"
+        href="admin.css"
+    >
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
+<!-- ========================================
+     HEADER
+======================================== -->
+
 <header>
+
     <div class="header-container">
+
         <div class="header-inner">
 
             <div class="header-right">
+
                 <div class="logo-wrapper">
-                    <span class="logo">T-Choob</span>
-                    <span class="admin-badge">پنل ادمین</span>
+
+                    <div class="logo">
+                        T-Choob
+                    </div>
+
+                    <div class="admin-badge">
+                        مدیریت
+                    </div>
+
                 </div>
 
                 <nav class="top-nav">
+
                     <button
-                        id="top-nav-orders"
-                        onclick="switchSection('orders')"
-                        class="active">
+                        id="top-orders-btn"
+                        class="active"
+                        onclick="switchTopSection('orders')"
+                    >
                         📦 سفارشات
                     </button>
 
                     <button
-                        id="top-nav-products"
-                        onclick="switchSection('products')">
-                        🏷️ محصولات
+                        id="top-products-btn"
+                        onclick="switchTopSection('products')"
+                    >
+                        🪵 محصولات
                     </button>
+
                 </nav>
+
             </div>
 
+
             <div class="admin-profile">
-                <button onclick="handleLogout()" class="logout-btn">
+
+                <button
+                    class="logout-btn"
+                    onclick="logout()"
+                >
                     خروج
                 </button>
 
                 <div class="admin-info">
-                    <div id="admin-name" class="admin-name">
-                        در حال بارگذاری...
+
+                    <div
+                        id="admin-name"
+                        class="admin-name"
+                    >
+                        مدیر
                     </div>
 
                     <div class="admin-role">
-                        مدیر سیستم
+                        Administrator
                     </div>
+
                 </div>
 
                 <img
                     id="admin-avatar"
-                    src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%239CA3AF'><path stroke-linecap='round' stroke-linejoin='round' d='M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z' /></svg>"
-                    alt="Admin Avatar"
-                    class="admin-avatar">
+                    class="admin-avatar"
+                    src=""
+                    alt="Admin"
+                >
+
             </div>
 
         </div>
+
     </div>
+
 </header>
 
 
+<!-- ========================================
+     MAIN
+======================================== -->
+
 <div class="main-wrapper">
+
+
+    <!-- ====================================
+         SIDEBAR
+    ==================================== -->
 
     <aside class="sidebar">
 
         <div class="sidebar-card">
 
-            <div id="sidebar-orders" class="sidebar-section">
+            <!-- Orders -->
 
-                <h3 class="sidebar-title">
-                    مدیریت سفارشات
-                </h3>
+            <div
+                id="orders-sidebar"
+                class="sidebar-section"
+            >
+
+                <p class="sidebar-title">
+                    سفارشات
+                </p>
 
                 <button
+                    class="sidebar-btn active"
+                    data-tab="orders-list"
                     onclick="showTab('orders-list', this)"
-                    class="sidebar-btn active">
-                    📋 همه سفارشات
+                >
+                    <span>
+                        سفارش‌های جاری
+                    </span>
+
+                    <span>
+                        📋
+                    </span>
                 </button>
 
                 <button
+                    class="sidebar-btn"
+                    data-tab="orders-completed"
                     onclick="showTab('orders-completed', this)"
-                    class="sidebar-btn">
-                    ✅ سفارشات تکمیل شده
+                >
+                    <span>
+                        تکمیل‌شده
+                    </span>
+
+                    <span>
+                        ✅
+                    </span>
                 </button>
 
                 <button
+                    class="sidebar-btn"
+                    data-tab="orders-create"
                     onclick="showTab('orders-create', this)"
-                    class="sidebar-btn">
-                    ➕ ثبت سفارش جدید
+                >
+                    <span>
+                        ثبت سفارش دستی
+                    </span>
+
+                    <span>
+                        ➕
+                    </span>
                 </button>
 
                 <button
+                    class="sidebar-btn"
+                    data-tab="orders-cart"
                     onclick="showTab('orders-cart', this)"
-                    class="sidebar-btn">
-                    🛒 سبد خرید
+                >
+                    <span>
+                        سبد خرید کاربران
+                    </span>
+
+                    <span>
+                        🛒
+                    </span>
                 </button>
 
             </div>
 
 
-            <div id="sidebar-products" class="sidebar-section hidden">
+            <!-- Products -->
 
-                <h3 class="sidebar-title">
-                    مدیریت محصولات
-                </h3>
+            <div
+                id="products-sidebar"
+                class="sidebar-section hidden"
+                style="margin-top: 24px;"
+            >
+
+                <p class="sidebar-title">
+                    محصولات
+                </p>
 
                 <button
+                    class="sidebar-btn"
+                    data-tab="products-active"
                     onclick="showTab('products-active', this)"
-                    class="sidebar-btn active">
-                    ⚡ محصولات در جریان
+                >
+                    <span>
+                        محصولات فعال
+                    </span>
+
+                    <span>
+                        🟢
+                    </span>
                 </button>
 
                 <button
+                    class="sidebar-btn"
+                    data-tab="products-out"
                     onclick="showTab('products-out', this)"
-                    class="sidebar-btn">
-                    🚫 محصولات تمام شده
+                >
+                    <span>
+                        ناموجود
+                    </span>
+
+                    <span>
+                        🟡
+                    </span>
                 </button>
 
                 <button
+                    class="sidebar-btn"
+                    data-tab="products-deleted"
                     onclick="showTab('products-deleted', this)"
-                    class="sidebar-btn">
-                    🗑️ محصولات حذف شده
+                >
+                    <span>
+                        حذف‌شده
+                    </span>
+
+                    <span>
+                        🗑️
+                    </span>
                 </button>
 
                 <button
+                    class="sidebar-btn"
+                    data-tab="products-add"
                     onclick="showTab('products-add', this)"
-                    class="sidebar-btn">
-                    ➕ ثبت محصول جدید
+                >
+                    <span>
+                        افزودن محصول
+                    </span>
+
+                    <span>
+                        ➕
+                    </span>
                 </button>
 
             </div>
@@ -142,220 +273,214 @@
     </aside>
 
 
+    <!-- ====================================
+         MAIN CONTENT
+    ==================================== -->
+
     <main class="main-content">
 
-        <!-- =========================
-             ORDERS
-        ========================== -->
 
-        <div id="tab-orders-list" class="tab-content">
+        <!-- ==================================
+             CURRENT ORDERS
+        ================================== -->
 
-            <div class="section-header">
+        <section
+            id="tab-orders-list"
+            class="tab-content"
+        >
+
+            <div class="page-header">
+
                 <div>
-                    <h2>همه سفارشات</h2>
-                    <p>سفارش‌های در حال پردازش</p>
-                </div>
 
-                <button
-                    onclick="loadOrders()"
-                    class="refresh-btn">
-                    🔄 بروزرسانی
-                </button>
-            </div>
+                    <h2>
+                        سفارش‌های جاری
+                    </h2>
 
-            <div class="table-wrapper">
-
-                <table class="admin-table">
-
-                    <thead>
-                        <tr>
-                            <th>تصویر</th>
-                            <th>محصول</th>
-                            <th>کد</th>
-                            <th>خریدار</th>
-                            <th>تعداد</th>
-                            <th>قیمت</th>
-                            <th>وضعیت</th>
-                            <th>تاریخ</th>
-                            <th>عملیات</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="orders-table-body">
-                        <tr>
-                            <td colspan="9" class="loading-cell">
-                                در حال بارگذاری...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-
-        <!-- =========================
-             COMPLETED ORDERS
-        ========================== -->
-
-        <div id="tab-orders-completed" class="tab-content hidden">
-
-            <div class="section-header">
-                <div>
-                    <h2>سفارشات تکمیل شده</h2>
-                    <p>سفارش‌هایی که تحویل یا تکمیل شده‌اند</p>
-                </div>
-
-                <button
-                    onclick="loadCompletedOrders()"
-                    class="refresh-btn">
-                    🔄 بروزرسانی
-                </button>
-            </div>
-
-            <div class="table-wrapper">
-
-                <table class="admin-table">
-
-                    <thead>
-                        <tr>
-                            <th>تصویر</th>
-                            <th>محصول</th>
-                            <th>کد</th>
-                            <th>خریدار</th>
-                            <th>تعداد</th>
-                            <th>قیمت</th>
-                            <th>وضعیت</th>
-                            <th>تاریخ</th>
-                            <th>عملیات</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="completed-orders-table-body">
-                        <tr>
-                            <td colspan="9" class="loading-cell">
-                                در حال بارگذاری...
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-
-        <!-- =========================
-             CREATE ORDER
-        ========================== -->
-
-        <div id="tab-orders-create" class="tab-content hidden">
-
-            <div class="section-header">
-                <div>
-                    <h2>ثبت سفارش دستی</h2>
                     <p>
-                        ثبت سفارش برای مشتری و ایجاد خودکار محصول مربوط به آن
+                        سفارش‌هایی که هنوز تکمیل نشده‌اند
                     </p>
+
                 </div>
+
+                <button
+                    class="btn btn-refresh"
+                    onclick="loadCurrentOrders()"
+                >
+                    🔄 بروزرسانی
+                </button>
+
+            </div>
+
+            <div id="orders-list-content">
+
+                <div class="loading">
+                    در حال دریافت سفارش‌ها...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             COMPLETED ORDERS
+        ================================== -->
+
+        <section
+            id="tab-orders-completed"
+            class="tab-content hidden"
+        >
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        سفارش‌های تکمیل‌شده
+                    </h2>
+
+                    <p>
+                        سفارش‌هایی که تکمیل شده‌اند
+                    </p>
+
+                </div>
+
+                <button
+                    class="btn btn-refresh"
+                    onclick="loadCompletedOrders()"
+                >
+                    🔄 بروزرسانی
+                </button>
+
+            </div>
+
+            <div id="completed-orders-content">
+
+                <div class="loading">
+                    در حال دریافت سفارش‌ها...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             CREATE MANUAL ORDER
+        ================================== -->
+
+        <section
+            id="tab-orders-create"
+            class="tab-content hidden"
+        >
+
+            <div class="page-header">
+
+                <div>
+
+                    <h2>
+                        ثبت سفارش دستی
+                    </h2>
+
+                    <p>
+                        ثبت سفارش برای یکی از کاربران موجود
+                    </p>
+
+                </div>
+
             </div>
 
 
-            <form id="create-order-form" class="create-order-form">
+            <form
+                id="create-order-form"
+                class="create-order-form"
+            >
+
+
+                <!-- Buyer -->
 
                 <div class="form-section">
 
-                    <h3>اطلاعات سفارش</h3>
+                    <h3>
+                        اطلاعات خریدار
+                    </h3>
 
                     <div class="form-grid">
 
-                        <div class="form-group">
-                            <label for="create-buyer">
+                        <div class="form-group form-group-full">
+
+                            <label for="order-buyer">
                                 خریدار
                             </label>
 
                             <select
-                                id="create-buyer"
-                                required>
+                                id="order-buyer"
+                                required
+                            >
 
                                 <option value="">
-                                    انتخاب کاربر
+                                    انتخاب کاربر...
                                 </option>
 
                             </select>
 
                             <small>
-                                خریدار باید حتماً از بین کاربران ثبت‌شده انتخاب شود.
+                                خریدار باید از بین کاربران موجود انتخاب شود.
                             </small>
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="create-quantity">
-                                تعداد
-                            </label>
-
-                            <input
-                                id="create-quantity"
-                                type="number"
-                                min="1"
-                                value="1"
-                                required>
 
                         </div>
 
+                    </div>
+
+                </div>
+
+
+                <!-- Product -->
+
+                <div class="form-section">
+
+                    <h3>
+                        اطلاعات محصول
+                    </h3>
+
+                    <div class="form-grid">
+
+
+                        <!-- Product type -->
 
                         <div class="form-group">
 
-                            <label for="create-price">
-                                قیمت هر عدد
-                            </label>
-
-                            <input
-                                id="create-price"
-                                type="number"
-                                min="0"
-                                value="0"
-                                required>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="create-product-type">
+                            <label for="product-type">
                                 نوع محصول
                             </label>
 
                             <select
-                                id="create-product-type"
-                                required>
+                                id="product-type"
+                                required
+                            >
 
                                 <option value="">
-                                    انتخاب نوع محصول
+                                    انتخاب کنید...
                                 </option>
 
-                                <option value="keychain">
+                                <option value="JK">
                                     جاکلیدی
                                 </option>
 
-                                <option value="keyfob">
+                                <option value="JS">
                                     جاسوئیچی
                                 </option>
 
-                                <option value="board">
+                                <option value="TB">
                                     تابلو
                                 </option>
 
-                                <option value="clock">
+                                <option value="CL">
                                     ساعت
                                 </option>
 
-                                <option value="other">
+                                <option value="OT">
                                     غیره
                                 </option>
 
@@ -363,87 +488,123 @@
 
                         </div>
 
-                    </div>
 
-                </div>
+                        <!-- Product code -->
 
+                        <div class="form-group">
 
-                <div class="form-section">
-
-                    <h3>کد محصول</h3>
-
-                    <div class="code-generator-row">
-
-                        <div class="form-group code-input-group">
-
-                            <label for="create-product-code">
+                            <label for="product-code">
                                 کد محصول
                             </label>
 
-                            <input
-                                id="create-product-code"
-                                type="text"
-                                dir="ltr"
-                                placeholder="مثلاً TCJK000A"
-                                autocomplete="off">
+                            <div class="code-generator-row">
 
-                        </div>
+                                <div class="code-input-group">
 
-                        <button
-                            type="button"
-                            id="generate-code-btn"
-                            class="generate-code-btn"
-                            onclick="generateProductCode()">
+                                    <input
+                                        id="product-code"
+                                        type="text"
+                                        placeholder="مثلاً TCJS0000"
+                                        dir="ltr"
+                                        autocomplete="off"
+                                        required
+                                    >
 
-                            ✨ تولید کد خودکار
+                                </div>
 
-                        </button>
+                                <button
+                                    type="button"
+                                    id="generate-code-btn"
+                                    class="generate-code-btn"
+                                >
+                                    تولید خودکار
+                                </button>
 
-                    </div>
-
-                    <small class="form-help">
-                        کد خودکار با توجه به نوع محصول ساخته می‌شود و اولین کد آزاد از
-                        0000 تا FFFF انتخاب خواهد شد.
-                    </small>
-
-                </div>
-
-
-                <div class="form-section">
-
-                    <h3>اطلاعات عمومی محصول</h3>
-
-                    <div class="form-grid">
-
-                        <div class="form-group form-group-full">
-
-                            <label for="create-images">
-                                تصاویر
-                            </label>
-
-                            <input
-                                id="create-images"
-                                type="text"
-                                dir="ltr"
-                                placeholder="https://... | https://...">
+                            </div>
 
                             <small>
-                                آدرس تصاویر را با علامت | از هم جدا کن.
+                                فرمت:
+                                TC + کد نوع + چهار رقم هگزادسیمال
                             </small>
 
                         </div>
 
 
+                        <!-- Quantity -->
+
+                        <div class="form-group">
+
+                            <label for="order-quantity">
+                                تعداد
+                            </label>
+
+                            <input
+                                id="order-quantity"
+                                type="number"
+                                min="1"
+                                value="1"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Price -->
+
+                        <div class="form-group">
+
+                            <label for="order-price">
+                                قیمت واحد
+                            </label>
+
+                            <input
+                                id="order-price"
+                                type="number"
+                                min="0"
+                                step="1"
+                                placeholder="قیمت به تومان"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Images -->
+
                         <div class="form-group form-group-full">
 
-                            <label for="create-description">
+                            <label for="product-images">
+                                تصاویر
+                            </label>
+
+                            <input
+                                id="product-images"
+                                type="text"
+                                dir="ltr"
+                                placeholder="URL1 | URL2 | URL3"
+                            >
+
+                            <div class="image-url-help">
+                                اگر چند تصویر دارید، URLها را با
+                                <strong>|</strong>
+                                از هم جدا کنید.
+                            </div>
+
+                        </div>
+
+
+                        <!-- Description -->
+
+                        <div class="form-group form-group-full">
+
+                            <label for="product-description">
                                 توضیحات
                             </label>
 
                             <textarea
-                                id="create-description"
-                                rows="4"
-                                placeholder="توضیحات محصول..."></textarea>
+                                id="product-description"
+                                placeholder="توضیحات محصول..."
+                            ></textarea>
 
                         </div>
 
@@ -452,117 +613,144 @@
                 </div>
 
 
-                <!-- جاکلیدی -->
+                <!-- ==================================
+                     JASOICHI
+                ================================== -->
 
                 <div
-                    id="fields-keychain"
-                    class="form-section product-type-fields hidden">
+                    id="fields-js"
+                    class="type-fields"
+                >
 
-                    <h3>مشخصات جاکلیدی</h3>
+                    <div class="form-section">
 
-                    <div class="form-grid">
+                        <h3>
+                            مشخصات جاسوئیچی
+                        </h3>
 
-                        <div class="form-group">
-
-                            <label for="keychain-wood">
-                                چوب
-                            </label>
-
-                            <select id="keychain-wood">
-
-                                <option value="">
-                                    انتخاب کنید
-                                </option>
-
-                                <option value="گردو">
-                                    گردو
-                                </option>
-
-                                <option value="عناب">
-                                    عناب
-                                </option>
-
-                                <option value="کرات">
-                                    کرات
-                                </option>
-
-                                <option value="نارنج">
-                                    نارنج
-                                </option>
-
-                                <option value="گردو سوخته">
-                                    گردو سوخته
-                                </option>
-
-                                <option value="سنجد">
-                                    سنجد
-                                </option>
-
-                                <option value="متفرقه">
-                                    متفرقه
-                                </option>
-
-                            </select>
-
-                        </div>
+                        <div class="form-grid">
 
 
-                        <div class="form-group">
+                            <div class="form-group">
 
-                            <label for="keychain-width">
-                                عرض
-                            </label>
+                                <label for="js-wood">
+                                    چوب
+                                </label>
 
-                            <input
-                                id="keychain-width"
-                                type="number"
-                                min="0"
-                                step="0.1">
+                                <select id="js-wood">
 
-                        </div>
+                                    <option value="">
+                                        انتخاب کنید...
+                                    </option>
+
+                                    <option value="گردو">
+                                        گردو
+                                    </option>
+
+                                    <option value="عناب">
+                                        عناب
+                                    </option>
+
+                                    <option value="کرات">
+                                        کرات
+                                    </option>
+
+                                    <option value="نارنج">
+                                        نارنج
+                                    </option>
+
+                                    <option value="گردو سوخته">
+                                        گردو سوخته
+                                    </option>
+
+                                    <option value="سنجد">
+                                        سنجد
+                                    </option>
+
+                                    <option value="متفرقه">
+                                        متفرقه
+                                    </option>
+
+                                </select>
+
+                            </div>
 
 
-                        <div class="form-group">
+                            <div class="form-group">
 
-                            <label for="keychain-length">
-                                طول
-                            </label>
+                                <label for="js-size">
+                                    اندازه
+                                </label>
 
-                            <input
-                                id="keychain-length"
-                                type="number"
-                                min="0"
-                                step="0.1">
+                                <select id="js-size">
 
-                        </div>
+                                    <option value="">
+                                        انتخاب کنید...
+                                    </option>
+
+                                    <option value="کوچک">
+                                        کوچک
+                                    </option>
+
+                                    <option value="متوسط">
+                                        متوسط
+                                    </option>
+
+                                    <option value="بزرگ">
+                                        بزرگ
+                                    </option>
+
+                                </select>
+
+                            </div>
 
 
-                        <div class="form-group">
+                            <div class="form-group">
 
-                            <label for="keychain-hooks">
-                                تعداد حلقه
-                            </label>
+                                <label for="js-design">
+                                    طرح
+                                </label>
 
-                            <input
-                                id="keychain-hooks"
-                                type="number"
-                                min="0"
-                                step="1">
+                                <input
+                                    id="js-design"
+                                    type="text"
+                                    placeholder="URL تصویر یا مثلاً F"
+                                >
 
-                        </div>
+                            </div>
 
 
-                        <div class="form-group form-group-full">
+                            <div class="form-group">
 
-                            <label for="keychain-design">
-                                طرح
-                            </label>
+                                <label for="js-font">
+                                    فونت
+                                </label>
 
-                            <input
-                                id="keychain-design"
-                                type="text"
-                                dir="ltr"
-                                placeholder="URL تصویر یا متن مثل F">
+                                <select id="js-font">
+
+                                    <option value="ندارد">
+                                        ندارد
+                                    </option>
+
+                                    <option value="1">
+                                        1
+                                    </option>
+
+                                    <option value="2">
+                                        2
+                                    </option>
+
+                                    <option value="3">
+                                        3
+                                    </option>
+
+                                    <option value="4">
+                                        4
+                                    </option>
+
+                                </select>
+
+                            </div>
 
                         </div>
 
@@ -571,134 +759,66 @@
                 </div>
 
 
-                <!-- جاسوئیچی -->
+                <!-- ==================================
+                     TABLO
+                ================================== -->
 
                 <div
-                    id="fields-keyfob"
-                    class="form-section product-type-fields hidden">
+                    id="fields-tb"
+                    class="type-fields"
+                >
 
-                    <h3>مشخصات جاسوئیچی</h3>
+                    <div class="form-section">
 
-                    <div class="form-grid">
+                        <h3>
+                            مشخصات تابلو
+                        </h3>
 
-                        <div class="form-group">
+                        <div class="form-grid">
 
-                            <label for="keyfob-wood">
-                                چوب
-                            </label>
+                            <div class="form-group form-group-full">
 
-                            <select id="keyfob-wood">
+                                <label for="tb-design">
+                                    طرح
+                                </label>
 
-                                <option value="">
-                                    انتخاب کنید
-                                </option>
+                                <input
+                                    id="tb-design"
+                                    type="text"
+                                    placeholder="URL تصاویر طرح"
+                                >
 
-                                <option value="گردو">
-                                    گردو
-                                </option>
+                            </div>
 
-                                <option value="عناب">
-                                    عناب
-                                </option>
+                            <div class="form-group">
 
-                                <option value="کرات">
-                                    کرات
-                                </option>
+                                <label for="tb-width">
+                                    عرض
+                                </label>
 
-                                <option value="نارنج">
-                                    نارنج
-                                </option>
+                                <input
+                                    id="tb-width"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                >
 
-                                <option value="گردو سوخته">
-                                    گردو سوخته
-                                </option>
+                            </div>
 
-                                <option value="سنجد">
-                                    سنجد
-                                </option>
+                            <div class="form-group">
 
-                                <option value="متفرقه">
-                                    متفرقه
-                                </option>
+                                <label for="tb-length">
+                                    طول
+                                </label>
 
-                            </select>
+                                <input
+                                    id="tb-length"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                >
 
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="keyfob-size">
-                                اندازه
-                            </label>
-
-                            <select id="keyfob-size">
-
-                                <option value="">
-                                    انتخاب کنید
-                                </option>
-
-                                <option value="کوچک">
-                                    کوچک
-                                </option>
-
-                                <option value="متوسط">
-                                    متوسط
-                                </option>
-
-                                <option value="بزرگ">
-                                    بزرگ
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="keyfob-font">
-                                فونت
-                            </label>
-
-                            <select id="keyfob-font">
-
-                                <option value="1">
-                                    1
-                                </option>
-
-                                <option value="2">
-                                    2
-                                </option>
-
-                                <option value="3">
-                                    3
-                                </option>
-
-                                <option value="4">
-                                    4
-                                </option>
-
-                                <option value="ندارد">
-                                    ندارد
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="form-group form-group-full">
-
-                            <label for="keyfob-design">
-                                طرح
-                            </label>
-
-                            <input
-                                id="keyfob-design"
-                                type="text"
-                                dir="ltr"
-                                placeholder="URL تصویر یا متن مثل F">
+                            </div>
 
                         </div>
 
@@ -707,57 +827,66 @@
                 </div>
 
 
-                <!-- تابلو -->
+                <!-- ==================================
+                     CLOCK
+                ================================== -->
 
                 <div
-                    id="fields-board"
-                    class="form-section product-type-fields hidden">
+                    id="fields-cl"
+                    class="type-fields"
+                >
 
-                    <h3>مشخصات تابلو</h3>
+                    <div class="form-section">
 
-                    <div class="form-grid">
+                        <h3>
+                            مشخصات ساعت
+                        </h3>
 
-                        <div class="form-group">
+                        <div class="form-grid">
 
-                            <label for="board-width">
-                                عرض
-                            </label>
+                            <div class="form-group form-group-full">
 
-                            <input
-                                id="board-width"
-                                type="number"
-                                min="0"
-                                step="0.1">
+                                <label for="cl-design">
+                                    طرح
+                                </label>
 
-                        </div>
+                                <input
+                                    id="cl-design"
+                                    type="text"
+                                    placeholder="URL تصاویر طرح"
+                                >
 
+                            </div>
 
-                        <div class="form-group">
+                            <div class="form-group">
 
-                            <label for="board-length">
-                                طول
-                            </label>
+                                <label for="cl-width">
+                                    عرض
+                                </label>
 
-                            <input
-                                id="board-length"
-                                type="number"
-                                min="0"
-                                step="0.1">
+                                <input
+                                    id="cl-width"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                >
 
-                        </div>
+                            </div>
 
+                            <div class="form-group">
 
-                        <div class="form-group form-group-full">
+                                <label for="cl-length">
+                                    طول
+                                </label>
 
-                            <label for="board-design">
-                                طرح
-                            </label>
+                                <input
+                                    id="cl-length"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                >
 
-                            <input
-                                id="board-design"
-                                type="text"
-                                dir="ltr"
-                                placeholder="URL تصاویر طرح، با | جدا کنید">
+                            </div>
 
                         </div>
 
@@ -766,57 +895,129 @@
                 </div>
 
 
-                <!-- ساعت -->
+                <!-- ==================================
+                     KEYCHAIN
+                ================================== -->
 
                 <div
-                    id="fields-clock"
-                    class="form-section product-type-fields hidden">
+                    id="fields-jk"
+                    class="type-fields"
+                >
 
-                    <h3>مشخصات ساعت</h3>
+                    <div class="form-section">
 
-                    <div class="form-grid">
+                        <h3>
+                            مشخصات جاکلیدی
+                        </h3>
 
-                        <div class="form-group">
-
-                            <label for="clock-width">
-                                عرض
-                            </label>
-
-                            <input
-                                id="clock-width"
-                                type="number"
-                                min="0"
-                                step="0.1">
-
-                        </div>
+                        <div class="form-grid">
 
 
-                        <div class="form-group">
+                            <div class="form-group">
 
-                            <label for="clock-length">
-                                طول
-                            </label>
+                                <label for="jk-wood">
+                                    چوب
+                                </label>
 
-                            <input
-                                id="clock-length"
-                                type="number"
-                                min="0"
-                                step="0.1">
+                                <select id="jk-wood">
 
-                        </div>
+                                    <option value="">
+                                        انتخاب کنید...
+                                    </option>
+
+                                    <option value="گردو">
+                                        گردو
+                                    </option>
+
+                                    <option value="عناب">
+                                        عناب
+                                    </option>
+
+                                    <option value="کرات">
+                                        کرات
+                                    </option>
+
+                                    <option value="نارنج">
+                                        نارنج
+                                    </option>
+
+                                    <option value="گردو سوخته">
+                                        گردو سوخته
+                                    </option>
+
+                                    <option value="سنجد">
+                                        سنجد
+                                    </option>
+
+                                    <option value="متفرقه">
+                                        متفرقه
+                                    </option>
+
+                                </select>
+
+                            </div>
 
 
-                        <div class="form-group form-group-full">
+                            <div class="form-group">
 
-                            <label for="clock-design">
-                                طرح
-                            </label>
+                                <label for="jk-hook-count">
+                                    تعداد قلاب
+                                </label>
 
-                            <input
-                                id="clock-design"
-                                type="text"
-                                dir="ltr"
-                                placeholder="URL تصاویر طرح، با | جدا کنید">
+                                <input
+                                    id="jk-hook-count"
+                                    type="number"
+                                    min="0"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="jk-width">
+                                    عرض
+                                </label>
+
+                                <input
+                                    id="jk-width"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="jk-length">
+                                    طول
+                                </label>
+
+                                <input
+                                    id="jk-length"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group form-group-full">
+
+                                <label for="jk-design">
+                                    طرح
+                                </label>
+
+                                <input
+                                    id="jk-design"
+                                    type="text"
+                                    placeholder="URL تصاویر طرح"
+                                >
+
+                            </div>
 
                         </div>
 
@@ -825,41 +1026,50 @@
                 </div>
 
 
-                <!-- غیره -->
+                <!-- ==================================
+                     OTHER
+                ================================== -->
 
                 <div
-                    id="fields-other"
-                    class="form-section product-type-fields hidden">
+                    id="fields-ot"
+                    class="type-fields"
+                >
 
-                    <h3>مشخصات محصول</h3>
+                    <div class="form-section">
 
-                    <div class="form-grid">
+                        <h3>
+                            مشخصات محصول متفرقه
+                        </h3>
 
-                        <div class="form-group form-group-full">
+                        <div class="form-grid">
 
-                            <label for="other-name">
-                                نام محصول
-                            </label>
+                            <div class="form-group form-group-full">
 
-                            <input
-                                id="other-name"
-                                type="text"
-                                placeholder="نام واقعی محصول">
+                                <label for="ot-name">
+                                    نام محصول
+                                </label>
 
-                        </div>
+                                <input
+                                    id="ot-name"
+                                    type="text"
+                                    placeholder="نام محصول"
+                                >
 
+                            </div>
 
-                        <div class="form-group form-group-full">
+                            <div class="form-group form-group-full">
 
-                            <label for="other-design">
-                                طرح
-                            </label>
+                                <label for="ot-design">
+                                    طرح
+                                </label>
 
-                            <input
-                                id="other-design"
-                                type="text"
-                                dir="ltr"
-                                placeholder="URL تصاویر طرح، با | جدا کنید">
+                                <input
+                                    id="ot-design"
+                                    type="text"
+                                    placeholder="URL تصاویر طرح"
+                                >
+
+                            </div>
 
                         </div>
 
@@ -867,307 +1077,338 @@
 
                 </div>
 
+
+                <!-- Message -->
+
+                <div
+                    id="order-form-message"
+                    class="order-form-message"
+                ></div>
+
+
+                <!-- Actions -->
 
                 <div class="form-actions">
 
                     <button
                         type="submit"
-                        class="submit-order-btn">
-
-                        ثبت سفارش و محصول
-
+                        id="submit-order-btn"
+                        class="submit-order-btn"
+                    >
+                        ثبت سفارش
                     </button>
 
                     <button
                         type="reset"
                         class="reset-form-btn"
-                        onclick="resetCreateOrderForm()">
-
+                    >
                         پاک کردن فرم
-
                     </button>
 
                 </div>
 
             </form>
 
-        </div>
+        </section>
 
 
-        <!-- =========================
-             CART
-        ========================== -->
+        <!-- ==================================
+             CARTS
+        ================================== -->
 
-        <div id="tab-orders-cart" class="tab-content hidden">
+        <section
+            id="tab-orders-cart"
+            class="tab-content hidden"
+        >
 
-            <div class="section-header">
+            <div class="page-header">
 
                 <div>
-                    <h2>سبد خرید کاربران</h2>
+
+                    <h2>
+                        سبد خرید کاربران
+                    </h2>
+
                     <p>
-                        فقط کاربرانی که حداقل یک محصول در سبد خرید دارند نمایش داده می‌شوند.
+                        کاربرانی که در حال حاضر محصولی در سبد خرید دارند
                     </p>
+
                 </div>
 
                 <button
+                    class="btn btn-refresh"
                     onclick="loadCarts()"
-                    class="refresh-btn">
-
+                >
                     🔄 بروزرسانی
-
                 </button>
 
             </div>
 
-            <div id="cart-container" class="cart-container">
+            <div id="carts-content">
 
-                <div class="loading-cell">
-                    در حال بارگذاری...
+                <div class="loading">
+                    در حال دریافت سبدهای خرید...
                 </div>
 
             </div>
 
-        </div>
+        </section>
 
 
-        <!-- =========================
-             PRODUCTS
-        ========================== -->
+        <!-- ==================================
+             ACTIVE PRODUCTS
+        ================================== -->
 
-        <div id="tab-products-active" class="tab-content hidden">
+        <section
+            id="tab-products-active"
+            class="tab-content hidden"
+        >
 
-            <div class="section-header">
+            <div class="page-header">
 
                 <div>
-                    <h2>محصولات در جریان</h2>
+
+                    <h2>
+                        محصولات فعال
+                    </h2>
+
                     <p>
-                        لیست محصولات موجود
+                        محصولات موجود در فروشگاه
                     </p>
+
+                </div>
+
+                <button
+                    class="btn btn-refresh"
+                    onclick="loadProducts()"
+                >
+                    🔄 بروزرسانی
+                </button>
+
+            </div>
+
+            <div id="products-active-content">
+
+                <div class="loading">
+                    در حال دریافت محصولات...
                 </div>
 
             </div>
 
-            <div class="table-wrapper">
-
-                <table class="admin-table">
-
-                    <thead>
-                        <tr>
-                            <th>تصویر</th>
-                            <th>نام</th>
-                            <th>کد</th>
-                            <th>قیمت</th>
-                            <th>نوع</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="products-active-body">
-                        <tr>
-                            <td colspan="5">
-                                بخش محصولات
-                            </td>
-                        </tr>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
+        </section>
 
 
-        <div id="tab-products-out" class="tab-content hidden">
+        <!-- ==================================
+             OUT OF STOCK
+        ================================== -->
 
-            <div class="section-header">
+        <section
+            id="tab-products-out"
+            class="tab-content hidden"
+        >
+
+            <div class="page-header">
 
                 <div>
-                    <h2>محصولات تمام شده</h2>
-                    <p>
+
+                    <h2>
                         محصولات ناموجود
+                    </h2>
+
+                    <p>
+                        محصولات غیرقابل خرید
                     </p>
+
                 </div>
 
             </div>
 
-        </div>
+            <div
+                id="products-out-content"
+                class="empty"
+            >
+                فعلاً محصولی در این بخش نیست.
+            </div>
+
+        </section>
 
 
-        <div id="tab-products-deleted" class="tab-content hidden">
+        <!-- ==================================
+             DELETED PRODUCTS
+        ================================== -->
 
-            <div class="section-header">
+        <section
+            id="tab-products-deleted"
+            class="tab-content hidden"
+        >
+
+            <div class="page-header">
 
                 <div>
-                    <h2>محصولات حذف شده</h2>
+
+                    <h2>
+                        محصولات حذف‌شده
+                    </h2>
+
                     <p>
-                        آرشیو محصولات حذف‌شده
+                        محصولات حذف‌شده از فروشگاه
                     </p>
+
                 </div>
 
             </div>
 
-        </div>
+            <div
+                id="products-deleted-content"
+                class="empty"
+            >
+                فعلاً محصول حذف‌شده‌ای وجود ندارد.
+            </div>
+
+        </section>
 
 
-        <div id="tab-products-add" class="tab-content hidden">
+        <!-- ==================================
+             ADD PRODUCT
+        ================================== -->
 
-            <div class="section-header">
+        <section
+            id="tab-products-add"
+            class="tab-content hidden"
+        >
+
+            <div class="page-header">
 
                 <div>
-                    <h2>ثبت محصول جدید</h2>
+
+                    <h2>
+                        افزودن محصول
+                    </h2>
+
                     <p>
-                        برای ثبت محصول جدید از بخش ثبت سفارش دستی استفاده کن.
+                        افزودن محصول جدید به فروشگاه
                     </p>
+
                 </div>
 
             </div>
 
-        </div>
+            <div class="empty">
+                برای ثبت محصول سفارشی می‌توانید از بخش «ثبت سفارش دستی» استفاده کنید.
+            </div>
+
+        </section>
 
     </main>
 
 </div>
 
 
+<!-- ========================================
+     FOOTER
+======================================== -->
+
 <footer>
-    <p>
-        T-Choob Admin Panel
-    </p>
+
+    <div class="footer-content">
+
+        مدیریت فروشگاه
+
+        <span class="footer-brand">
+            T-Choob
+        </span>
+
+    </div>
+
 </footer>
 
 
-<!-- =========================
+<!-- ========================================
      IMAGE MODAL
-========================== -->
+======================================== -->
 
 <div
     id="image-modal"
     class="modal image-modal"
-    onclick="closeImageModal(event)">
+    onclick="closeImageModal(event)"
+>
 
     <div class="image-modal-content">
 
         <button
+            type="button"
+            class="close-image-btn"
             onclick="closeImageModal()"
-            class="close-image-btn">
-
+        >
             ×
-
         </button>
 
         <img
             id="large-order-image"
             class="large-order-image"
-            alt="تصویر">
+            src=""
+            alt="تصویر"
+        >
 
     </div>
 
 </div>
 
 
-<!-- =========================
+<!-- ========================================
      EDIT ORDER MODAL
-========================== -->
+======================================== -->
 
 <div
     id="edit-order-modal"
-    class="modal edit-modal">
+    class="modal edit-modal"
+>
 
     <div class="edit-modal-content">
 
-        <button
-            onclick="closeEditModal()"
-            class="close-modal-btn">
+        <div class="modal-header">
 
-            ×
+            <h3>
+                ویرایش سفارش
+            </h3>
 
-        </button>
+            <button
+                type="button"
+                class="close-modal-btn"
+                onclick="closeEditModal()"
+            >
+                ×
+            </button>
 
-        <h3>
-            ویرایش سفارش
-        </h3>
+        </div>
 
-        <form id="edit-order-form">
+        <form
+            id="edit-order-form"
+            class="edit-form"
+        >
 
             <input
                 type="hidden"
-                id="edit-order-id">
+                id="edit-order-id"
+            >
 
             <div class="form-group">
 
-                <label for="edit-product-name">
-                    نام محصول
+                <label for="edit-order-status">
+                    وضعیت سفارش
                 </label>
 
-                <input
-                    id="edit-product-name"
-                    type="text"
-                    required>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="edit-code">
-                    کد
-                </label>
-
-                <input
-                    id="edit-code"
-                    type="text"
-                    dir="ltr">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="edit-price">
-                    قیمت
-                </label>
-
-                <input
-                    id="edit-price"
-                    type="number"
-                    min="0"
-                    required>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="edit-quantity">
-                    تعداد
-                </label>
-
-                <input
-                    id="edit-quantity"
-                    type="number"
-                    min="1"
-                    required>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="edit-status">
-                    وضعیت
-                </label>
-
-                <select id="edit-status">
-
-                    <option value="pending">
-                        pending
-                    </option>
+                <select
+                    id="edit-order-status"
+                    class="form-input"
+                >
 
                     <option value="in progress">
-                        in progress
+                        در حال انجام
                     </option>
 
                     <option value="completed">
-                        completed
+                        تکمیل‌شده
                     </option>
 
                 </select>
@@ -1175,23 +1416,43 @@
             </div>
 
 
-            <div class="edit-actions">
+            <div class="form-group">
 
-                <button
-                    type="submit"
-                    class="submit-order-btn">
+                <label for="edit-order-quantity">
+                    تعداد
+                </label>
 
-                    ذخیره تغییرات
+                <input
+                    id="edit-order-quantity"
+                    class="form-input"
+                    type="number"
+                    min="1"
+                >
 
-                </button>
+            </div>
+
+
+            <div
+                id="edit-modal-error"
+                class="modal-error hidden"
+            ></div>
+
+
+            <div class="modal-actions">
 
                 <button
                     type="button"
+                    class="btn btn-cancel"
                     onclick="closeEditModal()"
-                    class="reset-form-btn">
+                >
+                    انصراف
+                </button>
 
-                    لغو
-
+                <button
+                    type="submit"
+                    class="btn btn-submit"
+                >
+                    ذخیره
                 </button>
 
             </div>
@@ -1203,869 +1464,1145 @@
 </div>
 
 
+<!-- ========================================
+     JAVASCRIPT
+======================================== -->
+
 <script>
 
-const SUPABASE_URL = 'https://rlduutynqgevgzmayeit.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD';
-
-const shopDB = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+"use strict";
 
 
-const COMPLETED_STATUS = 'completed';
+/* ========================================
+   SUPABASE
+======================================== */
+
+const SUPABASE_URL =
+    "https://rlduutynqgevgzmayeit.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD";
+
+const shopDB =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
-const PRODUCT_TYPE_CODES = {
-    keychain: 'JK',
-    keyfob: 'JS',
-    board: 'TB',
-    clock: 'CL',
-    other: 'OT'
+/* ========================================
+   CONSTANTS
+======================================== */
+
+const COMPLETED_STATUS = "completed";
+
+const PRODUCT_TYPES = {
+    JK: "جاکلیدی",
+    JS: "جاسوئیچی",
+    TB: "تابلو",
+    CL: "ساعت",
+    OT: "غیره"
 };
 
 
-const PRODUCT_TYPE_NAMES = {
-    keychain: 'جاکلیدی',
-    keyfob: 'جاسوئیچی',
-    board: 'تابلو',
-    clock: 'ساعت',
-    other: 'غیره'
-};
+/* ========================================
+   GLOBAL DATA
+======================================== */
 
-
-let currentOrders = [];
-let completedOrders = [];
-let customerCarts = [];
 let allProfiles = [];
 
+let currentOrders = [];
 
-/* =========================
+let completedOrders = [];
+
+let currentEditOrder = null;
+
+
+/* ========================================
    HELPERS
-========================= */
+======================================== */
 
-function escapeHtml(value) {
+function escapeHTML(value) {
 
     if (value === null || value === undefined) {
-        return '';
+        return "";
     }
 
     return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
-function formatPrice(price) {
+function formatPrice(value) {
 
-    const number = Number(price || 0);
+    const number =
+        Number(value || 0);
 
-    return new Intl.NumberFormat('fa-IR').format(number) + ' تومان';
+    return number.toLocaleString("fa-IR") + " تومان";
 }
 
 
-function formatDate(date) {
+function formatDate(value) {
 
-    if (!date) {
-        return '-';
+    if (!value) {
+        return "-";
     }
 
-    return new Date(date).toLocaleString('fa-IR');
+    const date =
+        new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "-";
+    }
+
+    return date.toLocaleString(
+        "fa-IR",
+        {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
 }
 
 
-function getDefaultAvatar() {
+function getFirstImage(images, imageURL) {
 
-    return "data:image/svg+xml;utf8," +
-        encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="#9CA3AF"
-                 stroke-width="1.5">
-                <path stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-        `);
+    if (images) {
+
+        const list =
+            String(images)
+                .split("|")
+                .map(item => item.trim())
+                .filter(Boolean);
+
+        if (list.length > 0) {
+            return list[0];
+        }
+    }
+
+    return imageURL || "";
 }
 
 
-/* =========================
+function getProfileName(profile) {
+
+    if (!profile) {
+        return "کاربر ناشناس";
+    }
+
+    const fullName =
+        [
+            profile.first_name,
+            profile.last_name
+        ]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+
+    if (fullName) {
+        return fullName;
+    }
+
+    if (profile.username) {
+        return profile.username;
+    }
+
+    return "کاربر";
+}
+
+
+function getProfileAvatar(profile) {
+
+    return profile?.avatar_url || "";
+}
+
+
+/* ========================================
    AUTH
-========================= */
+======================================== */
 
-async function checkAdminAuth() {
+async function checkAdmin() {
 
     const {
-        data: {
-            session
-        },
+        data,
         error
     } = await shopDB.auth.getSession();
 
-    if (error || !session) {
+    if (error || !data.session) {
 
-        window.location.href = 'login.html';
+        window.location.href =
+            "login.html";
 
         return false;
     }
 
+    const user =
+        data.session.user;
 
     const {
         data: profile,
         error: profileError
     } = await shopDB
-        .from('profiles')
-        .select('id, username, avatar_url')
-        .eq('id', session.user.id)
-        .maybeSingle();
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
 
+    if (profileError || !profile) {
 
-    if (
-        profileError ||
-        !profile ||
-        profile.username !== 'admin'
-    ) {
+        alert("دسترسی مدیر پیدا نشد.");
 
         await shopDB.auth.signOut();
 
-        window.location.href = 'login.html';
+        window.location.href =
+            "login.html";
 
         return false;
     }
 
+    if (profile.username !== "admin") {
 
-    document.getElementById('admin-name').textContent =
-        profile.username || 'admin';
+        alert("شما دسترسی مدیریت ندارید.");
 
+        await shopDB.auth.signOut();
+
+        window.location.href =
+            "login.html";
+
+        return false;
+    }
+
+    document.getElementById("admin-name")
+        .textContent =
+        getProfileName(profile);
+
+    const avatar =
+        document.getElementById("admin-avatar");
 
     if (profile.avatar_url) {
 
-        document.getElementById('admin-avatar').src =
+        avatar.src =
             profile.avatar_url;
 
-    }
+    } else {
 
+        avatar.src =
+            "data:image/svg+xml;charset=UTF-8," +
+            encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="80"
+                     height="80"
+                     viewBox="0 0 80 80">
+                    <rect width="80" height="80" fill="#f3f4f6"/>
+                    <circle cx="40" cy="30" r="14" fill="#9ca3af"/>
+                    <path d="M16 70c3-17 15-25 24-25s21 8 24 25"
+                          fill="#9ca3af"/>
+                </svg>
+            `);
+    }
 
     return true;
 }
 
 
-async function handleLogout() {
+async function logout() {
 
     await shopDB.auth.signOut();
 
-    window.location.href = 'login.html';
+    window.location.href =
+        "login.html";
 }
 
 
-/* =========================
-   SECTION NAVIGATION
-========================= */
+/* ========================================
+   TOP SECTION
+======================================== */
 
-function switchSection(section) {
+function switchTopSection(section) {
 
     const ordersSidebar =
-        document.getElementById('sidebar-orders');
+        document.getElementById(
+            "orders-sidebar"
+        );
 
     const productsSidebar =
-        document.getElementById('sidebar-products');
+        document.getElementById(
+            "products-sidebar"
+        );
 
-    const ordersNav =
-        document.getElementById('top-nav-orders');
+    const ordersBtn =
+        document.getElementById(
+            "top-orders-btn"
+        );
 
-    const productsNav =
-        document.getElementById('top-nav-products');
+    const productsBtn =
+        document.getElementById(
+            "top-products-btn"
+        );
 
+    if (section === "orders") {
 
-    if (section === 'orders') {
+        ordersSidebar.classList.remove(
+            "hidden"
+        );
 
-        ordersSidebar.classList.remove('hidden');
-        productsSidebar.classList.add('hidden');
+        productsSidebar.classList.add(
+            "hidden"
+        );
 
-        ordersNav.classList.add('active');
-        productsNav.classList.remove('active');
+        ordersBtn.classList.add(
+            "active"
+        );
 
-        showTab('orders-list');
+        productsBtn.classList.remove(
+            "active"
+        );
+
+        showTab(
+            "orders-list",
+            document.querySelector(
+                '[data-tab="orders-list"]'
+            )
+        );
 
     } else {
 
-        ordersSidebar.classList.add('hidden');
-        productsSidebar.classList.remove('hidden');
+        ordersSidebar.classList.add(
+            "hidden"
+        );
 
-        ordersNav.classList.remove('active');
-        productsNav.classList.add('active');
+        productsSidebar.classList.remove(
+            "hidden"
+        );
 
-        showTab('products-active');
+        ordersBtn.classList.remove(
+            "active"
+        );
 
+        productsBtn.classList.add(
+            "active"
+        );
+
+        showTab(
+            "products-active",
+            document.querySelector(
+                '[data-tab="products-active"]'
+            )
+        );
     }
 }
 
 
-/* =========================
+/* ========================================
    TABS
-========================= */
+======================================== */
 
-function showTab(tabId, element = null) {
-
-    document
-        .querySelectorAll('.tab-content')
-        .forEach(tab => tab.classList.add('hidden'));
-
-
-    const selectedTab =
-        document.getElementById(`tab-${tabId}`);
-
-    if (selectedTab) {
-        selectedTab.classList.remove('hidden');
-    }
-
+function showTab(tabName, button) {
 
     document
-        .querySelectorAll('.sidebar-btn')
-        .forEach(button => button.classList.remove('active'));
+        .querySelectorAll(".tab-content")
+        .forEach(tab => {
 
+            tab.classList.add("hidden");
+        });
 
-    if (element) {
-        element.classList.add('active');
+    const target =
+        document.getElementById(
+            `tab-${tabName}`
+        );
+
+    if (target) {
+        target.classList.remove(
+            "hidden"
+        );
     }
 
+    document
+        .querySelectorAll(".sidebar-btn")
+        .forEach(btn => {
 
-    if (tabId === 'orders-list') {
-        loadOrders();
+            btn.classList.remove(
+                "active"
+            );
+        });
+
+    if (button) {
+
+        button.classList.add(
+            "active"
+        );
     }
 
+    if (tabName === "orders-list") {
+        loadCurrentOrders();
+    }
 
-    if (tabId === 'orders-completed') {
+    if (tabName === "orders-completed") {
         loadCompletedOrders();
     }
 
-
-    if (tabId === 'orders-create') {
-        loadProfilesForBuyerSelect();
+    if (tabName === "orders-create") {
+        loadProfiles();
     }
 
-
-    if (tabId === 'orders-cart') {
+    if (tabName === "orders-cart") {
         loadCarts();
     }
 
+    if (tabName === "products-active") {
+        loadProducts();
+    }
 }
 
 
-/* =========================
+/* ========================================
    PROFILES
-========================= */
+======================================== */
 
 async function loadProfiles() {
 
+    const select =
+        document.getElementById(
+            "order-buyer"
+        );
+
+    if (!select) {
+        return;
+    }
+
+    select.innerHTML = `
+        <option value="">
+            در حال دریافت کاربران...
+        </option>
+    `;
+
     const {
         data,
         error
     } = await shopDB
-        .from('profiles')
-        .select(
-            'id, username, avatar_url, gender, first_name, last_name, phone, address'
-        )
-        .order('username', {
+        .from("profiles")
+        .select(`
+            id,
+            username,
+            first_name,
+            last_name,
+            avatar_url
+        `)
+        .neq("username", "admin")
+        .order("username", {
             ascending: true
         });
 
-
     if (error) {
 
         console.error(error);
 
-        return [];
+        select.innerHTML = `
+            <option value="">
+                خطا در دریافت کاربران
+            </option>
+        `;
+
+        return;
     }
 
-
-    allProfiles = data || [];
-
-    return allProfiles;
-}
-
-
-async function loadProfilesForBuyerSelect() {
-
-    const select =
-        document.getElementById('create-buyer');
-
+    allProfiles =
+        data || [];
 
     select.innerHTML = `
         <option value="">
-            در حال بارگذاری کاربران...
+            انتخاب کاربر...
         </option>
     `;
 
+    allProfiles.forEach(profile => {
 
-    const profiles = await loadProfiles();
+        const option =
+            document.createElement("option");
 
+        option.value =
+            profile.id;
 
-    select.innerHTML = `
-        <option value="">
-            انتخاب کاربر
-        </option>
-    `;
+        const name =
+            getProfileName(profile);
 
+        const username =
+            profile.username
+                ? ` (@${profile.username})`
+                : "";
 
-    profiles
-        .filter(profile => profile.username !== 'admin')
-        .forEach(profile => {
+        option.textContent =
+            name + username;
 
-            const option =
-                document.createElement('option');
-
-            option.value = profile.id;
-
-
-            const fullName = [
-                profile.first_name,
-                profile.last_name
-            ]
-                .filter(Boolean)
-                .join(' ');
-
-
-            option.textContent =
-                fullName
-                    ? `${fullName} — ${profile.username}`
-                    : profile.username || profile.id;
-
-
-            select.appendChild(option);
-
-        });
+        select.appendChild(
+            option
+        );
+    });
 }
 
 
-/* =========================
+/* ========================================
    ORDERS
-========================= */
+======================================== */
 
-async function getProfilesMap(orders) {
-
-    const userIds = [
-        ...new Set(
-            (orders || [])
-                .map(order => order.user_id)
-                .filter(Boolean)
-        )
-    ];
-
-
-    if (!userIds.length) {
-        return {};
-    }
-
+async function fetchOrders(status) {
 
     const {
         data,
         error
     } = await shopDB
-        .from('profiles')
-        .select(
-            'id, username, avatar_url, first_name, last_name'
-        )
-        .in('id', userIds);
-
-
-    if (error) {
-
-        console.error(error);
-
-        return {};
-    }
-
-
-    return Object.fromEntries(
-        (data || []).map(profile => [
-            profile.id,
-            profile
-        ])
-    );
-}
-
-
-async function loadOrders() {
-
-    const tbody =
-        document.getElementById('orders-table-body');
-
-
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="9" class="loading-cell">
-                در حال بارگذاری...
-            </td>
-        </tr>
-    `;
-
-
-    const {
-        data,
-        error
-    } = await shopDB
-        .from('orders')
-        .select(`
-            id,
-            product_name,
-            price,
-            image_url,
-            images,
-            status,
-            created_at,
-            user_id,
-            quantity,
-            code,
-            product_type
-        `)
-        .neq('status', COMPLETED_STATUS)
-        .order('created_at', {
+        .from("orders")
+        .select("*")
+        .eq("status", status)
+        .order("created_at", {
             ascending: false
         });
 
+    if (error) {
+        throw error;
+    }
+
+    return data || [];
+}
+
+
+async function attachProfilesToOrders(orders) {
+
+    const userIds =
+        [
+            ...new Set(
+                orders
+                    .map(order => order.user_id)
+                    .filter(Boolean)
+            )
+        ];
+
+    if (userIds.length === 0) {
+        return orders.map(order => ({
+            ...order,
+            profile: null
+        }));
+    }
+
+    const {
+        data: profiles,
+        error
+    } = await shopDB
+        .from("profiles")
+        .select(`
+            id,
+            username,
+            first_name,
+            last_name,
+            avatar_url
+        `)
+        .in("id", userIds);
 
     if (error) {
+        console.error(error);
+
+        return orders.map(order => ({
+            ...order,
+            profile: null
+        }));
+    }
+
+    const profileMap =
+        new Map(
+            (profiles || [])
+                .map(profile => [
+                    profile.id,
+                    profile
+                ])
+        );
+
+    return orders.map(order => ({
+        ...order,
+        profile:
+            profileMap.get(
+                order.user_id
+            ) || null
+    }));
+}
+
+
+function renderOrders(orders) {
+
+    if (!orders.length) {
+
+        return `
+            <div class="empty">
+                سفارشی در این بخش وجود ندارد.
+            </div>
+        `;
+    }
+
+    return `
+        <div class="table-wrapper">
+
+            <table class="orders-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            کد سفارش
+                        </th>
+
+                        <th>
+                            خریدار
+                        </th>
+
+                        <th>
+                            محصول
+                        </th>
+
+                        <th>
+                            تصویر
+                        </th>
+
+                        <th>
+                            قیمت
+                        </th>
+
+                        <th>
+                            تعداد
+                        </th>
+
+                        <th>
+                            وضعیت
+                        </th>
+
+                        <th>
+                            تاریخ
+                        </th>
+
+                        <th>
+                            عملیات
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${orders.map(order => {
+
+                        const profile =
+                            order.profile;
+
+                        const image =
+                            getFirstImage(
+                                order.images,
+                                order.image_url
+                            );
+
+                        const buyerName =
+                            getProfileName(
+                                profile
+                            );
+
+                        const avatar =
+                            getProfileAvatar(
+                                profile
+                            );
+
+                        return `
+                            <tr>
+
+                                <td class="order-id">
+                                    ${escapeHTML(
+                                        order.code ||
+                                        order.id
+                                    )}
+                                </td>
+
+                                <td>
+
+                                    <div class="buyer-cell">
+
+                                        ${
+                                            avatar
+                                            ?
+                                            `
+                                                <img
+                                                    class="buyer-avatar"
+                                                    src="${escapeHTML(avatar)}"
+                                                    alt=""
+                                                >
+                                            `
+                                            :
+                                            `
+                                                <div class="buyer-avatar-fallback">
+                                                    👤
+                                                </div>
+                                            `
+                                        }
+
+                                        <span>
+                                            ${escapeHTML(
+                                                buyerName
+                                            )}
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                                <td class="product-name">
+                                    ${escapeHTML(
+                                        order.product_name ||
+                                        order.code ||
+                                        "-"
+                                    )}
+                                </td>
+
+                                <td>
+
+                                    ${
+                                        image
+                                        ?
+                                        `
+                                            <img
+                                                class="order-image"
+                                                src="${escapeHTML(image)}"
+                                                alt=""
+                                                onclick="openImageModal('${escapeHTML(image)}')"
+                                            >
+                                        `
+                                        :
+                                        `
+                                            <span class="no-image">
+                                                بدون تصویر
+                                            </span>
+                                        `
+                                    }
+
+                                </td>
+
+                                <td class="price-cell">
+                                    ${formatPrice(
+                                        order.price
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${Number(
+                                        order.quantity || 1
+                                    ).toLocaleString("fa-IR")}
+                                </td>
+
+                                <td>
+
+                                    ${
+                                        order.status ===
+                                        COMPLETED_STATUS
+                                        ?
+                                        `
+                                            <span class="btn btn-green">
+                                                تکمیل‌شده
+                                            </span>
+                                        `
+                                        :
+                                        `
+                                            <span class="btn btn-blue">
+                                                در حال انجام
+                                            </span>
+                                        `
+                                    }
+
+                                </td>
+
+                                <td class="date-cell">
+                                    ${formatDate(
+                                        order.created_at
+                                    )}
+                                </td>
+
+                                <td>
+
+                                    <div class="actions">
+
+                                        <button
+                                            class="action-btn btn-blue"
+                                            onclick="openEditModal('${escapeHTML(order.id)}')"
+                                        >
+                                            ویرایش
+                                        </button>
+
+                                        ${
+                                            order.status ===
+                                            COMPLETED_STATUS
+                                            ?
+                                            `
+                                                <button
+                                                    class="action-btn btn-blue"
+                                                    onclick="restoreOrder('${escapeHTML(order.id)}')"
+                                                >
+                                                    بازگردانی
+                                                </button>
+                                            `
+                                            :
+                                            `
+                                                <button
+                                                    class="action-btn btn-green"
+                                                    onclick="completeOrder('${escapeHTML(order.id)}')"
+                                                >
+                                                    تکمیل
+                                                </button>
+                                            `
+                                        }
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        `;
+
+                    }).join("")}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    `;
+}
+
+
+async function loadCurrentOrders() {
+
+    const container =
+        document.getElementById(
+            "orders-list-content"
+        );
+
+    container.innerHTML = `
+        <div class="loading">
+            در حال دریافت سفارش‌ها...
+        </div>
+    `;
+
+    try {
+
+        currentOrders =
+            await fetchOrders(
+                "in progress"
+            );
+
+        currentOrders =
+            await attachProfilesToOrders(
+                currentOrders
+            );
+
+        container.innerHTML =
+            renderOrders(
+                currentOrders
+            );
+
+    } catch (error) {
 
         console.error(error);
 
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9">
-                    خطا در دریافت سفارشات
-                </td>
-            </tr>
+        container.innerHTML = `
+            <div class="error-box">
+                خطا در دریافت سفارش‌ها:
+                ${escapeHTML(error.message)}
+            </div>
         `;
-
-        return;
     }
-
-
-    currentOrders = data || [];
-
-
-    if (!currentOrders.length) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9">
-                    سفارشی وجود ندارد.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-
-    const profilesMap =
-        await getProfilesMap(currentOrders);
-
-
-    tbody.innerHTML =
-        currentOrders
-            .map(order =>
-                createOrderRow(
-                    order,
-                    profilesMap[order.user_id],
-                    false
-                )
-            )
-            .join('');
 }
 
 
 async function loadCompletedOrders() {
 
-    const tbody =
+    const container =
         document.getElementById(
-            'completed-orders-table-body'
+            "completed-orders-content"
         );
 
-
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="9" class="loading-cell">
-                در حال بارگذاری...
-            </td>
-        </tr>
+    container.innerHTML = `
+        <div class="loading">
+            در حال دریافت سفارش‌ها...
+        </div>
     `;
 
+    try {
 
-    const {
-        data,
-        error
-    } = await shopDB
-        .from('orders')
-        .select(`
-            id,
-            product_name,
-            price,
-            image_url,
-            images,
-            status,
-            created_at,
-            user_id,
-            quantity,
-            code,
-            product_type
-        `)
-        .eq('status', COMPLETED_STATUS)
-        .order('created_at', {
-            ascending: false
-        });
+        completedOrders =
+            await fetchOrders(
+                COMPLETED_STATUS
+            );
 
+        completedOrders =
+            await attachProfilesToOrders(
+                completedOrders
+            );
 
-    if (error) {
+        container.innerHTML =
+            renderOrders(
+                completedOrders
+            );
+
+    } catch (error) {
 
         console.error(error);
 
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9">
-                    خطا در دریافت سفارشات
-                </td>
-            </tr>
+        container.innerHTML = `
+            <div class="error-box">
+                خطا در دریافت سفارش‌ها:
+                ${escapeHTML(error.message)}
+            </div>
         `;
-
-        return;
     }
-
-
-    completedOrders = data || [];
-
-
-    if (!completedOrders.length) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9">
-                    سفارش تکمیل‌شده‌ای وجود ندارد.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-
-    const profilesMap =
-        await getProfilesMap(completedOrders);
-
-
-    tbody.innerHTML =
-        completedOrders
-            .map(order =>
-                createOrderRow(
-                    order,
-                    profilesMap[order.user_id],
-                    true
-                )
-            )
-            .join('');
 }
 
-
-function createOrderRow(
-    order,
-    profile,
-    isCompleted
-) {
-
-    const username =
-        profile?.username ||
-        'کاربر ناشناس';
-
-
-    const image =
-        order.image_url ||
-        '';
-
-
-    const statusText =
-        order.status === 'completed'
-            ? 'تکمیل شده'
-            : order.status === 'in progress'
-                ? 'در حال پردازش'
-                : order.status;
-
-
-    return `
-        <tr>
-
-            <td>
-
-                ${
-                    image
-                        ? `
-                            <img
-                                src="${escapeHtml(image)}"
-                                class="order-thumb"
-                                alt="محصول"
-                                onclick="openImageModal('${order.id}', ${isCompleted})">
-                        `
-                        : '-'
-                }
-
-            </td>
-
-
-            <td>
-                ${escapeHtml(order.product_name || '-')}
-            </td>
-
-
-            <td dir="ltr">
-                ${escapeHtml(order.code || '-')}
-            </td>
-
-
-            <td>
-
-                <div class="buyer-cell">
-
-                    ${
-                        profile?.avatar_url
-                            ? `
-                                <img
-                                    src="${escapeHtml(profile.avatar_url)}"
-                                    class="buyer-avatar"
-                                    alt="">
-                            `
-                            : `
-                                <img
-                                    src="${getDefaultAvatar()}"
-                                    class="buyer-avatar"
-                                    alt="">
-                            `
-                    }
-
-                    <span>
-                        ${escapeHtml(username)}
-                    </span>
-
-                </div>
-
-            </td>
-
-
-            <td>
-                ${Number(order.quantity || 1)}
-            </td>
-
-
-            <td>
-                ${formatPrice(order.price)}
-            </td>
-
-
-            <td>
-
-                <span class="status-badge ${escapeHtml(order.status)}">
-                    ${escapeHtml(statusText)}
-                </span>
-
-            </td>
-
-
-            <td>
-                ${formatDate(order.created_at)}
-            </td>
-
-
-            <td>
-
-                <div class="table-actions">
-
-                    <button
-                        onclick="openEditModal('${order.id}', ${isCompleted})"
-                        class="action-btn edit-btn">
-                        ✏️
-                    </button>
-
-
-                    ${
-                        isCompleted
-                            ? `
-                                <button
-                                    onclick="restoreOrder('${order.id}')"
-                                    class="action-btn restore-btn">
-                                    ↩️
-                                </button>
-                            `
-                            : `
-                                <button
-                                    onclick="completeOrder('${order.id}')"
-                                    class="action-btn complete-btn">
-                                    ✅
-                                </button>
-                            `
-                    }
-
-
-                    <button
-                        onclick="deleteOrder('${order.id}')"
-                        class="action-btn delete-btn">
-                        🗑️
-                    </button>
-
-                </div>
-
-            </td>
-
-        </tr>
-    `;
-}
-
-
-/* =========================
-   ORDER ACTIONS
-========================= */
 
 async function completeOrder(orderId) {
 
     const confirmed =
-        confirm('این سفارش به سفارشات تکمیل‌شده منتقل شود؟');
-
+        confirm(
+            "آیا این سفارش تکمیل شده است؟"
+        );
 
     if (!confirmed) {
         return;
     }
 
-
     const {
         error
     } = await shopDB
-        .from('orders')
+        .from("orders")
         .update({
             status: COMPLETED_STATUS
         })
-        .eq('id', orderId);
-
+        .eq("id", orderId);
 
     if (error) {
 
-        alert('خطا در تکمیل سفارش.');
-
-        console.error(error);
+        alert(
+            "خطا در تکمیل سفارش: " +
+            error.message
+        );
 
         return;
     }
 
-
-    await loadOrders();
+    await loadCurrentOrders();
 }
 
 
 async function restoreOrder(orderId) {
 
     const confirmed =
-        confirm('این سفارش به سفارشات در جریان برگردد؟');
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    const {
-        error
-    } = await shopDB
-        .from('orders')
-        .update({
-            status: 'in progress'
-        })
-        .eq('id', orderId);
-
-
-    if (error) {
-
-        alert('خطا در بازگردانی سفارش.');
-
-        console.error(error);
-
-        return;
-    }
-
-
-    await loadCompletedOrders();
-}
-
-
-async function deleteOrder(orderId) {
-
-    const confirmed =
-        confirm('آیا از حذف این سفارش مطمئن هستید؟');
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    const {
-        error
-    } = await shopDB
-        .from('orders')
-        .delete()
-        .eq('id', orderId);
-
-
-    if (error) {
-
-        alert('خطا در حذف سفارش.');
-
-        console.error(error);
-
-        return;
-    }
-
-
-    await loadOrders();
-    await loadCompletedOrders();
-}
-
-
-/* =========================
-   IMAGE MODAL
-========================= */
-
-function openImageModal(
-    orderId,
-    isCompleted = false
-) {
-
-    const orders =
-        isCompleted
-            ? completedOrders
-            : currentOrders;
-
-
-    const order =
-        orders.find(item =>
-            String(item.id) === String(orderId)
+        confirm(
+            "سفارش به وضعیت «در حال انجام» بازگردانده شود؟"
         );
 
-
-    if (!order?.image_url) {
+    if (!confirmed) {
         return;
     }
 
+    const {
+        error
+    } = await shopDB
+        .from("orders")
+        .update({
+            status: "in progress"
+        })
+        .eq("id", orderId);
+
+    if (error) {
+
+        alert(
+            "خطا در بازگردانی سفارش: " +
+            error.message
+        );
+
+        return;
+    }
+
+    await loadCompletedOrders();
+}
+
+
+/* ========================================
+   EDIT ORDER
+======================================== */
+
+function openEditModal(orderId) {
+
+    const order =
+        [
+            ...currentOrders,
+            ...completedOrders
+        ]
+        .find(
+            item =>
+                String(item.id) ===
+                String(orderId)
+        );
+
+    if (!order) {
+        return;
+    }
+
+    currentEditOrder =
+        order;
 
     document.getElementById(
-        'large-order-image'
-    ).src = order.image_url;
-
+        "edit-order-id"
+    ).value =
+        order.id;
 
     document.getElementById(
-        'image-modal'
-    ).classList.add('show');
+        "edit-order-status"
+    ).value =
+        order.status;
+
+    document.getElementById(
+        "edit-order-quantity"
+    ).value =
+        order.quantity || 1;
+
+    document.getElementById(
+        "edit-modal-error"
+    ).classList.add(
+        "hidden"
+    );
+
+    document.getElementById(
+        "edit-order-modal"
+    ).classList.add(
+        "show"
+    );
+}
+
+
+function closeEditModal() {
+
+    document.getElementById(
+        "edit-order-modal"
+    ).classList.remove(
+        "show"
+    );
+
+    currentEditOrder =
+        null;
+}
+
+
+document.getElementById(
+    "edit-order-form"
+).addEventListener(
+    "submit",
+    async event => {
+
+        event.preventDefault();
+
+        const orderId =
+            document.getElementById(
+                "edit-order-id"
+            ).value;
+
+        const status =
+            document.getElementById(
+                "edit-order-status"
+            ).value;
+
+        const quantity =
+            Number(
+                document.getElementById(
+                    "edit-order-quantity"
+                ).value
+            );
+
+        const errorBox =
+            document.getElementById(
+                "edit-modal-error"
+            );
+
+        errorBox.classList.add(
+            "hidden"
+        );
+
+        if (!orderId || quantity < 1) {
+
+            errorBox.textContent =
+                "اطلاعات واردشده معتبر نیست.";
+
+            errorBox.classList.remove(
+                "hidden"
+            );
+
+            return;
+        }
+
+        const {
+            error
+        } = await shopDB
+            .from("orders")
+            .update({
+                status,
+                quantity
+            })
+            .eq("id", orderId);
+
+        if (error) {
+
+            errorBox.textContent =
+                error.message;
+
+            errorBox.classList.remove(
+                "hidden"
+            );
+
+            return;
+        }
+
+        closeEditModal();
+
+        if (status === COMPLETED_STATUS) {
+            await loadCompletedOrders();
+        } else {
+            await loadCurrentOrders();
+        }
+    }
+);
+
+
+/* ========================================
+   IMAGE MODAL
+======================================== */
+
+function openImageModal(url) {
+
+    const modal =
+        document.getElementById(
+            "image-modal"
+        );
+
+    const image =
+        document.getElementById(
+            "large-order-image"
+        );
+
+    image.src =
+        url;
+
+    modal.classList.add(
+        "show"
+    );
 }
 
 
@@ -2074,703 +2611,87 @@ function closeImageModal(event) {
     if (
         event &&
         event.target &&
-        event.target.id !== 'image-modal'
+        event.target.id !==
+        "image-modal"
     ) {
         return;
     }
 
-
-    document
-        .getElementById('image-modal')
-        .classList.remove('show');
-}
-
-
-/* =========================
-   EDIT ORDER
-========================= */
-
-function openEditModal(
-    orderId,
-    isCompleted = false
-) {
-
-    const orders =
-        isCompleted
-            ? completedOrders
-            : currentOrders;
-
-
-    const order =
-        orders.find(item =>
-            String(item.id) === String(orderId)
-        );
-
-
-    if (!order) {
-        return;
-    }
-
-
-    document.getElementById(
-        'edit-order-id'
-    ).value = order.id;
-
-
-    document.getElementById(
-        'edit-product-name'
-    ).value = order.product_name || '';
-
-
-    document.getElementById(
-        'edit-code'
-    ).value = order.code || '';
-
-
-    document.getElementById(
-        'edit-price'
-    ).value = order.price || 0;
-
-
-    document.getElementById(
-        'edit-quantity'
-    ).value = order.quantity || 1;
-
-
-    document.getElementById(
-        'edit-status'
-    ).value = order.status || 'in progress';
-
-
-    document
-        .getElementById('edit-order-modal')
-        .classList.add('show');
-}
-
-
-function closeEditModal() {
-
-    document
-        .getElementById('edit-order-modal')
-        .classList.remove('show');
-}
-
-
-document
-    .getElementById('edit-order-form')
-    .addEventListener('submit', async event => {
-
-        event.preventDefault();
-
-
-        const id =
-            document.getElementById(
-                'edit-order-id'
-            ).value;
-
-
-        const updates = {
-
-            product_name:
-                document.getElementById(
-                    'edit-product-name'
-                ).value.trim(),
-
-            code:
-                document.getElementById(
-                    'edit-code'
-                ).value.trim(),
-
-            price:
-                Number(
-                    document.getElementById(
-                        'edit-price'
-                    ).value
-                ),
-
-            quantity:
-                Number(
-                    document.getElementById(
-                        'edit-quantity'
-                    ).value
-                ),
-
-            status:
-                document.getElementById(
-                    'edit-status'
-                ).value
-
-        };
-
-
-        const {
-            error
-        } = await shopDB
-            .from('orders')
-            .update(updates)
-            .eq('id', id);
-
-
-        if (error) {
-
-            alert('خطا در ذخیره تغییرات.');
-
-            console.error(error);
-
-            return;
-        }
-
-
-        closeEditModal();
-
-        await loadOrders();
-        await loadCompletedOrders();
-
-    });
-
-
-/* =========================
-   CARTS
-========================= */
-
-async function loadCarts() {
-
-    const container =
+    const modal =
         document.getElementById(
-            'cart-container'
+            "image-modal"
         );
 
-
-    container.innerHTML = `
-        <div class="loading-cell">
-            در حال بارگذاری...
-        </div>
-    `;
-
-
-    const {
-        data: carts,
-        error: cartsError
-    } = await shopDB
-        .from('carts')
-        .select(`
-            id,
-            user_id,
-            product_id,
-            quantity,
-            created_at
-        `)
-        .order('created_at', {
-            ascending: false
-        });
-
-
-    if (cartsError) {
-
-        console.error(cartsError);
-
-        container.innerHTML = `
-            <div class="empty-state">
-                خطا در دریافت سبد خرید.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    if (!carts?.length) {
-
-        container.innerHTML = `
-            <div class="empty-state">
-                هیچ سبد خریدی وجود ندارد.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    const productIds = [
-        ...new Set(
-            carts.map(cart =>
-                cart.product_id
-            )
-        )
-    ];
-
-
-    const userIds = [
-        ...new Set(
-            carts.map(cart =>
-                cart.user_id
-            )
-        )
-    ];
-
-
-    const [
-        productsResult,
-        profilesResult
-    ] = await Promise.all([
-
-        shopDB
-            .from('products')
-            .select(`
-                id,
-                name,
-                price,
-                image_url,
-                description,
-                images,
-                product_type
-            `)
-            .in('id', productIds),
-
-        shopDB
-            .from('profiles')
-            .select(`
-                id,
-                username,
-                avatar_url,
-                first_name,
-                last_name
-            `)
-            .in('id', userIds)
-
-    ]);
-
-
-    if (productsResult.error) {
-
-        console.error(productsResult.error);
-
-        container.innerHTML = `
-            <div class="empty-state">
-                خطا در دریافت محصولات سبد خرید.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    if (profilesResult.error) {
-
-        console.error(profilesResult.error);
-
-        container.innerHTML = `
-            <div class="empty-state">
-                خطا در دریافت کاربران.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    const productsMap =
-        Object.fromEntries(
-            (productsResult.data || [])
-                .map(product => [
-                    product.id,
-                    product
-                ])
+    const image =
+        document.getElementById(
+            "large-order-image"
         );
 
+    modal.classList.remove(
+        "show"
+    );
 
-    const profilesMap =
-        Object.fromEntries(
-            (profilesResult.data || [])
-                .map(profile => [
-                    profile.id,
-                    profile
-                ])
-        );
-
-
-    const grouped = {};
-
-
-    carts.forEach(cart => {
-
-        if (!grouped[cart.user_id]) {
-
-            grouped[cart.user_id] = [];
-
-        }
-
-        grouped[cart.user_id].push({
-
-            ...cart,
-
-            product:
-                productsMap[cart.product_id] || null
-
-        });
-
-    });
-
-
-    customerCarts =
-        Object.entries(grouped)
-            .map(([userId, items]) => ({
-
-                userId,
-
-                profile:
-                    profilesMap[userId] || null,
-
-                items
-
-            }))
-            .filter(cart =>
-                cart.items.some(item =>
-                    item.product
-                )
-            );
-
-
-    if (!customerCarts.length) {
-
-        container.innerHTML = `
-            <div class="empty-state">
-                سبد خرید فعالی وجود ندارد.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML =
-        customerCarts
-            .map(createCartCard)
-            .join('');
+    image.src =
+        "";
 }
 
 
-function createCartCard(cart) {
-
-    const profile =
-        cart.profile;
-
-
-    const username =
-        profile?.username ||
-        'کاربر ناشناس';
-
-
-    const avatar =
-        profile?.avatar_url ||
-        getDefaultAvatar();
-
-
-    const total =
-        cart.items.reduce(
-            (sum, item) => {
-
-                if (!item.product) {
-                    return sum;
-                }
-
-                return sum +
-                    (
-                        Number(item.product.price || 0) *
-                        Number(item.quantity || 0)
-                    );
-
-            },
-            0
-        );
-
-
-    const latestUpdate =
-        cart.items
-            .map(item =>
-                new Date(item.created_at)
-            )
-            .sort((a, b) =>
-                b - a
-            )[0];
-
-
-    return `
-        <div class="cart-card">
-
-            <div class="cart-card-header">
-
-                <div class="cart-user">
-
-                    <img
-                        src="${escapeHtml(avatar)}"
-                        class="cart-user-avatar"
-                        alt="">
-
-                    <div>
-
-                        <strong>
-                            ${escapeHtml(username)}
-                        </strong>
-
-                        ${
-                            profile?.first_name ||
-                            profile?.last_name
-                                ? `
-                                    <span>
-                                        ${escapeHtml(
-                                            [
-                                                profile.first_name,
-                                                profile.last_name
-                                            ]
-                                            .filter(Boolean)
-                                            .join(' ')
-                                        )}
-                                    </span>
-                                `
-                                : ''
-                        }
-
-                    </div>
-
-                </div>
-
-
-                <div class="cart-total">
-
-                    <span>
-                        مجموع سبد
-                    </span>
-
-                    <strong>
-                        ${formatPrice(total)}
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="cart-products">
-
-                ${cart.items
-                    .filter(item => item.product)
-                    .map(item => {
-
-                        const product =
-                            item.product;
-
-
-                        const lineTotal =
-                            Number(product.price || 0) *
-                            Number(item.quantity || 0);
-
-
-                        return `
-                            <div class="cart-product">
-
-                                <div
-                                    class="cart-product-image-wrapper"
-                                    onclick="openCartProductImage('${product.id}')">
-
-                                    ${
-                                        product.image_url
-                                            ? `
-                                                <img
-                                                    src="${escapeHtml(product.image_url)}"
-                                                    class="cart-product-image"
-                                                    alt="">
-                                            `
-                                            : `
-                                                <div class="cart-product-no-image">
-                                                    🪵
-                                                </div>
-                                            `
-                                    }
-
-                                </div>
-
-
-                                <div class="cart-product-info">
-
-                                    <strong>
-                                        ${escapeHtml(product.name || '-')}
-                                    </strong>
-
-                                    ${
-                                        product.product_type
-                                            ? `
-                                                <span>
-                                                    ${escapeHtml(
-                                                        PRODUCT_TYPE_NAMES[
-                                                            product.product_type
-                                                        ] ||
-                                                        product.product_type
-                                                    )}
-                                                </span>
-                                            `
-                                            : ''
-                                    }
-
-                                    <span>
-                                        قیمت واحد:
-                                        ${formatPrice(product.price)}
-                                    </span>
-
-                                </div>
-
-
-                                <div class="cart-product-quantity">
-
-                                    <span>
-                                        تعداد
-                                    </span>
-
-                                    <strong>
-                                        ${Number(item.quantity || 0)}
-                                    </strong>
-
-                                </div>
-
-
-                                <div class="cart-product-total">
-
-                                    <span>
-                                        مبلغ
-                                    </span>
-
-                                    <strong>
-                                        ${formatPrice(lineTotal)}
-                                    </strong>
-
-                                </div>
-
-                            </div>
-                        `;
-
-                    })
-                    .join('')}
-
-            </div>
-
-
-            <div class="cart-card-footer">
-
-                <span>
-                    آخرین بروزرسانی:
-                    ${formatDate(latestUpdate)}
-                </span>
-
-                <span>
-                    ${cart.items.length} محصول
-                </span>
-
-            </div>
-
-        </div>
-    `;
-}
-
-
-function openCartProductImage(productId) {
-
-    const cart =
-        customerCarts.find(customer =>
-            customer.items.some(item =>
-                String(item.product?.id) ===
-                String(productId)
-            )
-        );
-
-
-    if (!cart) {
-        return;
-    }
-
-
-    const item =
-        cart.items.find(item =>
-            String(item.product?.id) ===
-            String(productId)
-        );
-
-
-    if (!item?.product?.image_url) {
-        return;
-    }
-
-
-    document.getElementById(
-        'large-order-image'
-    ).src = item.product.image_url;
-
-
-    document.getElementById(
-        'image-modal'
-    ).classList.add('show');
-}
-
-
-/* =========================
+/* ========================================
    PRODUCT CODE
-========================= */
+======================================== */
 
-async function generateProductCode() {
+function isValidProductCode(code) {
 
-    const type =
-        document.getElementById(
-            'create-product-type'
-        ).value;
-
-
-    if (!type) {
-
-        alert('ابتدا نوع محصول را انتخاب کن.');
-
-        return;
-    }
+    return /^TC(?:JK|JS|TB|CL|OT)[0-9A-F]{4}$/
+        .test(
+            String(code)
+                .trim()
+                .toUpperCase()
+        );
+}
 
 
-    const typeCode =
-        PRODUCT_TYPE_CODES[type];
-
+async function getExistingProductCodes(typeCode) {
 
     const prefix =
-        `TC${typeCode}`;
-
+        "TC" +
+        typeCode;
 
     const {
         data,
         error
     } = await shopDB
-        .from('products')
-        .select('name')
-        .ilike('name', `${prefix}%`);
-
-
-    if (error) {
-
-        console.error(error);
-
-        alert('خطا در بررسی کدهای موجود.');
-
-        return;
-    }
-
-
-    const existingCodes =
-        new Set(
-            (data || [])
-                .map(product =>
-                    String(product.name || '')
-                        .trim()
-                        .toUpperCase()
-                )
+        .from("products")
+        .select("name")
+        .ilike(
+            "name",
+            `${prefix}%`
         );
 
+    if (error) {
+        throw error;
+    }
 
-    let availableCode = null;
+    return new Set(
+        (data || [])
+            .map(item =>
+                String(item.name)
+                    .toUpperCase()
+            )
+    );
+}
 
+
+async function generateFirstFreeCode(typeCode) {
+
+    const existingCodes =
+        await getExistingProductCodes(
+            typeCode
+        );
+
+    const prefix =
+        "TC" +
+        typeCode;
 
     for (
         let number = 0;
@@ -2778,577 +2699,1317 @@ async function generateProductCode() {
         number++
     ) {
 
-        const hex =
+        const suffix =
             number
                 .toString(16)
                 .toUpperCase()
-                .padStart(4, '0');
-
+                .padStart(4, "0");
 
         const code =
-            `${prefix}${hex}`;
-
+            prefix +
+            suffix;
 
         if (!existingCodes.has(code)) {
-
-            availableCode = code;
-
-            break;
+            return code;
         }
-
     }
 
-
-    if (!availableCode) {
-
-        alert(
-            'تمام کدهای این نوع محصول از 0000 تا FFFF استفاده شده‌اند.'
-        );
-
-        return;
-    }
-
-
-    document.getElementById(
-        'create-product-code'
-    ).value = availableCode;
+    throw new Error(
+        "تمام کدهای این نوع محصول استفاده شده‌اند."
+    );
 }
 
 
-/* =========================
-   PRODUCT TYPE FIELDS
-========================= */
-
-document
-    .getElementById('create-product-type')
-    .addEventListener('change', event => {
-
-        document
-            .querySelectorAll('.product-type-fields')
-            .forEach(section =>
-                section.classList.add('hidden')
-            );
-
+document.getElementById(
+    "generate-code-btn"
+).addEventListener(
+    "click",
+    async () => {
 
         const type =
-            event.target.value;
-
+            document.getElementById(
+                "product-type"
+            ).value;
 
         if (!type) {
+
+            alert(
+                "ابتدا نوع محصول را انتخاب کنید."
+            );
+
             return;
         }
 
-
-        const target =
+        const button =
             document.getElementById(
-                `fields-${type}`
+                "generate-code-btn"
             );
 
+        button.disabled =
+            true;
 
-        if (target) {
-            target.classList.remove('hidden');
+        button.textContent =
+            "در حال بررسی...";
+
+        try {
+
+            const code =
+                await generateFirstFreeCode(
+                    type
+                );
+
+            document.getElementById(
+                "product-code"
+            ).value =
+                code;
+
+        } catch (error) {
+
+            alert(
+                error.message
+            );
+
+        } finally {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "تولید خودکار";
         }
+    }
+);
 
-    });
+
+/* ========================================
+   TYPE FIELDS
+======================================== */
+
+function updateTypeFields() {
+
+    const type =
+        document.getElementById(
+            "product-type"
+        ).value;
+
+    document
+        .querySelectorAll(
+            ".type-fields"
+        )
+        .forEach(section => {
+
+            section.classList.remove(
+                "show"
+            );
+        });
+
+    if (!type) {
+        return;
+    }
+
+    const target =
+        document.getElementById(
+            `fields-${type.toLowerCase()}`
+        );
+
+    if (target) {
+
+        target.classList.add(
+            "show"
+        );
+    }
+}
 
 
-/* =========================
+document.getElementById(
+    "product-type"
+).addEventListener(
+    "change",
+    updateTypeFields
+);
+
+
+/* ========================================
+   PRODUCT DETAILS
+======================================== */
+
+function buildProductDetails(type) {
+
+    switch (type) {
+
+        case "JS":
+
+            return {
+                wood:
+                    document.getElementById(
+                        "js-wood"
+                    ).value,
+
+                size:
+                    document.getElementById(
+                        "js-size"
+                    ).value,
+
+                design:
+                    document.getElementById(
+                        "js-design"
+                    ).value.trim(),
+
+                font:
+                    document.getElementById(
+                        "js-font"
+                    ).value
+            };
+
+
+        case "TB":
+
+            return {
+                design:
+                    document.getElementById(
+                        "tb-design"
+                    ).value.trim(),
+
+                width:
+                    document.getElementById(
+                        "tb-width"
+                    ).value,
+
+                length:
+                    document.getElementById(
+                        "tb-length"
+                    ).value
+            };
+
+
+        case "CL":
+
+            return {
+                design:
+                    document.getElementById(
+                        "cl-design"
+                    ).value.trim(),
+
+                width:
+                    document.getElementById(
+                        "cl-width"
+                    ).value,
+
+                length:
+                    document.getElementById(
+                        "cl-length"
+                    ).value
+            };
+
+
+        case "JK":
+
+            return {
+                wood:
+                    document.getElementById(
+                        "jk-wood"
+                    ).value,
+
+                width:
+                    document.getElementById(
+                        "jk-width"
+                    ).value,
+
+                length:
+                    document.getElementById(
+                        "jk-length"
+                    ).value,
+
+                hook_count:
+                    document.getElementById(
+                        "jk-hook-count"
+                    ).value,
+
+                design:
+                    document.getElementById(
+                        "jk-design"
+                    ).value.trim()
+            };
+
+
+        case "OT":
+
+            return {
+                product_name:
+                    document.getElementById(
+                        "ot-name"
+                    ).value.trim(),
+
+                design:
+                    document.getElementById(
+                        "ot-design"
+                    ).value.trim()
+            };
+
+
+        default:
+
+            return {};
+    }
+}
+
+
+/* ========================================
    CREATE MANUAL ORDER
-========================= */
+======================================== */
 
-function getImagesString() {
-
-    return document
-        .getElementById('create-images')
-        .value
-        .trim();
-}
-
-
-function getFirstImage(imagesString) {
-
-    if (!imagesString) {
-        return '';
-    }
-
-
-    return imagesString
-        .split('|')
-        .map(url => url.trim())
-        .filter(Boolean)[0] || '';
-}
-
-
-function collectProductDetails(type) {
-
-    const details = {};
-
-
-    if (type === 'keychain') {
-
-        details.wood =
-            document.getElementById(
-                'keychain-wood'
-            ).value;
-
-        details.width =
-            document.getElementById(
-                'keychain-width'
-            ).value;
-
-        details.length =
-            document.getElementById(
-                'keychain-length'
-            ).value;
-
-        details.hook_count =
-            document.getElementById(
-                'keychain-hooks'
-            ).value;
-
-        details.design =
-            document.getElementById(
-                'keychain-design'
-            ).value.trim();
-
-    }
-
-
-    if (type === 'keyfob') {
-
-        details.wood =
-            document.getElementById(
-                'keyfob-wood'
-            ).value;
-
-        details.size =
-            document.getElementById(
-                'keyfob-size'
-            ).value;
-
-        details.design =
-            document.getElementById(
-                'keyfob-design'
-            ).value.trim();
-
-        details.font =
-            document.getElementById(
-                'keyfob-font'
-            ).value;
-
-    }
-
-
-    if (type === 'board') {
-
-        details.design =
-            document.getElementById(
-                'board-design'
-            ).value.trim();
-
-        details.width =
-            document.getElementById(
-                'board-width'
-            ).value;
-
-        details.length =
-            document.getElementById(
-                'board-length'
-            ).value;
-
-    }
-
-
-    if (type === 'clock') {
-
-        details.design =
-            document.getElementById(
-                'clock-design'
-            ).value.trim();
-
-        details.width =
-            document.getElementById(
-                'clock-width'
-            ).value;
-
-        details.length =
-            document.getElementById(
-                'clock-length'
-            ).value;
-
-    }
-
-
-    if (type === 'other') {
-
-        details.other_name =
-            document.getElementById(
-                'other-name'
-            ).value.trim();
-
-        details.design =
-            document.getElementById(
-                'other-design'
-            ).value.trim();
-
-    }
-
-
-    return details;
-}
-
-
-document
-    .getElementById('create-order-form')
-    .addEventListener('submit', async event => {
+document.getElementById(
+    "create-order-form"
+).addEventListener(
+    "submit",
+    async event => {
 
         event.preventDefault();
 
+        const message =
+            document.getElementById(
+                "order-form-message"
+            );
+
+        const submitButton =
+            document.getElementById(
+                "submit-order-btn"
+            );
+
+        message.className =
+            "order-form-message";
+
+        message.textContent =
+            "";
 
         const buyerId =
             document.getElementById(
-                'create-buyer'
+                "order-buyer"
             ).value;
-
 
         const type =
             document.getElementById(
-                'create-product-type'
+                "product-type"
             ).value;
-
 
         let code =
             document.getElementById(
-                'create-product-code'
+                "product-code"
             ).value
-            .trim()
-            .toUpperCase();
-
-
-        const quantity =
-            Number(
-                document.getElementById(
-                    'create-quantity'
-                ).value
-            );
-
+                .trim()
+                .toUpperCase();
 
         const price =
             Number(
                 document.getElementById(
-                    'create-price'
+                    "order-price"
                 ).value
             );
 
+        const quantity =
+            Number(
+                document.getElementById(
+                    "order-quantity"
+                ).value
+            );
 
         const images =
-            getImagesString();
-
-
-        const firstImage =
-            getFirstImage(images);
-
+            document.getElementById(
+                "product-images"
+            ).value
+                .trim();
 
         const description =
             document.getElementById(
-                'create-description'
+                "product-description"
             ).value
-            .trim();
-
+                .trim();
 
         if (!buyerId) {
 
-            alert('خریدار را انتخاب کن.');
+            showOrderMessage(
+                "لطفاً خریدار را انتخاب کنید.",
+                "error"
+            );
 
             return;
         }
-
 
         if (!type) {
 
-            alert('نوع محصول را انتخاب کن.');
-
-            return;
-        }
-
-
-        if (!quantity || quantity < 1) {
-
-            alert('تعداد باید حداقل ۱ باشد.');
-
-            return;
-        }
-
-
-        if (price < 0) {
-
-            alert('قیمت نمی‌تواند منفی باشد.');
-
-            return;
-        }
-
-
-        if (!code) {
-
-            alert('کد محصول را وارد کن یا کد خودکار بساز.');
-
-            return;
-        }
-
-
-        const typeCode =
-            PRODUCT_TYPE_CODES[type];
-
-
-        const codePattern =
-            new RegExp(
-                `^TC${typeCode}[0-9A-F]{4}$`,
-                'i'
-            );
-
-
-        if (!codePattern.test(code)) {
-
-            alert(
-                `فرمت کد برای ${PRODUCT_TYPE_NAMES[type]} صحیح نیست.\nمثال: TC${typeCode}0000`
+            showOrderMessage(
+                "نوع محصول را انتخاب کنید.",
+                "error"
             );
 
             return;
         }
 
+        if (!isValidProductCode(code)) {
 
-        const {
-            data: existingProduct,
-            error: existingProductError
-        } = await shopDB
-            .from('products')
-            .select('id, name')
-            .eq('name', code)
-            .maybeSingle();
-
-
-        if (existingProductError) {
-
-            console.error(existingProductError);
-
-            alert('خطا در بررسی کد محصول.');
-
-            return;
-        }
-
-
-        if (existingProduct) {
-
-            alert(
-                'این کد محصول قبلاً استفاده شده است. یک کد دیگر وارد کن.'
+            showOrderMessage(
+                "کد محصول باید مانند TCJS0000 باشد.",
+                "error"
             );
 
             return;
         }
 
+        if (price < 0 || !Number.isFinite(price)) {
 
-        const details =
-            collectProductDetails(type);
-
-
-        const buyer =
-            allProfiles.find(profile =>
-                String(profile.id) ===
-                String(buyerId)
-            );
-
-
-        if (!buyer) {
-
-            alert(
-                'کاربر انتخاب‌شده پیدا نشد. دوباره کاربران را بارگذاری کن.'
+            showOrderMessage(
+                "قیمت معتبر نیست.",
+                "error"
             );
 
             return;
         }
 
+        if (quantity < 1 || !Number.isInteger(quantity)) {
 
-        const productPayload = {
+            showOrderMessage(
+                "تعداد باید حداقل ۱ باشد.",
+                "error"
+            );
 
-            name: code,
+            return;
+        }
 
-            price,
+        submitButton.disabled =
+            true;
 
-            image_url: firstImage || null,
-
-            description: description || null,
-
-            images: images || null,
-
-            product_type: type,
-
-            details
-
-        };
+        submitButton.textContent =
+            "در حال ثبت...";
 
 
-        const {
-            data: newProduct,
-            error: productError
-        } = await shopDB
-            .from('products')
-            .insert(productPayload)
-            .select()
-            .single();
+        let createdProductId =
+            null;
 
 
-        if (productError) {
+        try {
 
-            console.error(productError);
+            /* ------------------------------
+               Check duplicate product
+            ------------------------------ */
 
+            const {
+                data: existingProduct,
+                error: existingError
+            } = await shopDB
+                .from("products")
+                .select("id")
+                .eq("name", code)
+                .maybeSingle();
 
-            if (
-                productError.code === '23505'
-            ) {
-
-                alert(
-                    'این کد هم‌زمان توسط یک درخواست دیگر استفاده شده است. کد جدید تولید کن.'
-                );
-
-            } else {
-
-                alert(
-                    'خطا در ایجاد محصول.'
-                );
-
+            if (existingError) {
+                throw existingError;
             }
 
-            return;
-        }
+            if (existingProduct) {
+
+                throw new Error(
+                    "این کد محصول قبلاً استفاده شده است."
+                );
+            }
 
 
-        const orderPayload = {
+            /* ------------------------------
+               Product details
+            ------------------------------ */
 
-            product_name: code,
-
-            price,
-
-            image_url: firstImage || null,
-
-            images: images || null,
-
-            status: 'in progress',
-
-            user_id: buyer.id,
-
-            quantity,
-
-            code,
-
-            product_type: type
-
-        };
+            const details =
+                buildProductDetails(
+                    type
+                );
 
 
-        const {
-            data: newOrder,
-            error: orderError
-        } = await shopDB
-            .from('orders')
-            .insert(orderPayload)
-            .select()
-            .single();
+            /* ------------------------------
+               First image
+            ------------------------------ */
+
+            const firstImage =
+                images
+                    .split("|")
+                    .map(item =>
+                        item.trim()
+                    )
+                    .filter(Boolean)[0]
+                    || null;
 
 
-        if (orderError) {
+            /* ------------------------------
+               Create product
+            ------------------------------ */
 
-            console.error(orderError);
+            const {
+                data: product,
+                error: productError
+            } = await shopDB
+                .from("products")
+                .insert({
+                    name: code,
+                    price: price,
+                    image_url: firstImage,
+                    description: description,
+                    images: images || null,
+                    product_type: type,
+                    details: details
+                })
+                .select()
+                .single();
+
+            if (productError) {
+                throw productError;
+            }
+
+            createdProductId =
+                product.id;
 
 
-            await shopDB
-                .from('products')
-                .delete()
-                .eq('id', newProduct.id);
+            /* ------------------------------
+               Create order
+            ------------------------------ */
+
+            const {
+                data: order,
+                error: orderError
+            } = await shopDB
+                .from("orders")
+                .insert({
+                    user_id: buyerId,
+
+                    product_name: code,
+
+                    price: price,
+
+                    image_url: firstImage,
+
+                    images: images || null,
+
+                    product_type: type,
+
+                    quantity: quantity,
+
+                    code: code,
+
+                    status: "in progress"
+                })
+                .select()
+                .single();
+
+            if (orderError) {
+                throw orderError;
+            }
 
 
-            alert(
-                'محصول ساخته شد اما ثبت سفارش ناموفق بود. محصول ایجادشده نیز حذف شد.'
+            /* ------------------------------
+               Success
+            ------------------------------ */
+
+            showOrderMessage(
+                "سفارش با موفقیت ثبت شد.",
+                "success"
             );
 
-            return;
+            resetManualOrderForm();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            /* ------------------------------
+               Rollback product
+            ------------------------------ */
+
+            if (createdProductId) {
+
+                const {
+                    error: rollbackError
+                } = await shopDB
+                    .from("products")
+                    .delete()
+                    .eq(
+                        "id",
+                        createdProductId
+                    );
+
+                if (rollbackError) {
+
+                    console.error(
+                        "Rollback error:",
+                        rollbackError
+                    );
+                }
+            }
+
+
+            showOrderMessage(
+                "خطا در ثبت سفارش: " +
+                error.message,
+                "error"
+            );
+
+        } finally {
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                "ثبت سفارش";
         }
-
-
-        alert(
-            `سفارش با موفقیت ثبت شد.\nکد محصول: ${code}\nخریدار: ${buyer.username}`
-        );
-
-
-        resetCreateOrderForm();
-
-
-        await loadOrders();
-
-
-        showTab('orders-list');
-
-    });
-
-
-/* =========================
-   RESET CREATE FORM
-========================= */
-
-function resetCreateOrderForm() {
-
-    const form =
-        document.getElementById(
-            'create-order-form'
-        );
-
-
-    form.reset();
-
-
-    document
-        .querySelectorAll('.product-type-fields')
-        .forEach(section =>
-            section.classList.add('hidden')
-        );
-
-
-    document.getElementById(
-        'create-quantity'
-    ).value = 1;
-
-
-    document.getElementById(
-        'create-price'
-    ).value = 0;
-
-
-    loadProfilesForBuyerSelect();
-}
-
-
-/* =========================
-   START
-========================= */
-
-window.addEventListener(
-    'DOMContentLoaded',
-    async () => {
-
-        const authenticated =
-            await checkAdminAuth();
-
-
-        if (!authenticated) {
-            return;
-        }
-
-
-        await loadOrders();
-
     }
 );
 
+
+function showOrderMessage(
+    text,
+    type
+) {
+
+    const message =
+        document.getElementById(
+            "order-form-message"
+        );
+
+    message.textContent =
+        text;
+
+    message.className =
+        "order-form-message show " +
+        type;
+}
+
+
+function resetManualOrderForm() {
+
+    const form =
+        document.getElementById(
+            "create-order-form"
+        );
+
+    form.reset();
+
+    document
+        .querySelectorAll(
+            ".type-fields"
+        )
+        .forEach(section => {
+
+            section.classList.remove(
+                "show"
+            );
+        });
+
+    document.getElementById(
+        "order-quantity"
+    ).value =
+        "1";
+}
+
+
+/* ========================================
+   CARTS
+======================================== */
+
+async function loadCarts() {
+
+    const container =
+        document.getElementById(
+            "carts-content"
+        );
+
+    container.innerHTML = `
+        <div class="loading">
+            در حال دریافت سبدهای خرید...
+        </div>
+    `;
+
+    try {
+
+        const {
+            data: carts,
+            error: cartsError
+        } = await shopDB
+            .from("carts")
+            .select(`
+                id,
+                user_id,
+                product_id,
+                quantity,
+                created_at
+            `)
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+        if (cartsError) {
+            throw cartsError;
+        }
+
+        if (!carts || carts.length === 0) {
+
+            container.innerHTML = `
+                <div class="carts-empty">
+                    هیچ کاربری در حال حاضر محصولی در سبد خرید ندارد.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const userIds =
+            [
+                ...new Set(
+                    carts
+                        .map(cart =>
+                            cart.user_id
+                        )
+                        .filter(Boolean)
+                )
+            ];
+
+
+        const productIds =
+            [
+                ...new Set(
+                    carts
+                        .map(cart =>
+                            cart.product_id
+                        )
+                        .filter(Boolean)
+                )
+            ];
+
+
+        /* Profiles */
+
+        const {
+            data: profiles,
+            error: profilesError
+        } = await shopDB
+            .from("profiles")
+            .select(`
+                id,
+                username,
+                first_name,
+                last_name,
+                avatar_url
+            `)
+            .in(
+                "id",
+                userIds
+            );
+
+        if (profilesError) {
+            throw profilesError;
+        }
+
+
+        /* Products */
+
+        const {
+            data: products,
+            error: productsError
+        } = await shopDB
+            .from("products")
+            .select(`
+                id,
+                name,
+                price,
+                image_url,
+                images
+            `)
+            .in(
+                "id",
+                productIds
+            );
+
+        if (productsError) {
+            throw productsError;
+        }
+
+
+        const profileMap =
+            new Map(
+                (profiles || [])
+                    .map(profile => [
+                        profile.id,
+                        profile
+                    ])
+            );
+
+
+        const productMap =
+            new Map(
+                (products || [])
+                    .map(product => [
+                        product.id,
+                        product
+                    ])
+            );
+
+
+        const grouped =
+            new Map();
+
+
+        carts.forEach(cart => {
+
+            if (!grouped.has(
+                cart.user_id
+            )) {
+
+                grouped.set(
+                    cart.user_id,
+                    []
+                );
+            }
+
+            grouped
+                .get(cart.user_id)
+                .push(cart);
+        });
+
+
+        const cards =
+            [];
+
+
+        grouped.forEach(
+            (userCarts,
+            userId) => {
+
+                const profile =
+                    profileMap.get(
+                        userId
+                    );
+
+
+                const items =
+                    userCarts
+                        .map(cart => {
+
+                            const product =
+                                productMap.get(
+                                    cart.product_id
+                                );
+
+                            if (!product) {
+                                return null;
+                            }
+
+                            return {
+                                ...cart,
+                                product
+                            };
+                        })
+                        .filter(Boolean);
+
+
+                if (!items.length) {
+                    return;
+                }
+
+
+                let total =
+                    0;
+
+                items.forEach(item => {
+
+                    total +=
+                        Number(
+                            item.product.price || 0
+                        ) *
+                        Number(
+                            item.quantity || 0
+                        );
+                });
+
+
+                cards.push(
+                    renderCartCard(
+                        profile,
+                        items,
+                        total
+                    )
+                );
+            }
+        );
+
+
+        if (!cards.length) {
+
+            container.innerHTML = `
+                <div class="carts-empty">
+                    هیچ سبد خرید معتبری پیدا نشد.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML = `
+            <div class="carts-container">
+                ${cards.join("")}
+            </div>
+        `;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+            <div class="error-box">
+                خطا در دریافت سبدهای خرید:
+                ${escapeHTML(
+                    error.message
+                )}
+            </div>
+        `;
+    }
+}
+
+
+function renderCartCard(
+    profile,
+    items,
+    total
+) {
+
+    const avatar =
+        getProfileAvatar(
+            profile
+        );
+
+    const customerName =
+        getProfileName(
+            profile
+        );
+
+
+    const latestDate =
+        items
+            .map(item =>
+                new Date(
+                    item.created_at
+                ).getTime()
+            )
+            .filter(
+                value =>
+                    !Number.isNaN(value)
+            )
+            .sort(
+                (a, b) =>
+                    b - a
+            )[0];
+
+
+    const itemCount =
+        items.reduce(
+            (sum, item) =>
+                sum +
+                Number(
+                    item.quantity || 0
+                ),
+            0
+        );
+
+
+    return `
+        <div class="cart-card">
+
+            <div class="cart-card-header">
+
+                <div class="cart-customer">
+
+                    <div class="cart-customer-avatar">
+
+                        ${
+                            avatar
+                            ?
+                            `
+                                <img
+                                    src="${escapeHTML(avatar)}"
+                                    alt=""
+                                >
+                            `
+                            :
+                            `
+                                👤
+                            `
+                        }
+
+                    </div>
+
+
+                    <div class="cart-customer-info">
+
+                        <div class="cart-customer-name">
+                            ${escapeHTML(
+                                customerName
+                            )}
+                        </div>
+
+                        <div class="cart-customer-id">
+                            ${escapeHTML(
+                                profile?.username
+                                ? "@" +
+                                  profile.username
+                                : profile?.id || ""
+                            )}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="cart-items-count">
+                    ${itemCount.toLocaleString("fa-IR")}
+                    کالا
+                </div>
+
+            </div>
+
+
+            <div class="cart-items">
+
+                ${items.map(item => {
+
+                    const product =
+                        item.product;
+
+                    const image =
+                        getFirstImage(
+                            product.images,
+                            product.image_url
+                        );
+
+                    const quantity =
+                        Number(
+                            item.quantity || 0
+                        );
+
+                    const price =
+                        Number(
+                            product.price || 0
+                        );
+
+                    const lineTotal =
+                        price *
+                        quantity;
+
+                    return `
+                        <div class="cart-item">
+
+                            <div class="cart-product-image-wrapper">
+
+                                ${
+                                    image
+                                    ?
+                                    `
+                                        <img
+                                            class="cart-product-image clickable"
+                                            src="${escapeHTML(image)}"
+                                            alt=""
+                                            onclick="openImageModal('${escapeHTML(image)}')"
+                                        >
+                                    `
+                                    :
+                                    `
+                                        <div class="cart-product-no-image">
+                                            🪵
+                                        </div>
+                                    `
+                                }
+
+                            </div>
+
+
+                            <div class="cart-product-info">
+
+                                <div class="cart-product-name">
+                                    ${escapeHTML(
+                                        product.name
+                                    )}
+                                </div>
+
+                                <div class="cart-product-price">
+                                    ${formatPrice(
+                                        price
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="cart-product-quantity">
+
+                                <span>
+                                    تعداد
+                                </span>
+
+                                <strong>
+                                    ${quantity.toLocaleString("fa-IR")}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="cart-product-total">
+
+                                ${formatPrice(
+                                    lineTotal
+                                )}
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("")}
+
+            </div>
+
+
+            <div class="cart-card-footer">
+
+                <div>
+
+                    <div class="cart-total-row">
+
+                        <span class="cart-total-label">
+                            مجموع سبد
+                        </span>
+
+                        <strong class="cart-total-price">
+                            ${formatPrice(total)}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="cart-last-update">
+
+                    آخرین بروزرسانی:
+                    ${
+                        latestDate
+                        ?
+                        formatDate(
+                            new Date(
+                                latestDate
+                            ).toISOString()
+                        )
+                        :
+                        "-"
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* ========================================
+   PRODUCTS
+======================================== */
+
+async function loadProducts() {
+
+    const container =
+        document.getElementById(
+            "products-active-content"
+        );
+
+    container.innerHTML = `
+        <div class="loading">
+            در حال دریافت محصولات...
+        </div>
+    `;
+
+    try {
+
+        const {
+            data,
+            error
+        } = await shopDB
+            .from("products")
+            .select("*")
+            .order(
+                "name",
+                {
+                    ascending: true
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || data.length === 0) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    محصولی وجود ندارد.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML = `
+            <div class="product-list">
+
+                ${data.map(product => {
+
+                    const image =
+                        getFirstImage(
+                            product.images,
+                            product.image_url
+                        );
+
+                    return `
+                        <div class="product-card">
+
+                            ${
+                                image
+                                ?
+                                `
+                                    <img
+                                        class="product-card-image"
+                                        src="${escapeHTML(image)}"
+                                        alt=""
+                                    >
+                                `
+                                :
+                                `
+                                    <div
+                                        class="product-card-image"
+                                        style="
+                                            display:flex;
+                                            align-items:center;
+                                            justify-content:center;
+                                            font-size:40px;
+                                        "
+                                    >
+                                        🪵
+                                    </div>
+                                `
+                            }
+
+                            <div class="product-card-body">
+
+                                <h3 class="product-card-title">
+                                    ${escapeHTML(
+                                        product.name
+                                    )}
+                                </h3>
+
+                                <div class="product-card-price">
+                                    ${formatPrice(
+                                        product.price
+                                    )}
+                                </div>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }).join("")}
+
+            </div>
+        `;
+
+    } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+            <div class="error-box">
+                خطا در دریافت محصولات:
+                ${escapeHTML(
+                    error.message
+                )}
+            </div>
+        `;
+    }
+}
+
+
+/* ========================================
+   ESCAPE / MODAL EVENTS
+======================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key !== "Escape") {
+            return;
+        }
+
+        closeImageModal();
+
+        closeEditModal();
+    }
+);
+
+
+document.getElementById(
+    "image-modal"
+).addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target.id ===
+            "image-modal"
+        ) {
+
+            closeImageModal(
+                event
+            );
+        }
+    }
+);
+
+
+/* ========================================
+   INITIALIZE
+======================================== */
+
+(async function init() {
+
+    const isAdmin =
+        await checkAdmin();
+
+    if (!isAdmin) {
+        return;
+    }
+
+    await loadCurrentOrders();
+
+    await loadProfiles();
+
+})();
+    
 </script>
 
 </body>
+
 </html>
