@@ -392,15 +392,6 @@ function renderProducts(
                 product => {
 
                     const image = getProductImage(product);
-                    
-                    console.log(
-                        'PRODUCT:',
-                        product.name,
-                        'image_url:',
-                        product.image_url,
-                        'final image:',
-                        image
-                    );
 
                     const name =
                         escapeHTML(
