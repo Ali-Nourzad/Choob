@@ -147,6 +147,7 @@
                     <thead class="bg-gray-50 text-gray-600">
                         <tr>
                             <th class="p-3">شناسه</th>
+                            <th class="p-3">نام محصول</th>
                             <th class="p-3">کد سفارش</th>
                             <th class="p-3">تصویر</th>
                             <th class="p-3">نام کاربر</th>
@@ -237,7 +238,11 @@
     
             <form id="edit-order-form" class="space-y-4">
                 <input type="hidden" id="edit-order-id">
-    
+                <div>
+                    <label class="block text-sm mb-1">نام محصول</label>
+                    <input id="edit-product-name" required class="w-full border rounded-lg p-2.5">
+                </div>
+
                 <div>
                     <label class="block text-sm mb-1">کد سفارش</label>
                     <input id="edit-code" required
@@ -420,6 +425,7 @@
                 .from('orders')
                 .select(`
                     id,
+                    product_name,
                     price,
                     image_url,
                     status,
@@ -492,9 +498,12 @@
                     </td>
         
                     <td class="p-3 font-medium">
-                        ${escapeHtml(order.code || '---')}
+                        ${escapeHtml(order.product_name || '---')}
                     </td>
-        
+                    <td class="p-3">
+                        ${order.code ? escapeHtml(order.code) : '<span class="text-gray-400">بدون کد</span>'}
+                    </td>
+
                     <td class="p-3">
                         ${order.image_url ? `
                             <img
@@ -602,6 +611,7 @@
             if (!order) return;
         
             document.getElementById('edit-order-id').value = order.id;
+            document.getElementById('edit-product-name').value = order.product_name || '';
             document.getElementById('edit-code').value = order.code || '';
             document.getElementById('edit-price').value = order.price ?? 0;
             document.getElementById('edit-quantity').value = order.quantity ?? 1;
@@ -627,7 +637,8 @@
             const errorBox = document.getElementById('edit-error');
         
             const changes = {
-                code: document.getElementById('edit-code').value.trim(),
+                product_name: document.getElementById('edit-product-name').value.trim(),
+                code: document.getElementById('edit-code').value.trim() || null,
                 price: Number(document.getElementById('edit-price').value),
                 quantity: Number(document.getElementById('edit-quantity').value),
                 status: document.getElementById('edit-status').value.trim(),
