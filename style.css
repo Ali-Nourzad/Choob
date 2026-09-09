@@ -514,9 +514,12 @@ img {
    PRODUCTS GRID
 ========================================= */
 
-.products-grid {
+.products-grid,
+#product-grid {
     display: grid;
+
     grid-template-columns: repeat(4, minmax(0, 1fr));
+
     gap: 22px;
 
     padding-bottom: 70px;
@@ -528,8 +531,6 @@ img {
 ========================================= */
 
 .product-card {
-    position: relative;
-
     display: flex;
     flex-direction: column;
 
@@ -539,6 +540,7 @@ img {
     overflow: hidden;
 
     background: var(--surface);
+
     border: 1px solid var(--border);
     border-radius: 20px;
 
@@ -560,10 +562,10 @@ img {
 
 
 /* =========================================
-   PRODUCT IMAGE
+   PRODUCT IMAGE BOX
 ========================================= */
 
-.product-card-image {
+.product-image-box {
     position: relative;
 
     width: 100%;
@@ -576,32 +578,39 @@ img {
     background: var(--surface-2);
 
     border-radius: 20px 20px 0 0;
+
+    cursor: pointer;
 }
 
-.product-card-image img {
+
+/* =========================================
+   PRODUCT IMAGE
+========================================= */
+
+.product-image {
     display: block;
 
     width: 100%;
-    height: 100%;
+    height: 265px;
 
     object-fit: cover;
-    object-position: center;
+    object-position: center center;
 
     border-radius: 20px 20px 0 0;
 
     transition: transform 0.35s ease;
 }
 
-.product-card:hover .product-card-image img {
+.product-card:hover .product-image {
     transform: scale(1.045);
 }
 
 
 /* =========================================
-   PRODUCT CARD CONTENT
+   PRODUCT INFO
 ========================================= */
 
-.product-card-content {
+.product-info {
     display: flex;
     flex-direction: column;
 
@@ -614,10 +623,10 @@ img {
 
 
 /* =========================================
-   PRODUCT TITLE
+   PRODUCT NAME
 ========================================= */
 
-.product-card h3 {
+.product-name {
     margin: 0;
 
     color: var(--text);
@@ -634,7 +643,7 @@ img {
    PRODUCT DESCRIPTION
 ========================================= */
 
-.product-card p {
+.product-info p {
     margin: 8px 0 0;
 
     color: var(--muted);
@@ -653,6 +662,7 @@ img {
 
 .product-price {
     margin-top: auto !important;
+
     padding-top: 15px;
 
     color: var(--primary) !important;
@@ -662,6 +672,130 @@ img {
     line-height: 1.5;
 
     text-align: right;
+}
+
+
+/* =========================================
+   ADD TO CART BUTTON
+========================================= */
+
+.product-btn {
+    display: block;
+
+    width: 100%;
+
+    margin: 15px 0 0;
+
+    padding: 13px 16px;
+
+    border: none;
+    border-radius: 13px;
+
+    background: var(--navy);
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+.product-btn:hover {
+    background: var(--navy-dark);
+
+    transform: translateY(-1px);
+}
+
+.product-btn:active {
+    transform: translateY(0);
+}
+
+.product-btn:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================
+   PRODUCTS RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+    .products-grid,
+    #product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .products-grid,
+    #product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 18px;
+    }
+
+    .product-image-box {
+        height: 230px;
+    }
+
+    .product-image {
+        height: 230px;
+    }
+
+    .product-info {
+        padding: 16px 14px 14px;
+    }
+}
+
+@media (max-width: 520px) {
+    .products-header {
+        padding: 50px 0 25px;
+    }
+
+    .products-header h2 {
+        font-size: 32px;
+    }
+
+    .products-grid,
+    #product-grid {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+
+        padding-bottom: 50px;
+    }
+
+    .product-image-box {
+        height: 250px;
+    }
+
+    .product-image {
+        height: 250px;
+    }
+
+    .product-info {
+        padding: 16px 15px 15px;
+    }
+
+    .product-btn {
+        width: 100%;
+
+        margin-top: 15px;
+    }
 }
 
 
