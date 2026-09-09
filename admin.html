@@ -1,520 +1,1162 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پنل مدیریت | T-Choob</title>
-<link rel="icon" type="image/png" href="favicon.ico">
-<link rel="stylesheet" href="admin.css">
-<link rel="preload" href="Lalezar-Regular.ttf" as="font" type="font/ttf" crossorigin>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
-<header>
-<div class="header-container">
-<div class="header-inner">
-<div class="header-right">
-<div class="logo-wrapper">
-<div class="logo">T-Choob</div>
-<div class="admin-badge">مدیریت</div>
-</div>
-<nav class="top-nav">
-<button id="top-orders-btn" class="active" onclick="switchTopSection('orders')"><img class="ui-icon" src="assets/admin-icons/orders.png" alt="">سفارشات</button>
-<button id="top-products-btn" onclick="switchTopSection('products')"><img class="ui-icon" src="assets/admin-icons/products.png" alt="">محصولات</button>
-</nav>
-</div>
-<div class="admin-profile">
-<button class="logout-btn" onclick="logout()">خروج</button>
-<div class="admin-info">
-<div id="admin-name" class="admin-name">مدیر</div>
-<div class="admin-role">Administrator</div>
-</div>
-<img id="admin-avatar" class="admin-avatar" src="" alt="Admin">
-</div>
-</div>
-</div>
-</header>
-<div class="main-wrapper">
-<aside class="sidebar">
-<div class="sidebar-card">
-<div id="orders-sidebar" class="sidebar-section">
-<p class="sidebar-title">سفارشات</p>
-<button class="sidebar-btn active" data-tab="orders-list" onclick="showTab('orders-list',this)"><span>سفارش‌های جاری</span><img class="ui-icon" src="assets/admin-icons/order-list.png" alt=""></button>
-<button class="sidebar-btn" data-tab="orders-completed" onclick="showTab('orders-completed',this)"><span>تکمیل‌شده</span><img class="ui-icon" src="assets/admin-icons/completed.png" alt=""></button>
-<button class="sidebar-btn" data-tab="orders-create" onclick="showTab('orders-create',this)"><span>ثبت سفارش دستی</span><img class="ui-icon" src="assets/admin-icons/add.png" alt=""></button>
-<button class="sidebar-btn" data-tab="orders-cart" onclick="showTab('orders-cart',this)"><span>سبد خرید کاربران</span><img class="ui-icon" src="assets/admin-icons/cart.png" alt=""></button>
-</div>
-<div id="products-sidebar" class="sidebar-section hidden" style="margin-top:24px;">
-<p class="sidebar-title">محصولات</p>
-<button class="sidebar-btn" data-tab="products-active" onclick="showTab('products-active',this)"><span>محصولات فعال</span><img class="ui-icon" src="assets/admin-icons/active.png" alt=""></button>
-<button class="sidebar-btn" data-tab="products-out" onclick="showTab('products-out',this)"><span>ناموجود</span><img class="ui-icon" src="assets/admin-icons/out.png" alt=""></button>
-<button class="sidebar-btn" data-tab="products-deleted" onclick="showTab('products-deleted',this)"><span>حذف‌شده</span><img class="ui-icon" src="assets/admin-icons/delete.png" alt=""></button>
-<button class="sidebar-btn" data-tab="products-add" onclick="showTab('products-add',this)"><span>افزودن محصول</span><img class="ui-icon" src="assets/admin-icons/add.png" alt=""></button>
-</div>
-</div>
-</aside>
-<main class="main-content">
-<section id="tab-orders-list" class="tab-content">
-<div class="page-header">
-<div>
-<h2>سفارش‌های جاری</h2>
-<p>سفارش‌هایی که هنوز تکمیل نشده‌اند</p>
-</div>
-<button class="btn btn-refresh" onclick="loadCurrentOrders()"><img class="ui-icon" src="assets/admin-icons/refresh.png" alt="">بروزرسانی</button>
-</div>
-<div id="orders-list-content"><div class="loading">در حال دریافت سفارش‌ها...</div></div>
-</section>
-<section id="tab-orders-completed" class="tab-content hidden">
-<div class="page-header">
-<div>
-<h2>سفارش‌های تکمیل‌شده</h2>
-<p>سفارش‌هایی که تکمیل شده‌اند</p>
-</div>
-<button class="btn btn-refresh" onclick="loadCompletedOrders()"><img class="ui-icon" src="assets/admin-icons/refresh.png" alt="">بروزرسانی</button>
-</div>
-<div id="completed-orders-content"><div class="loading">در حال دریافت سفارش‌ها...</div></div>
-</section>
-<section id="tab-orders-create" class="tab-content hidden">
-<div class="page-header">
-<div>
-<h2>ثبت سفارش دستی</h2>
-<p>ثبت سفارش برای یکی از کاربران موجود</p>
-</div>
-</div>
-<form id="create-order-form" class="create-order-form">
-<div class="form-section">
-<h3>اطلاعات خریدار</h3>
-<div class="form-grid">
-<div class="form-group form-group-full">
-<label for="order-buyer">خریدار</label>
-<select id="order-buyer" required><option value="">انتخاب کاربر...</option></select>
-<small>خریدار باید از بین کاربران موجود انتخاب شود.</small>
-</div>
-</div>
-</div>
-<div class="form-section">
-<h3>اطلاعات محصول</h3>
-<div class="form-grid">
-<div class="form-group">
-<label for="product-type">نوع محصول</label>
-<select id="product-type" required>
-<option value="">انتخاب کنید...</option>
-<option value="JK">جاکلیدی</option>
-<option value="JS">جاسوئیچی</option>
-<option value="TB">تابلو</option>
-<option value="CL">ساعت</option>
-<option value="OT">غیره</option>
-</select>
-</div>
-<div class="form-group">
-<label for="product-code">کد محصول</label>
-<div class="code-generator-row">
-<div class="code-input-group">
-<input id="product-code" type="text" placeholder="مثلاً TCJS0000" dir="ltr" autocomplete="off" required>
-</div>
-<button type="button" id="generate-code-btn" class="generate-code-btn"><img class="ui-icon" src="assets/admin-icons/generate.png" alt=""> تولید خودکار</button>
-</div>
-<small>فرمت: TC + کد نوع + چهار رقم هگزادسیمال</small>
-</div>
-<div class="form-group">
-<label for="order-quantity">تعداد</label>
-<input id="order-quantity" type="number" min="1" value="1" required>
-</div>
-<div class="form-group">
-<label for="order-price">قیمت واحد</label>
-<input id="order-price" type="number" min="0" step="1" placeholder="قیمت به تومان" required>
-</div>
-<div class="form-group form-group-full">
-<label for="product-images">تصاویر</label>
-<input id="product-images" type="text" dir="ltr" placeholder="URL1 | URL2 | URL3">
-<div class="image-url-help">اگر چند تصویر دارید، URLها را با <strong>|</strong> از هم جدا کنید.</div>
-</div>
-<div class="form-group form-group-full">
-<label for="product-description">توضیحات</label>
-<textarea id="product-description" placeholder="توضیحات محصول..."></textarea>
-</div>
-</div>
-</div>
-<div id="fields-js" class="type-fields">
-<div class="form-section">
-<h3>مشخصات جاسوئیچی</h3>
-<div class="form-grid">
-<div class="form-group">
-<label for="js-wood">چوب</label>
-<select id="js-wood">
-<option value="">انتخاب کنید...</option>
-<option value="گردو">گردو</option>
-<option value="عناب">عناب</option>
-<option value="کرات">کرات</option>
-<option value="نارنج">نارنج</option>
-<option value="گردو سوخته">گردو سوخته</option>
-<option value="سنجد">سنجد</option>
-<option value="متفرقه">متفرقه</option>
-</select>
-</div>
-<div class="form-group">
-<label for="js-size">اندازه</label>
-<select id="js-size">
-<option value="">انتخاب کنید...</option>
-<option value="کوچک">کوچک</option>
-<option value="متوسط">متوسط</option>
-<option value="بزرگ">بزرگ</option>
-</select>
-</div>
-<div class="form-group">
-<label for="js-design">طرح</label>
-<input id="js-design" type="text" placeholder="URL تصویر یا نام طرح">
-</div>
-<div class="form-group">
-<label for="js-font">فونت</label>
-<select id="js-font">
-<option value="ندارد">ندارد</option>
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-</select>
-</div>
-</div>
-</div>
-</div>
-<div id="fields-tb" class="type-fields">
-<div class="form-section">
-<h3>مشخصات تابلو</h3>
-<div class="form-grid">
-<div class="form-group form-group-full">
-<label for="tb-design">طرح</label>
-<input id="tb-design" type="text" placeholder="URL تصاویر طرح">
-</div>
-<div class="form-group">
-<label for="tb-width">عرض</label>
-<input id="tb-width" type="number" min="0" step="0.01">
-</div>
-<div class="form-group">
-<label for="tb-length">طول</label>
-<input id="tb-length" type="number" min="0" step="0.01">
-</div>
-</div>
-</div>
-</div>
-<div id="fields-cl" class="type-fields">
-<div class="form-section">
-<h3>مشخصات ساعت</h3>
-<div class="form-grid">
-<div class="form-group form-group-full">
-<label for="cl-design">طرح</label>
-<input id="cl-design" type="text" placeholder="URL تصاویر طرح">
-</div>
-<div class="form-group">
-<label for="cl-width">عرض</label>
-<input id="cl-width" type="number" min="0" step="0.01">
-</div>
-<div class="form-group">
-<label for="cl-length">طول</label>
-<input id="cl-length" type="number" min="0" step="0.01">
-</div>
-</div>
-</div>
-</div>
-<div id="fields-jk" class="type-fields">
-<div class="form-section">
-<h3>مشخصات جاکلیدی</h3>
-<div class="form-grid">
-<div class="form-group">
-<label for="jk-wood">چوب</label>
-<select id="jk-wood">
-<option value="">انتخاب کنید...</option>
-<option value="گردو">گردو</option>
-<option value="عناب">عناب</option>
-<option value="کرات">کرات</option>
-<option value="نارنج">نارنج</option>
-<option value="گردو سوخته">گردو سوخته</option>
-<option value="سنجد">سنجد</option>
-<option value="متفرقه">متفرقه</option>
-</select>
-</div>
-<div class="form-group">
-<label for="jk-hook-count">تعداد قلاب</label>
-<input id="jk-hook-count" type="number" min="0">
-</div>
-<div class="form-group">
-<label for="jk-width">عرض</label>
-<input id="jk-width" type="number" min="0" step="0.01">
-</div>
-<div class="form-group">
-<label for="jk-length">طول</label>
-<input id="jk-length" type="number" min="0" step="0.01">
-</div>
-<div class="form-group form-group-full">
-<label for="jk-design">طرح</label>
-<input id="jk-design" type="text" placeholder="URL تصاویر طرح">
-</div>
-</div>
-</div>
-</div>
-<div id="fields-ot" class="type-fields">
-<div class="form-section">
-<h3>مشخصات محصول متفرقه</h3>
-<div class="form-grid">
-<div class="form-group form-group-full">
-<label for="ot-name">نام محصول</label>
-<input id="ot-name" type="text" placeholder="نام محصول">
-</div>
-<div class="form-group form-group-full">
-<label for="ot-design">طرح</label>
-<input id="ot-design" type="text" placeholder="URL تصاویر طرح">
-</div>
-</div>
-</div>
-</div>
-<div id="order-form-message" class="order-form-message"></div>
-<div class="form-actions">
-<button type="submit" id="submit-order-btn" class="submit-order-btn">ثبت سفارش</button>
-<button type="reset" class="reset-form-btn">پاک کردن فرم</button>
-</div>
-</form>
-</section>
-<section id="tab-orders-cart" class="tab-content hidden">
-<div class="page-header">
-<div>
-<h2>سبد خرید کاربران</h2>
-<p>کاربرانی که در حال حاضر محصولی در سبد خرید دارند</p>
-</div>
-<button class="btn btn-refresh" onclick="loadCarts()"><img class="ui-icon" src="assets/admin-icons/refresh.png" alt="">بروزرسانی</button>
-</div>
-<div id="carts-content"><div class="loading">در حال دریافت سبدهای خرید...</div></div>
-</section>
-<section id="tab-products-active" class="tab-content hidden">
-<div class="page-header">
-<div>
-<h2>محصولات فعال</h2>
-<p>محصولات موجود در فروشگاه</p>
-</div>
-<button class="btn btn-refresh" onclick="loadProducts('active')"><img class="ui-icon" src="assets/admin-icons/refresh.png" alt="">بروزرسانی</button>
-</div>
-<div id="products-active-content"><div class="loading">در حال دریافت محصولات...</div></div>
-</section>
-<section id="tab-products-out" class="tab-content hidden">
-<div class="page-header">
-<div>
-<h2>محصولات ناموجود</h2>
-<p>محصولاتی که فعلاً قابل خرید نیستند</p>
-</div>
-<button class="btn btn-refresh" onclick="loadProducts('out')"><img class="ui-icon" src="assets/admin-icons/refresh.png" alt="">بروزرسانی</button>
-</div>
-<div id="products-out-content"><div class="loading">در حال دریافت محصولات...</div></div>
-</section>
-<section id="tab-products-deleted" class="tab-content hidden">
-<div class="page-header">
-<div>
-<h2>محصولات حذف‌شده</h2>
-<p>محصولاتی که از فروشگاه حذف شده‌اند</p>
-</div>
-<button class="btn btn-refresh" onclick="loadProducts('deleted')"><img class="ui-icon" src="assets/admin-icons/refresh.png" alt="">بروزرسانی</button>
-</div>
-<div id="products-deleted-content"><div class="loading">در حال دریافت محصولات...</div></div>
-</section>
-<section id="tab-products-add" class="tab-content hidden">
-<div class="page-header">
-<div>
-<h2>افزودن محصول</h2>
-<p>افزودن محصول جدید بدون ثبت سفارش</p>
-</div>
-</div>
-<form id="add-product-form" class="create-order-form">
-<div class="form-section">
-<h3>اطلاعات محصول</h3>
-<div class="form-grid">
-<div class="form-group">
-<label for="add-product-type">نوع محصول</label>
-<select id="add-product-type" required>
-<option value="">انتخاب کنید...</option>
-<option value="JK">جاکلیدی</option>
-<option value="JS">جاسوئیچی</option>
-<option value="TB">تابلو</option>
-<option value="CL">ساعت</option>
-<option value="OT">غیره</option>
-</select>
-</div>
-<div class="form-group">
-<label for="add-product-code">کد محصول</label>
-<div class="code-generator-row">
-<div class="code-input-group">
-<input id="add-product-code" type="text" placeholder="مثلاً TCJS0000" dir="ltr" autocomplete="off" required>
-</div>
-<button type="button" id="add-generate-code-btn" class="generate-code-btn"><img class="ui-icon" src="assets/admin-icons/generate.png" alt=""> تولید خودکار</button>
-</div>
-</div>
-<div class="form-group">
-<label for="add-product-price">قیمت</label>
-<input id="add-product-price" type="number" min="0" step="1" required>
-</div>
-<div class="form-group">
-<label for="add-product-status">وضعیت</label>
-<select id="add-product-status">
-<option value="active">فعال</option>
-<option value="out">ناموجود</option>
-</select>
-</div>
-<div class="form-group form-group-full">
-<label for="add-product-images">تصاویر</label>
-<input id="add-product-images" type="text" dir="ltr" placeholder="URL1 | URL2 | URL3">
-</div>
-<div class="form-group form-group-full">
-<label for="add-product-description">توضیحات</label>
-<textarea id="add-product-description" placeholder="توضیحات محصول..."></textarea>
-</div>
-</div>
-</div>
-<div id="add-fields-js" class="type-fields">
-<div class="form-section">
-<h3>مشخصات جاسوئیچی</h3>
-<div class="form-grid">
-<div class="form-group"><label for="add-js-wood">چوب</label><select id="add-js-wood"><option value="">انتخاب کنید...</option><option value="گردو">گردو</option><option value="عناب">عناب</option><option value="کرات">کرات</option><option value="نارنج">نارنج</option><option value="گردو سوخته">گردو سوخته</option><option value="سنجد">سنجد</option><option value="متفرقه">متفرقه</option></select></div>
-<div class="form-group"><label for="add-js-size">اندازه</label><select id="add-js-size"><option value="">انتخاب کنید...</option><option value="کوچک">کوچک</option><option value="متوسط">متوسط</option><option value="بزرگ">بزرگ</option></select></div>
-<div class="form-group"><label for="add-js-design">طرح</label><input id="add-js-design" type="text"></div>
-<div class="form-group"><label for="add-js-font">فونت</label><select id="add-js-font"><option value="ندارد">ندارد</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-</div>
-</div>
-</div>
-<div id="add-fields-jk" class="type-fields">
-<div class="form-section">
-<h3>مشخصات جاکلیدی</h3>
-<div class="form-grid">
-<div class="form-group"><label for="add-jk-wood">چوب</label><select id="add-jk-wood"><option value="">انتخاب کنید...</option><option value="گردو">گردو</option><option value="عناب">عناب</option><option value="کرات">کرات</option><option value="نارنج">نارنج</option><option value="گردو سوخته">گردو سوخته</option><option value="سنجد">سنجد</option><option value="متفرقه">متفرقه</option></select></div>
-<div class="form-group"><label for="add-jk-hook-count">تعداد قلاب</label><input id="add-jk-hook-count" type="number" min="0"></div>
-<div class="form-group"><label for="add-jk-width">عرض</label><input id="add-jk-width" type="number" min="0" step="0.01"></div>
-<div class="form-group"><label for="add-jk-length">طول</label><input id="add-jk-length" type="number" min="0" step="0.01"></div>
-<div class="form-group form-group-full"><label for="add-jk-design">طرح</label><input id="add-jk-design" type="text"></div>
-</div>
-</div>
-</div>
-<div id="add-fields-tb" class="type-fields">
-<div class="form-section">
-<h3>مشخصات تابلو</h3>
-<div class="form-grid">
-<div class="form-group form-group-full"><label for="add-tb-design">طرح</label><input id="add-tb-design" type="text"></div>
-<div class="form-group"><label for="add-tb-width">عرض</label><input id="add-tb-width" type="number" min="0" step="0.01"></div>
-<div class="form-group"><label for="add-tb-length">طول</label><input id="add-tb-length" type="number" min="0" step="0.01"></div>
-</div>
-</div>
-</div>
-<div id="add-fields-cl" class="type-fields">
-<div class="form-section">
-<h3>مشخصات ساعت</h3>
-<div class="form-grid">
-<div class="form-group form-group-full"><label for="add-cl-design">طرح</label><input id="add-cl-design" type="text"></div>
-<div class="form-group"><label for="add-cl-width">عرض</label><input id="add-cl-width" type="number" min="0" step="0.01"></div>
-<div class="form-group"><label for="add-cl-length">طول</label><input id="add-cl-length" type="number" min="0" step="0.01"></div>
-</div>
-</div>
-</div>
-<div id="add-fields-ot" class="type-fields">
-<div class="form-section">
-<h3>مشخصات محصول متفرقه</h3>
-<div class="form-grid">
-<div class="form-group form-group-full"><label for="add-ot-name">نام محصول</label><input id="add-ot-name" type="text"></div>
-<div class="form-group form-group-full"><label for="add-ot-design">طرح</label><input id="add-ot-design" type="text"></div>
-</div>
-</div>
-</div>
-<div id="add-product-message" class="order-form-message"></div>
-<div class="form-actions">
-<button type="submit" id="add-product-btn" class="submit-order-btn">افزودن محصول</button>
-<button type="reset" class="reset-form-btn">پاک کردن فرم</button>
-</div>
-</form>
-</section>
-</main>
-</div>
-<footer>
-<div class="footer-content">مدیریت فروشگاه <span class="footer-brand">T-Choob</span></div>
-</footer>
-<div id="image-modal" class="modal image-modal" onclick="closeImageModal(event)">
-<div class="image-modal-content">
-<button type="button" class="close-image-btn" onclick="closeImageModal()">×</button>
-<img id="large-order-image" class="large-order-image" src="" alt="تصویر">
-</div>
-</div>
-<div id="edit-order-modal" class="modal edit-modal">
-<div class="edit-modal-content">
-<div class="modal-header">
-<h3>ویرایش سفارش</h3>
-<button type="button" class="close-modal-btn" onclick="closeEditModal()">×</button>
-</div>
-<form id="edit-order-form" class="edit-form">
-<input type="hidden" id="edit-order-id">
-<div class="form-group">
-<label for="edit-order-status">وضعیت سفارش</label>
-<select id="edit-order-status" class="form-input"><option value="in progress">در حال انجام</option><option value="completed">تکمیل‌شده</option></select>
-</div>
-<div class="form-group">
-<label for="edit-order-quantity">تعداد</label>
-<input id="edit-order-quantity" class="form-input" type="number" min="1">
-</div>
-<div id="edit-modal-error" class="modal-error hidden"></div>
-<div class="modal-actions">
-<button type="button" class="btn btn-cancel" onclick="closeEditModal()">انصراف</button>
-<button type="submit" class="btn btn-submit">ذخیره</button>
-</div>
-</form>
-</div>
-</div>
-<div id="edit-product-modal" class="modal edit-modal">
-<div class="edit-modal-content product-edit-modal">
-<div class="modal-header">
-<h3>ویرایش محصول</h3>
-<button type="button" class="close-modal-btn" onclick="closeProductEditModal()">×</button>
-</div>
-<form id="edit-product-form" class="edit-form">
-<input type="hidden" id="edit-product-id">
-<div class="form-grid">
-<div class="form-group">
-<label for="edit-product-code">کد محصول</label>
-<input id="edit-product-code" class="form-input" type="text" dir="ltr" required>
-</div>
-<div class="form-group">
-<label for="edit-product-type">نوع محصول</label>
-<select id="edit-product-type" class="form-input" required>
-<option value="JK">جاکلیدی</option>
-<option value="JS">جاسوئیچی</option>
-<option value="TB">تابلو</option>
-<option value="CL">ساعت</option>
-<option value="OT">غیره</option>
-</select>
-</div>
-<div class="form-group">
-<label for="edit-product-price">قیمت</label>
-<input id="edit-product-price" class="form-input" type="number" min="0" required>
-</div>
-<div class="form-group">
-<label for="edit-product-status">وضعیت</label>
-<select id="edit-product-status" class="form-input">
-<option value="active">فعال</option>
-<option value="out">ناموجود</option>
-<option value="deleted">حذف‌شده</option>
-</select>
-</div>
-<div class="form-group form-group-full">
-<label for="edit-product-images">تصاویر</label>
-<input id="edit-product-images" class="form-input" type="text" dir="ltr">
-</div>
-<div class="form-group form-group-full">
-<label for="edit-product-description">توضیحات</label>
-<textarea id="edit-product-description" class="form-input"></textarea>
-</div>
-</div>
-<div id="edit-product-details-area"></div>
-<div id="edit-product-message" class="order-form-message"></div>
-<div class="modal-actions">
-<button type="button" class="btn btn-cancel" onclick="closeProductEditModal()">انصراف</button>
-<button type="submit" class="btn btn-submit">ذخیره تغییرات</button>
-</div>
-</form>
-</div>
-</div>
-<script>
-"use strict";
+<html dir="rtl" lang="fa">
+	<head>
+		<meta charset="utf-8"/>
+		<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+		<title>
+			پنل مدیریت | T-Choob
+		</title>
+		<link href="favicon.ico" rel="icon" type="image/png"/>
+		<link href="admin.css" rel="stylesheet"/>
+		<link as="font" crossorigin="" href="Lalezar-Regular.ttf" rel="preload" type="font/ttf"/>
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+		</script>
+	</head>
+	<body>
+		<header>
+			<div class="header-container">
+				<div class="header-inner">
+					<div class="header-right">
+						<div class="logo-wrapper">
+							<div class="logo">
+								T-Choob
+							</div>
+							<div class="admin-badge">
+								مدیریت
+							</div>
+						</div>
+						<nav class="top-nav">
+							<button class="active" id="top-orders-btn" onclick="switchTopSection('orders')">
+								<img alt="" class="ui-icon" src="assets/admin-icons/orders.png"/>
+								سفارشات
+							</button>
+							<button id="top-products-btn" onclick="switchTopSection('products')">
+								<img alt="" class="ui-icon" src="assets/admin-icons/products.png"/>
+								محصولات
+							</button>
+						</nav>
+					</div>
+					<div class="admin-profile">
+						<button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" type="button">
+							حالت تاریک
+						</button>
+						<button class="logout-btn" onclick="logout()">
+							خروج
+						</button>
+						<div class="admin-info">
+							<div class="admin-name" id="admin-name">
+								مدیر
+							</div>
+							<div class="admin-role">
+								Administrator
+							</div>
+						</div>
+						<img alt="Admin" class="admin-avatar" id="admin-avatar" src=""/>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class="main-wrapper">
+			<aside class="sidebar">
+				<div class="sidebar-card">
+					<div class="sidebar-section" id="orders-sidebar">
+						<p class="sidebar-title">
+							سفارشات
+						</p>
+						<button class="sidebar-btn active" data-tab="orders-list" onclick="showTab('orders-list',this)">
+							<span>
+								سفارش‌های جاری
+							</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/order-list.png"/>
+						</button>
+						<button class="sidebar-btn" data-tab="orders-completed" onclick="showTab('orders-completed',this)">
+							<span>
+								تکمیل‌شده
+							</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/completed.png"/>
+						</button>
+						<button class="sidebar-btn" data-tab="orders-create" onclick="showTab('orders-create',this)">
+							<span>
+								ثبت سفارش دستی
+							</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/add.png"/>
+						</button>
+						<button class="sidebar-btn" data-tab="orders-cart" onclick="showTab('orders-cart',this)">
+							<span>
+								سبد خرید کاربران
+							</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/cart.png"/>
+						</button>
+					</div>
+					<div class="sidebar-section hidden" id="products-sidebar" style="margin-top:24px;">
+						<p class="sidebar-title">
+							محصولات
+						</p>
+						<button class="sidebar-btn" data-tab="products-active" onclick="showTab('products-active',this)">
+							<span>
+								محصولات فعال
+							</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/active.png"/>
+						</button>
+						<button class="sidebar-btn" data-tab="products-out" onclick="showTab('products-out',this)">
+							<span>
+								ناموجود
+							</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/out.png"/>
+						</button>
+						<button class="sidebar-btn" data-tab="products-deleted" onclick="showTab('products-deleted',this)">
+							<span>
+								حذف‌شده
+							</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/delete.png"/>
+						</button>
+						<button class="sidebar-btn" data-tab="products-add" onclick="showTab('products-add',this)">
+							<span>
+								افزودن محصول
+							</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/add.png"/>
+						</button>
+					</div>
+				</div>
+			</aside>
+			<main class="main-content">
+				<section class="tab-content" id="tab-orders-list">
+					<div class="page-header">
+						<div>
+							<h2>
+								سفارش‌های جاری
+							</h2>
+							<p>
+								سفارش‌هایی که هنوز تکمیل نشده‌اند
+							</p>
+						</div>
+						<button class="btn btn-refresh" onclick="loadCurrentOrders()">
+							<img alt="" class="ui-icon" src="assets/admin-icons/refresh.png"/>
+							بروزرسانی
+						</button>
+					</div>
+					<div id="orders-list-content">
+						<div class="loading">
+							در حال دریافت سفارش‌ها...
+						</div>
+					</div>
+				</section>
+				<section class="tab-content hidden" id="tab-orders-completed">
+					<div class="page-header">
+						<div>
+							<h2>
+								سفارش‌های تکمیل‌شده
+							</h2>
+							<p>
+								سفارش‌هایی که تکمیل شده‌اند
+							</p>
+						</div>
+						<button class="btn btn-refresh" onclick="loadCompletedOrders()">
+							<img alt="" class="ui-icon" src="assets/admin-icons/refresh.png"/>
+							بروزرسانی
+						</button>
+					</div>
+					<div id="completed-orders-content">
+						<div class="loading">
+							در حال دریافت سفارش‌ها...
+						</div>
+					</div>
+				</section>
+				<section class="tab-content hidden" id="tab-orders-create">
+					<div class="page-header">
+						<div>
+							<h2>
+								ثبت سفارش دستی
+							</h2>
+							<p>
+								ثبت سفارش برای یکی از کاربران موجود
+							</p>
+						</div>
+					</div>
+					<form class="create-order-form" id="create-order-form">
+						<div class="form-section">
+							<h3>
+								اطلاعات خریدار
+							</h3>
+							<div class="form-grid">
+								<div class="form-group form-group-full">
+									<label for="order-buyer">
+										خریدار
+									</label>
+									<select id="order-buyer" required="">
+										<option value="">
+											انتخاب کاربر...
+										</option>
+									</select>
+									<small>
+										خریدار باید از بین کاربران موجود انتخاب شود.
+									</small>
+								</div>
+							</div>
+						</div>
+						<div class="form-section">
+							<h3>
+								اطلاعات محصول
+							</h3>
+							<div class="form-grid">
+								<div class="form-group">
+									<label for="product-type">
+										نوع محصول
+									</label>
+									<select id="product-type" required="">
+										<option value="">
+											انتخاب کنید...
+										</option>
+										<option value="JK">
+											جاکلیدی
+										</option>
+										<option value="JS">
+											جاسوئیچی
+										</option>
+										<option value="TB">
+											تابلو
+										</option>
+										<option value="CL">
+											ساعت
+										</option>
+										<option value="OT">
+											غیره
+										</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="product-code">
+										کد محصول
+									</label>
+									<div class="code-generator-row">
+										<div class="code-input-group">
+											<input autocomplete="off" dir="ltr" id="product-code" placeholder="مثلاً TCJS0000" required="" type="text"/>
+										</div>
+										<button class="generate-code-btn" id="generate-code-btn" type="button">
+											<img alt="" class="ui-icon" src="assets/admin-icons/generate.png"/>
+											تولید خودکار
+										</button>
+									</div>
+									<small>
+										فرمت: TC + کد نوع + چهار رقم هگزادسیمال
+									</small>
+								</div>
+								<div class="form-group">
+									<label for="order-quantity">
+										تعداد
+									</label>
+									<input id="order-quantity" min="1" required="" type="number" value="1"/>
+								</div>
+								<div class="form-group">
+									<label for="order-price">
+										قیمت واحد
+									</label>
+									<input id="order-price" min="0" placeholder="قیمت به تومان" required="" step="1" type="number"/>
+								</div>
+								<div class="form-group form-group-full">
+									<label for="product-images">
+										تصاویر
+									</label>
+									<input dir="ltr" id="product-images" placeholder="URL1 | URL2 | URL3" type="text"/>
+									<div class="image-url-help">
+										اگر چند تصویر دارید، URLها را با
+										<strong>
+											|
+										</strong>
+										از هم جدا کنید.
+									</div>
+								</div>
+								<div class="form-group form-group-full">
+									<label for="product-description">
+										توضیحات
+									</label>
+									<textarea id="product-description" placeholder="توضیحات محصول..."></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="fields-js">
+							<div class="form-section">
+								<h3>
+									مشخصات جاسوئیچی
+								</h3>
+								<div class="form-grid">
+									<div class="form-group">
+										<label for="js-wood">
+											چوب
+										</label>
+										<select id="js-wood">
+											<option value="">
+												انتخاب کنید...
+											</option>
+											<option value="گردو">
+												گردو
+											</option>
+											<option value="عناب">
+												عناب
+											</option>
+											<option value="کرات">
+												کرات
+											</option>
+											<option value="نارنج">
+												نارنج
+											</option>
+											<option value="گردو سوخته">
+												گردو سوخته
+											</option>
+											<option value="سنجد">
+												سنجد
+											</option>
+											<option value="متفرقه">
+												متفرقه
+											</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="js-size">
+											اندازه
+										</label>
+										<select id="js-size">
+											<option value="">
+												انتخاب کنید...
+											</option>
+											<option value="کوچک">
+												کوچک
+											</option>
+											<option value="متوسط">
+												متوسط
+											</option>
+											<option value="بزرگ">
+												بزرگ
+											</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="js-design">
+											طرح
+										</label>
+										<input id="js-design" placeholder="URL تصویر یا نام طرح" type="text"/>
+									</div>
+									<div class="form-group">
+										<label for="js-font">
+											فونت
+										</label>
+										<select id="js-font">
+											<option value="ندارد">
+												ندارد
+											</option>
+											<option value="1">
+												1
+											</option>
+											<option value="2">
+												2
+											</option>
+											<option value="3">
+												3
+											</option>
+											<option value="4">
+												4
+											</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="fields-tb">
+							<div class="form-section">
+								<h3>
+									مشخصات تابلو
+								</h3>
+								<div class="form-grid">
+									<div class="form-group form-group-full">
+										<label for="tb-design">
+											طرح
+										</label>
+										<input id="tb-design" placeholder="URL تصاویر طرح" type="text"/>
+									</div>
+									<div class="form-group">
+										<label for="tb-width">
+											عرض
+										</label>
+										<input id="tb-width" min="0" step="0.01" type="number"/>
+									</div>
+									<div class="form-group">
+										<label for="tb-length">
+											طول
+										</label>
+										<input id="tb-length" min="0" step="0.01" type="number"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="fields-cl">
+							<div class="form-section">
+								<h3>
+									مشخصات ساعت
+								</h3>
+								<div class="form-grid">
+									<div class="form-group form-group-full">
+										<label for="cl-design">
+											طرح
+										</label>
+										<input id="cl-design" placeholder="URL تصاویر طرح" type="text"/>
+									</div>
+									<div class="form-group">
+										<label for="cl-width">
+											عرض
+										</label>
+										<input id="cl-width" min="0" step="0.01" type="number"/>
+									</div>
+									<div class="form-group">
+										<label for="cl-length">
+											طول
+										</label>
+										<input id="cl-length" min="0" step="0.01" type="number"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="fields-jk">
+							<div class="form-section">
+								<h3>
+									مشخصات جاکلیدی
+								</h3>
+								<div class="form-grid">
+									<div class="form-group">
+										<label for="jk-wood">
+											چوب
+										</label>
+										<select id="jk-wood">
+											<option value="">
+												انتخاب کنید...
+											</option>
+											<option value="گردو">
+												گردو
+											</option>
+											<option value="عناب">
+												عناب
+											</option>
+											<option value="کرات">
+												کرات
+											</option>
+											<option value="نارنج">
+												نارنج
+											</option>
+											<option value="گردو سوخته">
+												گردو سوخته
+											</option>
+											<option value="سنجد">
+												سنجد
+											</option>
+											<option value="متفرقه">
+												متفرقه
+											</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="jk-hook-count">
+											تعداد قلاب
+										</label>
+										<input id="jk-hook-count" min="0" type="number"/>
+									</div>
+									<div class="form-group">
+										<label for="jk-width">
+											عرض
+										</label>
+										<input id="jk-width" min="0" step="0.01" type="number"/>
+									</div>
+									<div class="form-group">
+										<label for="jk-length">
+											طول
+										</label>
+										<input id="jk-length" min="0" step="0.01" type="number"/>
+									</div>
+									<div class="form-group form-group-full">
+										<label for="jk-design">
+											طرح
+										</label>
+										<input id="jk-design" placeholder="URL تصاویر طرح" type="text"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="fields-ot">
+							<div class="form-section">
+								<h3>
+									مشخصات محصول متفرقه
+								</h3>
+								<div class="form-grid">
+									<div class="form-group form-group-full">
+										<label for="ot-name">
+											نام محصول
+										</label>
+										<input id="ot-name" placeholder="نام محصول" type="text"/>
+									</div>
+									<div class="form-group form-group-full">
+										<label for="ot-design">
+											طرح
+										</label>
+										<input id="ot-design" placeholder="URL تصاویر طرح" type="text"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="order-form-message" id="order-form-message">
+						</div>
+						<div class="form-actions">
+							<button class="submit-order-btn" id="submit-order-btn" type="submit">
+								ثبت سفارش
+							</button>
+							<button class="reset-form-btn" type="reset">
+								پاک کردن فرم
+							</button>
+						</div>
+					</form>
+				</section>
+				<section class="tab-content hidden" id="tab-orders-cart">
+					<div class="page-header">
+						<div>
+							<h2>
+								سبد خرید کاربران
+							</h2>
+							<p>
+								کاربرانی که در حال حاضر محصولی در سبد خرید دارند
+							</p>
+						</div>
+						<button class="btn btn-refresh" onclick="loadCarts()">
+							<img alt="" class="ui-icon" src="assets/admin-icons/refresh.png"/>
+							بروزرسانی
+						</button>
+					</div>
+					<div id="carts-content">
+						<div class="loading">
+							در حال دریافت سبدهای خرید...
+						</div>
+					</div>
+				</section>
+				<section class="tab-content hidden" id="tab-products-active">
+					<div class="page-header">
+						<div>
+							<h2>
+								محصولات فعال
+							</h2>
+							<p>
+								محصولات موجود در فروشگاه
+							</p>
+						</div>
+						<button class="btn btn-refresh" onclick="loadProducts('active')">
+							<img alt="" class="ui-icon" src="assets/admin-icons/refresh.png"/>
+							بروزرسانی
+						</button>
+					</div>
+					<div id="products-active-content">
+						<div class="loading">
+							در حال دریافت محصولات...
+						</div>
+					</div>
+				</section>
+				<section class="tab-content hidden" id="tab-products-out">
+					<div class="page-header">
+						<div>
+							<h2>
+								محصولات ناموجود
+							</h2>
+							<p>
+								محصولاتی که فعلاً قابل خرید نیستند
+							</p>
+						</div>
+						<button class="btn btn-refresh" onclick="loadProducts('out')">
+							<img alt="" class="ui-icon" src="assets/admin-icons/refresh.png"/>
+							بروزرسانی
+						</button>
+					</div>
+					<div id="products-out-content">
+						<div class="loading">
+							در حال دریافت محصولات...
+						</div>
+					</div>
+				</section>
+				<section class="tab-content hidden" id="tab-products-deleted">
+					<div class="page-header">
+						<div>
+							<h2>
+								محصولات حذف‌شده
+							</h2>
+							<p>
+								محصولاتی که از فروشگاه حذف شده‌اند
+							</p>
+						</div>
+						<button class="btn btn-refresh" onclick="loadProducts('deleted')">
+							<img alt="" class="ui-icon" src="assets/admin-icons/refresh.png"/>
+							بروزرسانی
+						</button>
+					</div>
+					<div id="products-deleted-content">
+						<div class="loading">
+							در حال دریافت محصولات...
+						</div>
+					</div>
+				</section>
+				<section class="tab-content hidden" id="tab-products-add">
+					<div class="page-header">
+						<div>
+							<h2>
+								افزودن محصول
+							</h2>
+							<p>
+								افزودن محصول جدید بدون ثبت سفارش
+							</p>
+						</div>
+					</div>
+					<form class="create-order-form" id="add-product-form">
+						<div class="form-section">
+							<h3>
+								اطلاعات محصول
+							</h3>
+							<div class="form-grid">
+								<div class="form-group">
+									<label for="add-product-type">
+										نوع محصول
+									</label>
+									<select id="add-product-type" required="">
+										<option value="">
+											انتخاب کنید...
+										</option>
+										<option value="JK">
+											جاکلیدی
+										</option>
+										<option value="JS">
+											جاسوئیچی
+										</option>
+										<option value="TB">
+											تابلو
+										</option>
+										<option value="CL">
+											ساعت
+										</option>
+										<option value="OT">
+											غیره
+										</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="add-product-code">
+										کد محصول
+									</label>
+									<div class="code-generator-row">
+										<div class="code-input-group">
+											<input autocomplete="off" dir="ltr" id="add-product-code" placeholder="مثلاً TCJS0000" required="" type="text"/>
+										</div>
+										<button class="generate-code-btn" id="add-generate-code-btn" type="button">
+											<img alt="" class="ui-icon" src="assets/admin-icons/generate.png"/>
+											تولید خودکار
+										</button>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="add-product-price">
+										قیمت
+									</label>
+									<input id="add-product-price" min="0" required="" step="1" type="number"/>
+								</div>
+								<div class="form-group">
+									<label for="add-product-status">
+										وضعیت
+									</label>
+									<select id="add-product-status">
+										<option value="active">
+											فعال
+										</option>
+										<option value="out">
+											ناموجود
+										</option>
+									</select>
+								</div>
+								<div class="form-group form-group-full">
+									<label for="add-product-images">
+										تصاویر
+									</label>
+									<input dir="ltr" id="add-product-images" placeholder="URL1 | URL2 | URL3" type="text"/>
+								</div>
+								<div class="form-group form-group-full">
+									<label for="add-product-description">
+										توضیحات
+									</label>
+									<textarea id="add-product-description" placeholder="توضیحات محصول..."></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="add-fields-js">
+							<div class="form-section">
+								<h3>
+									مشخصات جاسوئیچی
+								</h3>
+								<div class="form-grid">
+									<div class="form-group">
+										<label for="add-js-wood">
+											چوب
+										</label>
+										<select id="add-js-wood">
+											<option value="">
+												انتخاب کنید...
+											</option>
+											<option value="گردو">
+												گردو
+											</option>
+											<option value="عناب">
+												عناب
+											</option>
+											<option value="کرات">
+												کرات
+											</option>
+											<option value="نارنج">
+												نارنج
+											</option>
+											<option value="گردو سوخته">
+												گردو سوخته
+											</option>
+											<option value="سنجد">
+												سنجد
+											</option>
+											<option value="متفرقه">
+												متفرقه
+											</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="add-js-size">
+											اندازه
+										</label>
+										<select id="add-js-size">
+											<option value="">
+												انتخاب کنید...
+											</option>
+											<option value="کوچک">
+												کوچک
+											</option>
+											<option value="متوسط">
+												متوسط
+											</option>
+											<option value="بزرگ">
+												بزرگ
+											</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="add-js-design">
+											طرح
+										</label>
+										<input id="add-js-design" type="text"/>
+									</div>
+									<div class="form-group">
+										<label for="add-js-font">
+											فونت
+										</label>
+										<select id="add-js-font">
+											<option value="ندارد">
+												ندارد
+											</option>
+											<option value="1">
+												1
+											</option>
+											<option value="2">
+												2
+											</option>
+											<option value="3">
+												3
+											</option>
+											<option value="4">
+												4
+											</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="add-fields-jk">
+							<div class="form-section">
+								<h3>
+									مشخصات جاکلیدی
+								</h3>
+								<div class="form-grid">
+									<div class="form-group">
+										<label for="add-jk-wood">
+											چوب
+										</label>
+										<select id="add-jk-wood">
+											<option value="">
+												انتخاب کنید...
+											</option>
+											<option value="گردو">
+												گردو
+											</option>
+											<option value="عناب">
+												عناب
+											</option>
+											<option value="کرات">
+												کرات
+											</option>
+											<option value="نارنج">
+												نارنج
+											</option>
+											<option value="گردو سوخته">
+												گردو سوخته
+											</option>
+											<option value="سنجد">
+												سنجد
+											</option>
+											<option value="متفرقه">
+												متفرقه
+											</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="add-jk-hook-count">
+											تعداد قلاب
+										</label>
+										<input id="add-jk-hook-count" min="0" type="number"/>
+									</div>
+									<div class="form-group">
+										<label for="add-jk-width">
+											عرض
+										</label>
+										<input id="add-jk-width" min="0" step="0.01" type="number"/>
+									</div>
+									<div class="form-group">
+										<label for="add-jk-length">
+											طول
+										</label>
+										<input id="add-jk-length" min="0" step="0.01" type="number"/>
+									</div>
+									<div class="form-group form-group-full">
+										<label for="add-jk-design">
+											طرح
+										</label>
+										<input id="add-jk-design" type="text"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="add-fields-tb">
+							<div class="form-section">
+								<h3>
+									مشخصات تابلو
+								</h3>
+								<div class="form-grid">
+									<div class="form-group form-group-full">
+										<label for="add-tb-design">
+											طرح
+										</label>
+										<input id="add-tb-design" type="text"/>
+									</div>
+									<div class="form-group">
+										<label for="add-tb-width">
+											عرض
+										</label>
+										<input id="add-tb-width" min="0" step="0.01" type="number"/>
+									</div>
+									<div class="form-group">
+										<label for="add-tb-length">
+											طول
+										</label>
+										<input id="add-tb-length" min="0" step="0.01" type="number"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="add-fields-cl">
+							<div class="form-section">
+								<h3>
+									مشخصات ساعت
+								</h3>
+								<div class="form-grid">
+									<div class="form-group form-group-full">
+										<label for="add-cl-design">
+											طرح
+										</label>
+										<input id="add-cl-design" type="text"/>
+									</div>
+									<div class="form-group">
+										<label for="add-cl-width">
+											عرض
+										</label>
+										<input id="add-cl-width" min="0" step="0.01" type="number"/>
+									</div>
+									<div class="form-group">
+										<label for="add-cl-length">
+											طول
+										</label>
+										<input id="add-cl-length" min="0" step="0.01" type="number"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="type-fields" id="add-fields-ot">
+							<div class="form-section">
+								<h3>
+									مشخصات محصول متفرقه
+								</h3>
+								<div class="form-grid">
+									<div class="form-group form-group-full">
+										<label for="add-ot-name">
+											نام محصول
+										</label>
+										<input id="add-ot-name" type="text"/>
+									</div>
+									<div class="form-group form-group-full">
+										<label for="add-ot-design">
+											طرح
+										</label>
+										<input id="add-ot-design" type="text"/>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="order-form-message" id="add-product-message">
+						</div>
+						<div class="form-actions">
+							<button class="submit-order-btn" id="add-product-btn" type="submit">
+								افزودن محصول
+							</button>
+							<button class="reset-form-btn" type="reset">
+								پاک کردن فرم
+							</button>
+						</div>
+					</form>
+				</section>
+			</main>
+		</div>
+		<footer>
+			<div class="footer-content">
+				مدیریت فروشگاه
+				<span class="footer-brand">
+					T-Choob
+				</span>
+			</div>
+		</footer>
+		<div class="modal image-modal" id="image-modal" onclick="closeImageModal(event)">
+			<div class="image-modal-content">
+				<button class="close-image-btn" onclick="closeImageModal()" type="button">
+					×
+				</button>
+				<img alt="تصویر" class="large-order-image" id="large-order-image" src=""/>
+			</div>
+		</div>
+		<div class="modal edit-modal" id="edit-order-modal">
+			<div class="edit-modal-content order-edit-modal">
+				<div class="modal-header">
+					<h3>
+						ویرایش کامل سفارش
+					</h3>
+					<button class="close-modal-btn" onclick="closeEditModal()" type="button">
+						×
+					</button>
+				</div>
+				<form class="edit-form" id="edit-order-form">
+					<input id="edit-order-id" type="hidden"/>
+					<div class="form-section">
+						<h3>
+							اطلاعات سفارش
+						</h3>
+						<div class="form-grid">
+							<div class="form-group">
+								<label for="edit-order-status">
+									وضعیت سفارش
+								</label>
+								<select class="form-input" id="edit-order-status">
+									<option value="in progress">
+										در حال انجام
+									</option>
+									<option value="completed">
+										تکمیل‌شده
+									</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="edit-order-buyer">
+									خریدار
+								</label>
+								<select class="form-input" id="edit-order-buyer" required="">
+									<option value="">
+										در حال دریافت کاربران...
+									</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="edit-order-code">
+									کد سفارش
+								</label>
+								<input class="form-input" dir="ltr" id="edit-order-code" type="text"/>
+							</div>
+							<div class="form-group">
+								<label for="edit-order-product-name">
+									کد/نام محصول
+								</label>
+								<input class="form-input" id="edit-order-product-name" type="text"/>
+							</div>
+							<div class="form-group">
+								<label for="edit-order-product-type">
+									نوع محصول
+								</label>
+								<select class="form-input" id="edit-order-product-type">
+									<option value="JK">
+										جاکلیدی
+									</option>
+									<option value="JS">
+										جاسوئیچی
+									</option>
+									<option value="TB">
+										تابلو
+									</option>
+									<option value="CL">
+										ساعت
+									</option>
+									<option value="OT">
+										غیره
+									</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="edit-order-price">
+									قیمت واحد
+								</label>
+								<input class="form-input" id="edit-order-price" min="0" step="1" type="number"/>
+							</div>
+							<div class="form-group">
+								<label for="edit-order-quantity">
+									تعداد
+								</label>
+								<input class="form-input" id="edit-order-quantity" min="1" step="1" type="number"/>
+							</div>
+							<div class="form-group form-group-full">
+								<label for="edit-order-description">
+									توضیحات محصول
+								</label>
+								<textarea class="form-input" id="edit-order-description" placeholder="توضیحات محصول..."></textarea>
+							</div>
+							<div class="form-group form-group-full">
+								<label for="edit-order-images">
+									تصاویر
+								</label>
+								<input class="form-input" dir="ltr" id="edit-order-images" placeholder="URL1 | URL2 | URL3" type="text"/>
+								<small>
+									اگر چند تصویر دارید، URLها را با | جدا کنید.
+								</small>
+							</div>
+						</div>
+					</div>
+					<div class="form-section">
+						<h3>
+							مشخصات محصول
+						</h3>
+						<div id="edit-order-details-area">
+						</div>
+					</div>
+					<div class="modal-error hidden" id="edit-modal-error">
+					</div>
+					<div class="modal-actions">
+						<button class="btn btn-cancel" onclick="closeEditModal()" type="button">
+							انصراف
+						</button>
+						<button class="btn btn-submit" type="submit">
+							ذخیره تغییرات
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="modal edit-modal" id="edit-product-modal">
+			<div class="edit-modal-content product-edit-modal">
+				<div class="modal-header">
+					<h3>
+						ویرایش محصول
+					</h3>
+					<button class="close-modal-btn" onclick="closeProductEditModal()" type="button">
+						×
+					</button>
+				</div>
+				<form class="edit-form" id="edit-product-form">
+					<input id="edit-product-id" type="hidden"/>
+					<div class="form-grid">
+						<div class="form-group">
+							<label for="edit-product-code">
+								کد محصول
+							</label>
+							<input class="form-input" dir="ltr" id="edit-product-code" required="" type="text"/>
+						</div>
+						<div class="form-group">
+							<label for="edit-product-type">
+								نوع محصول
+							</label>
+							<select class="form-input" id="edit-product-type" required="">
+								<option value="JK">
+									جاکلیدی
+								</option>
+								<option value="JS">
+									جاسوئیچی
+								</option>
+								<option value="TB">
+									تابلو
+								</option>
+								<option value="CL">
+									ساعت
+								</option>
+								<option value="OT">
+									غیره
+								</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="edit-product-price">
+								قیمت
+							</label>
+							<input class="form-input" id="edit-product-price" min="0" required="" type="number"/>
+						</div>
+						<div class="form-group">
+							<label for="edit-product-status">
+								وضعیت
+							</label>
+							<select class="form-input" id="edit-product-status">
+								<option value="active">
+									فعال
+								</option>
+								<option value="out">
+									ناموجود
+								</option>
+								<option value="deleted">
+									حذف‌شده
+								</option>
+							</select>
+						</div>
+						<div class="form-group form-group-full">
+							<label for="edit-product-images">
+								تصاویر
+							</label>
+							<input class="form-input" dir="ltr" id="edit-product-images" type="text"/>
+						</div>
+						<div class="form-group form-group-full">
+							<label for="edit-product-description">
+								توضیحات
+							</label>
+							<textarea class="form-input" id="edit-product-description"></textarea>
+						</div>
+					</div>
+					<div id="edit-product-details-area">
+					</div>
+					<div class="order-form-message" id="edit-product-message">
+					</div>
+					<div class="modal-actions">
+						<button class="btn btn-cancel" onclick="closeProductEditModal()" type="button">
+							انصراف
+						</button>
+						<button class="btn btn-submit" type="submit">
+							ذخیره تغییرات
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<script>
+			"use strict";
 const SUPABASE_URL="https://rlduutynqgevgzmayeit.supabase.co";
 const SUPABASE_KEY="sb_publishable_QQKsRmCxqZNX1dZW7bjAmA_xypPHAjD";
 const shopDB=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -533,7 +1175,10 @@ function formatDate(value){if(!value)return "-";const date=new Date(value);if(Nu
 function getFirstImage(images,imageURL){if(images){const list=String(images).split("|").map(x=>x.trim()).filter(Boolean);if(list.length)return list[0];}return imageURL||"";}
 function getProfileName(profile){if(!profile)return "کاربر ناشناس";const fullName=[profile.first_name,profile.last_name].filter(Boolean).join(" ").trim();if(fullName)return fullName;if(profile.username)return profile.username;return "کاربر";}
 function getProfileAvatar(profile){return profile?.avatar_url||"";}
-async function checkAdmin(){const {data,error}=await shopDB.auth.getSession();if(error||!data.session){window.location.href="login.html";return false;}const user=data.session.user;const {data:profile,error:profileError}=await shopDB.from("profiles").select("*").eq("id",user.id).single();if(profileError||!profile){alert("دسترسی مدیر پیدا نشد.");await shopDB.auth.signOut();window.location.href="login.html";return false;}if(profile.username!=="admin"){alert("شما دسترسی مدیریت ندارید.");await shopDB.auth.signOut();window.location.href="login.html";return false;}document.getElementById("admin-name").textContent=getProfileName(profile);document.getElementById("admin-avatar").src=profile.avatar_url||"data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="#f3f4f6"/><circle cx="40" cy="30" r="14" fill="#9ca3af"/><path d="M16 70c3-17 15-25 24-25s21 8 24 25" fill="#9ca3af"/></svg>`);return true;}
+function applyTheme(){const dark=localStorage.getItem("tchoob-admin-theme")==="dark";document.documentElement.classList.toggle("dark-mode",dark);const button=document.getElementById("theme-toggle");if(button)button.textContent=dark?"حالت روشن":"حالت تاریک";}
+function toggleTheme(){const dark=document.documentElement.classList.contains("dark-mode");localStorage.setItem("tchoob-admin-theme",dark?"light":"dark");applyTheme();}
+applyTheme();
+async function checkAdmin(){const {data,error}=await shopDB.auth.getSession();if(error||!data.session){window.location.href="login.html";return false;}const user=data.session.user;const {data:profile,error:profileError}=await shopDB.from("profiles").select("*").eq("id",user.id).single();if(profileError||!profile){alert("دسترسی مدیر پیدا نشد.");await shopDB.auth.signOut();window.location.href="login.html";return false;}if(profile.username!=="admin"){alert("شما دسترسی مدیریت ندارید.");await shopDB.auth.signOut();window.location.href="login.html";return false;}document.getElementById("admin-name").textContent=getProfileName(profile);document.getElementById("admin-avatar").src=profile.avatar_url||ICON_PATH+"avatar.png";return true;}
 async function logout(){await shopDB.auth.signOut();window.location.href="login.html";}
 function switchTopSection(section){const ordersSidebar=document.getElementById("orders-sidebar");const productsSidebar=document.getElementById("products-sidebar");const ordersBtn=document.getElementById("top-orders-btn");const productsBtn=document.getElementById("top-products-btn");if(section==="orders"){ordersSidebar.classList.remove("hidden");productsSidebar.classList.add("hidden");ordersBtn.classList.add("active");productsBtn.classList.remove("active");showTab("orders-list",document.querySelector('[data-tab="orders-list"]'));}else{ordersSidebar.classList.add("hidden");productsSidebar.classList.remove("hidden");ordersBtn.classList.remove("active");productsBtn.classList.add("active");showTab("products-active",document.querySelector('[data-tab="products-active"]'));}}
 function showTab(tabName,button){document.querySelectorAll(".tab-content").forEach(tab=>tab.classList.add("hidden"));const target=document.getElementById(`tab-${tabName}`);if(target)target.classList.remove("hidden");document.querySelectorAll(".sidebar-btn").forEach(btn=>btn.classList.remove("active"));if(button)button.classList.add("active");if(tabName==="orders-list")loadCurrentOrders();if(tabName==="orders-completed")loadCompletedOrders();if(tabName==="orders-create")loadProfiles();if(tabName==="orders-cart")loadCarts();if(tabName==="products-active")loadProducts("active");if(tabName==="products-out")loadProducts("out");if(tabName==="products-deleted")loadProducts("deleted");}
@@ -545,9 +1190,89 @@ async function loadCurrentOrders(){const container=document.getElementById("orde
 async function loadCompletedOrders(){const container=document.getElementById("completed-orders-content");container.innerHTML='<div class="loading">در حال دریافت سفارش‌ها...</div>';try{completedOrders=await attachProfilesToOrders(await fetchOrders(COMPLETED_STATUS));container.innerHTML=renderOrders(completedOrders);}catch(error){container.innerHTML=`<div class="error-box">خطا در دریافت سفارش‌ها: ${escapeHTML(error.message)}</div>`;}}
 async function completeOrder(orderId){if(!confirm("آیا این سفارش تکمیل شده است؟"))return;const {error}=await shopDB.from("orders").update({status:COMPLETED_STATUS}).eq("id",orderId);if(error)return alert("خطا در تکمیل سفارش: "+error.message);await loadCurrentOrders();}
 async function restoreOrder(orderId){if(!confirm("سفارش به وضعیت «در حال انجام» بازگردانده شود؟"))return;const {error}=await shopDB.from("orders").update({status:"in progress"}).eq("id",orderId);if(error)return alert("خطا در بازگردانی سفارش: "+error.message);await loadCompletedOrders();}
-function openEditModal(orderId){const order=[...currentOrders,...completedOrders].find(x=>String(x.id)===String(orderId));if(!order)return;currentEditOrder=order;document.getElementById("edit-order-id").value=order.id;document.getElementById("edit-order-status").value=order.status;document.getElementById("edit-order-quantity").value=order.quantity||1;document.getElementById("edit-modal-error").classList.add("hidden");document.getElementById("edit-order-modal").classList.add("show");}
+async function openEditModal(orderId){
+const order=[...currentOrders,...completedOrders].find(x=>String(x.id)===String(orderId));
+if(!order)return;
+currentEditOrder=order;
+document.getElementById("edit-order-id").value=order.id;
+document.getElementById("edit-order-status").value=order.status||"in progress";
+document.getElementById("edit-order-code").value=order.code||"";
+document.getElementById("edit-order-product-name").value=order.product_name||"";
+document.getElementById("edit-order-product-type").value=order.product_type||"OT";
+document.getElementById("edit-order-price").value=order.price??0;
+document.getElementById("edit-order-quantity").value=order.quantity||1;
+document.getElementById("edit-order-images").value=order.images||order.image_url||"";
+document.getElementById("edit-order-description").value="";
+await loadEditOrderBuyers(order.user_id);
+await loadEditOrderDetails(order);
+document.getElementById("edit-modal-error").classList.add("hidden");
+document.getElementById("edit-order-modal").classList.add("show");
+}
+async function loadEditOrderBuyers(selectedUserId){
+const select=document.getElementById("edit-order-buyer");
+select.innerHTML="<option value=''>در حال دریافت کاربران...</option>";
+let profiles=allProfiles;
+if(!profiles.length){const {data,error}=await shopDB.from("profiles").select("id,username,first_name,last_name,avatar_url").neq("username","admin").order("username",{ascending:true});if(!error)profiles=data||[];}
+select.innerHTML="<option value=''>انتخاب کاربر...</option>";
+profiles.forEach(profile=>{const option=document.createElement("option");option.value=profile.id;option.textContent=getProfileName(profile)+(profile.username?` (@${profile.username})`:"");if(String(profile.id)===String(selectedUserId))option.selected=true;select.appendChild(option);});
+}
+async function loadEditOrderDetails(order){
+const area=document.getElementById("edit-order-details-area");
+let product=null;
+const code=order.product_name||order.code||"";
+if(code){const {data}=await shopDB.from("products").select("*").eq("name",code).maybeSingle();product=data||null;}
+const type=order.product_type||product?.product_type||"OT";
+const details=product?.details||{};
+order._productDetails=details;
+order._productData=product;
+document.getElementById("edit-order-description").value=product?.description||"";
+area.innerHTML=renderOrderEditDetails(type,details);
+}
+function renderOrderEditDetails(type,details={}){
+const d=key=>escapeHTML(details[key]??"");
+if(type==="JS")return `<div class="form-grid"><div class="form-group"><label for="edit-order-detail-wood">چوب</label><select id="edit-order-detail-wood" class="form-input"><option value="">انتخاب کنید...</option><option value="گردو">گردو</option><option value="عناب">عناب</option><option value="کرات">کرات</option><option value="نارنج">نارنج</option><option value="گردو سوخته">گردو سوخته</option><option value="سنجد">سنجد</option><option value="متفرقه">متفرقه</option></select></div><div class="form-group"><label for="edit-order-detail-size">اندازه</label><select id="edit-order-detail-size" class="form-input"><option value="">انتخاب کنید...</option><option value="کوچک">کوچک</option><option value="متوسط">متوسط</option><option value="بزرگ">بزرگ</option></select></div><div class="form-group"><label for="edit-order-detail-design">طرح</label><input id="edit-order-detail-design" class="form-input" type="text" value="${d("design")}"></div><div class="form-group"><label for="edit-order-detail-font">فونت</label><select id="edit-order-detail-font" class="form-input"><option value="ندارد">ندارد</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div></div>`;
+if(type==="JK")return `<div class="form-grid"><div class="form-group"><label for="edit-order-detail-wood">چوب</label><select id="edit-order-detail-wood" class="form-input"><option value="">انتخاب کنید...</option><option value="گردو">گردو</option><option value="عناب">عناب</option><option value="کرات">کرات</option><option value="نارنج">نارنج</option><option value="گردو سوخته">گردو سوخته</option><option value="سنجد">سنجد</option><option value="متفرقه">متفرقه</option></select></div><div class="form-group"><label for="edit-order-detail-hook_count">تعداد قلاب</label><input id="edit-order-detail-hook_count" class="form-input" type="number" min="0" value="${d("hook_count")}"></div><div class="form-group"><label for="edit-order-detail-width">عرض</label><input id="edit-order-detail-width" class="form-input" type="number" min="0" step="0.01" value="${d("width")}"></div><div class="form-group"><label for="edit-order-detail-length">طول</label><input id="edit-order-detail-length" class="form-input" type="number" min="0" step="0.01" value="${d("length")}"></div><div class="form-group form-group-full"><label for="edit-order-detail-design">طرح</label><input id="edit-order-detail-design" class="form-input" type="text" value="${d("design")}"></div></div>`;
+if(type==="TB"||type==="CL")return `<div class="form-grid"><div class="form-group form-group-full"><label for="edit-order-detail-design">طرح</label><input id="edit-order-detail-design" class="form-input" type="text" value="${d("design")}"></div><div class="form-group"><label for="edit-order-detail-width">عرض</label><input id="edit-order-detail-width" class="form-input" type="number" min="0" step="0.01" value="${d("width")}"></div><div class="form-group"><label for="edit-order-detail-length">طول</label><input id="edit-order-detail-length" class="form-input" type="number" min="0" step="0.01" value="${d("length")}"></div></div>`;
+return `<div class="form-grid"><div class="form-group form-group-full"><label for="edit-order-detail-product_name">نام محصول</label><input id="edit-order-detail-product_name" class="form-input" type="text" value="${d("product_name")}"></div><div class="form-group form-group-full"><label for="edit-order-detail-design">طرح</label><input id="edit-order-detail-design" class="form-input" type="text" value="${d("design")}"></div></div>`;
+}
+function getEditedOrderDetails(type){
+const value=id=>document.getElementById(id)?.value?.trim()||"";
+if(type==="JS")return{wood:value("edit-order-detail-wood"),size:value("edit-order-detail-size"),design:value("edit-order-detail-design"),font:value("edit-order-detail-font")};
+if(type==="JK")return{wood:value("edit-order-detail-wood"),width:value("edit-order-detail-width"),length:value("edit-order-detail-length"),hook_count:value("edit-order-detail-hook_count"),design:value("edit-order-detail-design")};
+if(type==="TB"||type==="CL")return{design:value("edit-order-detail-design"),width:value("edit-order-detail-width"),length:value("edit-order-detail-length")};
+return{product_name:value("edit-order-detail-product_name"),design:value("edit-order-detail-design")};
+}
+document.getElementById("edit-order-product-type").addEventListener("change",()=>{const oldDetails=currentEditOrder?._productDetails||{};document.getElementById("edit-order-details-area").innerHTML=renderOrderEditDetails(document.getElementById("edit-order-product-type").value,oldDetails);});
 function closeEditModal(){document.getElementById("edit-order-modal").classList.remove("show");currentEditOrder=null;}
-document.getElementById("edit-order-form").addEventListener("submit",async event=>{event.preventDefault();const orderId=document.getElementById("edit-order-id").value;const status=document.getElementById("edit-order-status").value;const quantity=Number(document.getElementById("edit-order-quantity").value);const errorBox=document.getElementById("edit-modal-error");if(!orderId||quantity<1){errorBox.textContent="اطلاعات واردشده معتبر نیست.";errorBox.classList.remove("hidden");return;}const {error}=await shopDB.from("orders").update({status,quantity}).eq("id",orderId);if(error){errorBox.textContent=error.message;errorBox.classList.remove("hidden");return;}closeEditModal();status===COMPLETED_STATUS?await loadCompletedOrders():await loadCurrentOrders();});
+document.getElementById("edit-order-form").addEventListener("submit",async event=>{
+event.preventDefault();
+const errorBox=document.getElementById("edit-modal-error");
+const orderId=document.getElementById("edit-order-id").value;
+const userId=document.getElementById("edit-order-buyer").value;
+const status=document.getElementById("edit-order-status").value;
+const code=document.getElementById("edit-order-code").value.trim();
+const productName=document.getElementById("edit-order-product-name").value.trim();
+const type=document.getElementById("edit-order-product-type").value;
+const price=Number(document.getElementById("edit-order-price").value);
+const quantity=Number(document.getElementById("edit-order-quantity").value);
+const images=document.getElementById("edit-order-images").value.trim();
+const description=document.getElementById("edit-order-description").value.trim();
+if(!orderId||!userId||!status||!productName||!type||!Number.isFinite(price)||price<0||!Number.isInteger(quantity)||quantity<1){errorBox.textContent="لطفاً همه اطلاعات لازم را درست وارد کنید.";errorBox.classList.remove("hidden");return;}
+const button=document.querySelector("#edit-order-form .btn-submit");button.disabled=true;button.textContent="در حال ذخیره...";
+try{
+const firstImage=images.split("|").map(x=>x.trim()).filter(Boolean)[0]||null;
+const details=getEditedOrderDetails(type);
+const orderUpdate={user_id:userId,status,code:code||productName,product_name:productName,product_type:type,price,quantity,images:images||null,image_url:firstImage};
+const {error:orderError}=await shopDB.from("orders").update(orderUpdate).eq("id",orderId);
+if(orderError)throw orderError;
+const oldCode=currentEditOrder?.product_name||currentEditOrder?.code||"";
+let productQuery=null;
+if(oldCode){const {data}=await shopDB.from("products").select("id").eq("name",oldCode).maybeSingle();productQuery=data||null;}
+if(productQuery){const productUpdate={name:productName,product_type:type,price,images:images||null,image_url:firstImage,description,details};const {error:productError}=await shopDB.from("products").update(productUpdate).eq("id",productQuery.id);if(productError)throw productError;}
+closeEditModal();
+if(status===COMPLETED_STATUS)await loadCompletedOrders();else await loadCurrentOrders();
+}catch(error){errorBox.textContent="خطا در ذخیره تغییرات: "+error.message;errorBox.classList.remove("hidden");}finally{button.disabled=false;button.textContent="ذخیره تغییرات";}
+});
 function openImageModal(url){const modal=document.getElementById("image-modal");document.getElementById("large-order-image").src=url;modal.classList.add("show");}
 function closeImageModal(event){if(event&&event.target&&event.target.id!=="image-modal")return;document.getElementById("image-modal").classList.remove("show");document.getElementById("large-order-image").src="";}
 function isValidProductCode(code){return /^TC(?:JK|JS|TB|CL|OT)[0-9A-F]{4}$/.test(String(code).trim().toUpperCase());}
@@ -584,6 +1309,6 @@ async function loadCarts(){const container=document.getElementById("carts-conten
 document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeImageModal();closeEditModal();closeProductEditModal();}});
 document.getElementById("image-modal").addEventListener("click",event=>{if(event.target.id==="image-modal")closeImageModal(event);});
 (async function init(){const isAdmin=await checkAdmin();if(!isAdmin)return;await loadCurrentOrders();await loadProfiles();})();
-</script>
-</body>
+		</script>
+	</body>
 </html>
