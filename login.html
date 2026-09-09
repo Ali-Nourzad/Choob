@@ -3,45 +3,29 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 	<title>ورود به حساب | T-Choob</title>
-
 	<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
 	<div class="auth-page">
-
 		<div class="auth-container">
-
 			<div class="auth-card">
-
 				<div class="auth-header">
-
 					<a href="index.html" class="auth-logo">
 						T
 					</a>
-
 					<h1>
 						ورود به حساب
 					</h1>
-
 					<p>
 						به T-Choob خوش آمدید
 					</p>
-
 				</div>
-
-
 				<form id="login-form" class="auth-form">
-
 					<div class="auth-field">
-
 						<label for="email">
 							ایمیل
 						</label>
-
 						<input
 							type="email"
 							id="email"
@@ -49,18 +33,12 @@
 							autocomplete="email"
 							required
 						>
-
 					</div>
-
-
 					<div class="auth-field">
-
 						<label for="password">
 							رمز عبور
 						</label>
-
 						<div class="auth-password-wrapper">
-
 							<input
 								type="password"
 								id="password"
@@ -68,7 +46,6 @@
 								autocomplete="current-password"
 								required
 							>
-
 							<button
 								type="button"
 								id="password-toggle"
@@ -76,18 +53,12 @@
 							>
 								نمایش
 							</button>
-
 						</div>
-
 					</div>
-
-
 					<div
 						id="login-message"
 						class="auth-message"
 					></div>
-
-
 					<button
 						type="submit"
 						id="login-button"
@@ -95,42 +66,27 @@
 					>
 						ورود به حساب
 					</button>
-
 				</form>
-
-
 				<div class="auth-divider">
 					<span>یا</span>
 				</div>
-
-
 				<div class="auth-register">
-
 					<span>
 						حساب کاربری ندارید؟
 					</span>
-
 					<a href="signup.html">
 						ساخت حساب جدید
 					</a>
-
 				</div>
-
-
 				<a
 					href="index.html"
 					class="auth-back"
 				>
 					بازگشت به فروشگاه
 				</a>
-
 			</div>
-
 		</div>
-
 	</div>
-
-
 	<script>
 		const passwordInput = document.getElementById("password");
 		const passwordToggle = document.getElementById("password-toggle");
@@ -150,7 +106,7 @@
 
 
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-	<script src="supabase.js"></script>
+	<!-- <script src="supabase.js"></script> -->
 	<script src="auth.js"></script>
 
 </body>
