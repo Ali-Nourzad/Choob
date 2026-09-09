@@ -1,365 +1,14 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>ثبت نام | T-Choob</title>
 
+	<link rel="icon" href="favicon.ico">
 	<link rel="stylesheet" href="style.css">
-
-	<style>
-		.signup-page {
-			min-height: 100vh;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 40px 20px;
-			background:
-				radial-gradient(circle at top right, rgba(49, 82, 107, 0.08), transparent 35%),
-				var(--bg);
-		}
-
-		.signup-container {
-			width: 100%;
-			max-width: 650px;
-		}
-
-		.signup-card {
-			background: var(--surface);
-			border: 1px solid var(--border);
-			border-radius: 24px;
-			padding: 36px;
-			box-shadow: var(--shadow-lg);
-		}
-
-		.signup-header {
-			text-align: center;
-			margin-bottom: 30px;
-		}
-
-		.signup-logo {
-			width: 70px;
-			height: 70px;
-			margin: 0 auto 16px;
-			border-radius: 20px;
-			background: var(--navy);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: #fff;
-			font-family: "Lalezar", sans-serif;
-			font-size: 32px;
-			box-shadow: 0 10px 25px rgba(49, 82, 107, 0.2);
-		}
-
-		.signup-header h1 {
-			margin: 0 0 8px;
-			font-family: "Lalezar", sans-serif;
-			font-size: 32px;
-			color: var(--text);
-		}
-
-		.signup-header p {
-			margin: 0;
-			color: var(--muted);
-			font-size: 14px;
-		}
-
-		.signup-form {
-			display: grid;
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 18px;
-		}
-
-		.form-group {
-			display: flex;
-			flex-direction: column;
-			gap: 8px;
-		}
-
-		.form-group.full-width {
-			grid-column: 1 / -1;
-		}
-
-		.form-group label {
-			font-size: 14px;
-			font-weight: 700;
-			color: var(--text);
-		}
-
-		.form-group input,
-		.form-group select,
-		.form-group textarea {
-			width: 100%;
-			box-sizing: border-box;
-			border: 1px solid var(--border);
-			border-radius: 13px;
-			padding: 13px 15px;
-			background: var(--surface-2);
-			color: var(--text);
-			font-family: inherit;
-			font-size: 14px;
-			outline: none;
-			transition: 0.2s ease;
-		}
-
-		.form-group textarea {
-			min-height: 90px;
-			resize: vertical;
-		}
-
-		.form-group input:focus,
-		.form-group select:focus,
-		.form-group textarea:focus {
-			border-color: var(--navy);
-			box-shadow: 0 0 0 3px rgba(49, 82, 107, 0.10);
-			background: var(--surface);
-		}
-
-		.form-group input::placeholder,
-		.form-group textarea::placeholder {
-			color: var(--muted);
-		}
-
-		.optional-label {
-			color: var(--muted);
-			font-size: 11px;
-			font-weight: 400;
-			margin-right: 5px;
-		}
-
-		.password-wrapper {
-			position: relative;
-		}
-
-		.password-wrapper input {
-			padding-left: 48px;
-		}
-
-		.password-toggle {
-			position: absolute;
-			left: 8px;
-			top: 50%;
-			transform: translateY(-50%);
-			width: 34px;
-			height: 34px;
-			border: 0;
-			border-radius: 9px;
-			background: transparent;
-			color: var(--muted);
-			cursor: pointer;
-			font-family: inherit;
-			font-size: 12px;
-		}
-
-		.password-toggle:hover {
-			background: var(--surface-3);
-			color: var(--navy);
-		}
-
-		.password-strength {
-			margin-top: 8px;
-		}
-
-		.password-strength-bar {
-			height: 5px;
-			border-radius: 20px;
-			background: var(--surface-3);
-			overflow: hidden;
-		}
-
-		.password-strength-fill {
-			width: 0;
-			height: 100%;
-			border-radius: inherit;
-			background: var(--red);
-			transition: 0.25s ease;
-		}
-
-		.password-strength-text {
-			margin-top: 6px;
-			font-size: 11px;
-			color: var(--muted);
-		}
-
-		.avatar-wrapper {
-			display: flex;
-			align-items: center;
-			gap: 16px;
-			padding: 14px;
-			border: 1px dashed var(--border);
-			border-radius: 14px;
-			background: var(--surface-2);
-		}
-
-		.avatar-preview {
-			width: 62px;
-			height: 62px;
-			border-radius: 50%;
-			background: var(--surface-3);
-			border: 2px solid var(--border);
-			object-fit: cover;
-			display: none;
-		}
-
-		.avatar-placeholder {
-			width: 62px;
-			height: 62px;
-			border-radius: 50%;
-			background: var(--navy);
-			color: #fff;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-family: "Lalezar", sans-serif;
-			font-size: 23px;
-			flex-shrink: 0;
-		}
-
-		.avatar-info {
-			flex: 1;
-		}
-
-		.avatar-info strong {
-			display: block;
-			font-size: 13px;
-			color: var(--text);
-			margin-bottom: 5px;
-		}
-
-		.avatar-info span {
-			display: block;
-			font-size: 11px;
-			color: var(--muted);
-		}
-
-		.avatar-input {
-			margin-top: 8px;
-			font-size: 12px !important;
-			padding: 8px !important;
-		}
-
-		.signup-submit {
-			grid-column: 1 / -1;
-			width: 100%;
-			border: 0;
-			border-radius: 14px;
-			padding: 15px 20px;
-			background: var(--navy);
-			color: #fff;
-			font-family: inherit;
-			font-size: 15px;
-			font-weight: 700;
-			cursor: pointer;
-			transition: 0.2s ease;
-			margin-top: 4px;
-		}
-
-		.signup-submit:hover {
-			background: var(--navy-dark);
-			transform: translateY(-1px);
-		}
-
-		.signup-submit:disabled {
-			opacity: 0.65;
-			cursor: not-allowed;
-			transform: none;
-		}
-
-		.signup-message {
-			grid-column: 1 / -1;
-			display: none;
-			padding: 12px 14px;
-			border-radius: 12px;
-			font-size: 13px;
-			line-height: 1.8;
-		}
-
-		.signup-message.error {
-			display: block;
-			background: var(--red-soft);
-			color: var(--red);
-			border: 1px solid rgba(184, 107, 103, 0.25);
-		}
-
-		.signup-message.success {
-			display: block;
-			background: var(--green-soft);
-			color: var(--green);
-			border: 1px solid rgba(95, 146, 119, 0.25);
-		}
-
-		.signup-footer {
-			text-align: center;
-			margin-top: 24px;
-			padding-top: 20px;
-			border-top: 1px solid var(--border);
-		}
-
-		.signup-footer p {
-			margin: 0 0 12px;
-			font-size: 13px;
-			color: var(--muted);
-		}
-
-		.signup-footer a {
-			color: var(--navy);
-			font-weight: 700;
-			text-decoration: none;
-		}
-
-		.signup-footer a:hover {
-			text-decoration: underline;
-		}
-
-		.back-to-shop {
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 100%;
-			padding: 12px;
-			border-radius: 12px;
-			border: 1px solid var(--border);
-			background: var(--surface-2);
-			color: var(--text);
-			text-decoration: none;
-			font-size: 13px;
-			font-weight: 700;
-			transition: 0.2s ease;
-		}
-
-		.back-to-shop:hover {
-			background: var(--surface-3);
-			border-color: var(--navy);
-			color: var(--navy);
-		}
-
-		@media (max-width: 600px) {
-			.signup-page {
-				padding: 20px 12px;
-			}
-
-			.signup-card {
-				padding: 24px 18px;
-				border-radius: 20px;
-			}
-
-			.signup-form {
-				grid-template-columns: 1fr;
-			}
-
-			.form-group.full-width,
-			.signup-submit,
-			.signup-message {
-				grid-column: auto;
-			}
-
-			.signup-header h1 {
-				font-size: 28px;
-			}
-		}
-	</style>
 </head>
 
 <body>
@@ -371,18 +20,29 @@
 			<div class="signup-card">
 
 				<div class="signup-header">
-					<div class="signup-logo">T</div>
 
-					<h1>ایجاد حساب کاربری</h1>
+					<div class="signup-logo">
+						T
+					</div>
+
+					<h1>
+						ایجاد حساب کاربری
+					</h1>
 
 					<p>
 						برای ثبت سفارش و مدیریت حساب خود ثبت نام کنید
 					</p>
+
 				</div>
 
-				<form id="signup-form" class="signup-form">
+
+				<form
+					id="signup-form"
+					class="signup-form">
+
 
 					<div class="form-group">
+
 						<label for="first-name">
 							نام
 						</label>
@@ -393,11 +53,13 @@
 							name="first_name"
 							placeholder="نام خود را وارد کنید"
 							autocomplete="given-name"
-							required
-						>
+							required>
+
 					</div>
 
+
 					<div class="form-group">
+
 						<label for="last-name">
 							نام خانوادگی
 						</label>
@@ -408,41 +70,47 @@
 							name="last_name"
 							placeholder="نام خانوادگی خود را وارد کنید"
 							autocomplete="family-name"
-							required
-						>
+							required>
+
 					</div>
 
+
 					<div class="form-group">
-						<label for="username">
+
+						<label for="signup-username">
 							نام کاربری
 						</label>
 
 						<input
 							type="text"
-							id="username"
+							id="signup-username"
 							name="username"
 							placeholder="نام کاربری"
 							autocomplete="username"
-							required
-						>
+							required>
+
 					</div>
 
+
 					<div class="form-group">
-						<label for="phone">
+
+						<label for="signup-phone">
 							شماره تلفن
 						</label>
 
 						<input
 							type="tel"
-							id="phone"
+							id="signup-phone"
 							name="phone"
 							placeholder="مثلاً 09123456789"
 							autocomplete="tel"
-							required
-						>
+							required>
+
 					</div>
 
+
 					<div class="form-group">
+
 						<label for="gender">
 							جنسیت
 						</label>
@@ -450,32 +118,49 @@
 						<select
 							id="gender"
 							name="gender"
-							required
-						>
-							<option value="">انتخاب کنید</option>
-							<option value="male">مرد</option>
-							<option value="female">زن</option>
-							<option value="other">سایر</option>
+							required>
+
+							<option value="">
+								انتخاب کنید
+							</option>
+
+							<option value="male">
+								مرد
+							</option>
+
+							<option value="female">
+								زن
+							</option>
+
+							<option value="other">
+								سایر
+							</option>
+
 						</select>
+
 					</div>
 
+
 					<div class="form-group">
-						<label for="email">
+
+						<label for="signup-email">
 							ایمیل
 						</label>
 
 						<input
 							type="email"
-							id="email"
+							id="signup-email"
 							name="email"
 							placeholder="example@email.com"
 							autocomplete="email"
-							required
-						>
+							required>
+
 					</div>
 
+
 					<div class="form-group">
-						<label for="password">
+
+						<label for="signup-password">
 							رمز عبور
 						</label>
 
@@ -483,62 +168,74 @@
 
 							<input
 								type="password"
-								id="password"
+								id="signup-password"
 								name="password"
 								placeholder="رمز عبور خود را وارد کنید"
 								autocomplete="new-password"
 								required
-								minlength="6"
-							>
+								minlength="6">
 
 							<button
 								type="button"
 								class="password-toggle"
 								id="password-toggle"
-								aria-label="نمایش رمز عبور"
-							>
+								aria-label="نمایش رمز عبور">
 								نمایش
 							</button>
 
 						</div>
 
+
 						<div class="password-strength">
+
 							<div class="password-strength-bar">
+
 								<div
 									id="password-strength-fill"
-									class="password-strength-fill"
-								></div>
+									class="password-strength-fill">
+								</div>
+
 							</div>
+
 
 							<div
 								id="password-strength-text"
-								class="password-strength-text"
-							>
+								class="password-strength-text">
 								حداقل ۶ کاراکتر
 							</div>
+
 						</div>
+
 					</div>
 
+
 					<div class="form-group">
-						<label for="avatar">
+
+						<label for="signup-avatar">
+
 							تصویر پروفایل
-							<span class="optional-label">(اختیاری)</span>
+
+							<span class="optional-label">
+								(اختیاری)
+							</span>
+
 						</label>
+
 
 						<div class="avatar-wrapper">
 
 							<div
 								id="avatar-placeholder"
-								class="avatar-placeholder"
-							>
+								class="avatar-placeholder">
 								T
 							</div>
+
 
 							<img
 								id="avatar-preview"
 								class="avatar-preview"
-								alt="پیش‌نمایش تصویر پروفایل"
-							>
+								alt="پیش‌نمایش تصویر پروفایل">
+
 
 							<div class="avatar-info">
 
@@ -552,61 +249,71 @@
 
 								<input
 									type="file"
-									id="avatar"
+									id="signup-avatar"
 									name="avatar"
 									class="avatar-input"
-									accept="image/*"
-								>
+									accept="image/*">
 
 							</div>
 
 						</div>
+
 					</div>
+
 
 					<div class="form-group full-width">
 
 						<label for="address">
+
 							آدرس
-							<span class="optional-label">(اختیاری)</span>
+
+							<span class="optional-label">
+								(اختیاری)
+							</span>
+
 						</label>
 
 						<textarea
 							id="address"
 							name="address"
 							placeholder="اگر مایل هستید آدرس خود را وارد کنید..."
-							autocomplete="street-address"
-						></textarea>
+							autocomplete="street-address"></textarea>
 
 					</div>
 
+
 					<div
 						id="signup-message"
-						class="signup-message"
-					></div>
+						class="signup-message">
+					</div>
+
 
 					<button
 						type="submit"
-						id="signup-button"
-						class="signup-submit"
-					>
+						id="signup-btn"
+						class="signup-submit">
 						ایجاد حساب کاربری
 					</button>
 
 				</form>
 
+
 				<div class="signup-footer">
 
 					<p>
+
 						قبلاً حساب کاربری ساخته‌اید؟
+
 						<a href="login.html">
 							ورود به حساب
 						</a>
+
 					</p>
+
 
 					<a
 						href="index.html"
-						class="back-to-shop"
-					>
+						class="back-to-shop">
 						بازگشت به فروشگاه
 					</a>
 
@@ -618,101 +325,224 @@
 
 	</div>
 
+
 	<script>
-		const passwordInput = document.getElementById("password");
-		const passwordToggle = document.getElementById("password-toggle");
-		const passwordStrengthFill = document.getElementById("password-strength-fill");
-		const passwordStrengthText = document.getElementById("password-strength-text");
+		const passwordInput =
+			document.getElementById(
+				"signup-password"
+			);
 
-		passwordToggle.addEventListener("click", () => {
-			const isPassword = passwordInput.type === "password";
 
-			passwordInput.type = isPassword ? "text" : "password";
-			passwordToggle.textContent = isPassword ? "مخفی" : "نمایش";
-		});
+		const passwordToggle =
+			document.getElementById(
+				"password-toggle"
+			);
 
-		passwordInput.addEventListener("input", () => {
-			const password = passwordInput.value;
-			let strength = 0;
 
-			if (password.length >= 6) {
-				strength++;
+		const passwordStrengthFill =
+			document.getElementById(
+				"password-strength-fill"
+			);
+
+
+		const passwordStrengthText =
+			document.getElementById(
+				"password-strength-text"
+			);
+
+
+		passwordToggle.addEventListener(
+			"click",
+			function () {
+
+				const isPassword =
+					passwordInput.type ===
+					"password";
+
+
+				passwordInput.type =
+					isPassword
+						? "text"
+						: "password";
+
+
+				passwordToggle.textContent =
+					isPassword
+						? "مخفی"
+						: "نمایش";
+
 			}
+		);
 
-			if (password.length >= 8) {
-				strength++;
+
+		passwordInput.addEventListener(
+			"input",
+			function () {
+
+				const password =
+					passwordInput.value;
+
+
+				let strength = 0;
+
+
+				if (password.length >= 6) {
+					strength++;
+				}
+
+
+				if (password.length >= 8) {
+					strength++;
+				}
+
+
+				if (/[A-Z]/.test(password)) {
+					strength++;
+				}
+
+
+				if (/[0-9]/.test(password)) {
+					strength++;
+				}
+
+
+				if (
+					/[^A-Za-z0-9]/.test(password)
+				) {
+					strength++;
+				}
+
+
+				const widths = [
+					"0%",
+					"20%",
+					"40%",
+					"60%",
+					"80%",
+					"100%"
+				];
+
+
+				passwordStrengthFill.style.width =
+					widths[strength];
+
+
+				if (!password) {
+
+					passwordStrengthText.textContent =
+						"حداقل ۶ کاراکتر";
+
+				} else if (strength <= 1) {
+
+					passwordStrengthText.textContent =
+						"رمز عبور ضعیف است";
+
+				} else if (strength <= 3) {
+
+					passwordStrengthText.textContent =
+						"رمز عبور متوسط است";
+
+				} else {
+
+					passwordStrengthText.textContent =
+						"رمز عبور قوی است";
+
+				}
+
 			}
+		);
 
-			if (/[A-Z]/.test(password)) {
-				strength++;
+
+		const avatarInput =
+			document.getElementById(
+				"signup-avatar"
+			);
+
+
+		const avatarPreview =
+			document.getElementById(
+				"avatar-preview"
+			);
+
+
+		const avatarPlaceholder =
+			document.getElementById(
+				"avatar-placeholder"
+			);
+
+
+		avatarInput.addEventListener(
+			"change",
+			function () {
+
+				const file =
+					avatarInput.files[0];
+
+
+				if (!file) {
+
+					avatarPreview.style.display =
+						"none";
+
+					avatarPlaceholder.style.display =
+						"flex";
+
+					avatarPreview.removeAttribute(
+						"src"
+					);
+
+					return;
+				}
+
+
+				if (
+					!file.type.startsWith(
+						"image/"
+					)
+				) {
+
+					avatarInput.value = "";
+
+					avatarPreview.style.display =
+						"none";
+
+					avatarPlaceholder.style.display =
+						"flex";
+
+					return;
+				}
+
+
+				const reader =
+					new FileReader();
+
+
+				reader.onload =
+					function (event) {
+
+						avatarPreview.src =
+							event.target.result;
+
+						avatarPreview.style.display =
+							"block";
+
+						avatarPlaceholder.style.display =
+							"none";
+
+					};
+
+
+				reader.readAsDataURL(file);
+
 			}
-
-			if (/[0-9]/.test(password)) {
-				strength++;
-			}
-
-			if (/[^A-Za-z0-9]/.test(password)) {
-				strength++;
-			}
-
-			const widths = [
-				"0%",
-				"20%",
-				"40%",
-				"60%",
-				"80%",
-				"100%"
-			];
-
-			passwordStrengthFill.style.width = widths[strength];
-
-			if (!password) {
-				passwordStrengthText.textContent = "حداقل ۶ کاراکتر";
-			} else if (strength <= 1) {
-				passwordStrengthText.textContent = "رمز عبور ضعیف است";
-			} else if (strength <= 3) {
-				passwordStrengthText.textContent = "رمز عبور متوسط است";
-			} else {
-				passwordStrengthText.textContent = "رمز عبور قوی است";
-			}
-		});
-
-		const avatarInput = document.getElementById("avatar");
-		const avatarPreview = document.getElementById("avatar-preview");
-		const avatarPlaceholder = document.getElementById("avatar-placeholder");
-
-		avatarInput.addEventListener("change", () => {
-			const file = avatarInput.files[0];
-
-			if (!file) {
-				avatarPreview.style.display = "none";
-				avatarPlaceholder.style.display = "flex";
-				avatarPreview.removeAttribute("src");
-				return;
-			}
-
-			if (!file.type.startsWith("image/")) {
-				avatarInput.value = "";
-				avatarPreview.style.display = "none";
-				avatarPlaceholder.style.display = "flex";
-				return;
-			}
-
-			const reader = new FileReader();
-
-			reader.onload = (event) => {
-				avatarPreview.src = event.target.result;
-				avatarPreview.style.display = "block";
-				avatarPlaceholder.style.display = "none";
-			};
-
-			reader.readAsDataURL(file);
-		});
+		);
 	</script>
 
+
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-	<script src="supabase.js"></script>
+
 	<script src="auth.js"></script>
 
 </body>
+
 </html>
