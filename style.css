@@ -1,2501 +1,2612 @@
 @font-face {
-	font-family: 'Lalezar';
-	src: url('./Lalezar-Regular.ttf') format('truetype');
+    font-family: "Lalezar";
+    src: url("Lalezar-Regular.ttf") format("truetype");
+    font-display: swap;
 }
 
 :root {
-	--bg: #f6f0e7;
-	--bg-soft: #fbf7f1;
+    --bg: #f6f0e7;
+    --bg-soft: #fbf7f1;
 
-	--surface: #fffdf9;
-	--surface-2: #f8f2e9;
-	--surface-3: #f1e8dc;
+    --surface: #fffdf9;
+    --surface-2: #f8f2e9;
+    --surface-3: #f1e8dc;
 
-	--text: #342d27;
-	--muted: #80746a;
+    --text: #342d27;
+    --muted: #80746a;
 
-	--border: #e7dbcd;
+    --border: #e7dbcd;
 
-	--primary: #8b5e3c;
-	--primary-dark: #67432b;
-	--primary-soft: #f0dfcd;
+    --primary: #8b5e3c;
+    --primary-dark: #67432b;
+    --primary-soft: #f0dfcd;
 
-	--navy: #31526b;
-	--navy-dark: #253f53;
-	--navy-soft: #dce7ee;
+    --navy: #31526b;
+    --navy-dark: #253f53;
+    --navy-soft: #dce7ee;
 
-	--green: #6f8050;
-	--green-dark: #59683f;
-	--green-soft: #e6ecd9;
+    --green: #6f8050;
+    --green-dark: #59683f;
+    --green-soft: #e6ecd9;
 
-	--yellow: #b68a43;
-	--yellow-soft: #f6ecd8;
+    --yellow: #b68a43;
+    --yellow-soft: #f6ecd8;
 
-	--red: #b86b67;
-	--red-dark: #984f4b;
-	--red-soft: #f5e2e0;
+    --red: #b86b67;
+    --red-dark: #984f4b;
+    --red-soft: #f5e2e0;
 
-	--shadow: 0 10px 35px rgba(75, 55, 38, .08);
-	--shadow-lg: 0 20px 60px rgba(57, 42, 29, .14);
+    --shadow: 0 10px 35px rgba(75, 55, 38, 0.08);
+    --shadow-lg: 0 20px 60px rgba(57, 42, 29, 0.14);
 
-	--radius: 18px;
-	--transition: .2s ease;
+    --radius: 18px;
+    --transition: 0.2s ease;
 }
 
-
-/* =========================================================
-   پایه
-========================================================= */
-
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	font-family: 'Lalezar', sans-serif;
+    box-sizing: border-box;
 }
 
 html {
-	scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 body {
-	background: var(--bg);
-	color: var(--text);
-	min-height: 100vh;
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Lalezar", "Vazirmatn", Tahoma, sans-serif;
+    direction: rtl;
 }
 
 button,
 input,
 select,
 textarea {
-	font-family: inherit;
+    font: inherit;
 }
 
 button {
-	cursor: pointer;
+    border: 0;
 }
 
 a {
-	color: inherit;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
 }
 
 .hidden {
-	display: none !important;
+    display: none !important;
 }
 
+/* =========================================
+   GENERAL
+========================================= */
 
-/* =========================================================
-   ناوبار
-========================================================= */
+.main-container {
+    width: min(1200px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.section-title {
+    margin: 0;
+    color: var(--text);
+    font-family: "Lalezar", sans-serif;
+    font-size: 30px;
+}
+
+.section-subtitle {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.form-message {
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.form-message.error {
+    color: var(--red-dark);
+    background: var(--red-soft);
+    border: 1px solid rgba(184, 107, 103, 0.25);
+}
+
+.form-message.success {
+    color: var(--green-dark);
+    background: var(--green-soft);
+    border: 1px solid rgba(111, 128, 80, 0.25);
+}
+
+/* =========================================
+   NAVBAR
+========================================= */
 
 .navbar {
-	position: sticky;
-	top: 0;
-	z-index: 1000;
-	padding: 15px 0;
-	background: var(--surface);
-	border-bottom: 1px solid var(--border);
-	box-shadow: 0 5px 25px rgba(57, 42, 29, .07);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    background: var(--navy);
+    color: #fff;
+
+    box-shadow: 0 8px 28px rgba(37, 63, 83, 0.18);
 }
 
 .navbar-container {
-	width: 95%;
-	max-width: 1400px;
-	margin: auto;
+    width: min(1200px, calc(100% - 40px));
+    min-height: 76px;
+    margin: 0 auto;
 
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
 }
 
 .logo {
-	font-size: 32px;
-	color: var(--navy);
-	text-decoration: none;
-	cursor: pointer;
-	transition: var(--transition);
-}
-
-.logo:hover {
-	color: var(--primary);
+    margin: 0;
+    color: #fff;
+    font-family: "Lalezar", sans-serif;
+    font-size: 31px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
 }
 
 .navbar-actions {
-	display: flex;
-	align-items: center;
-	gap: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-
-/* =========================================================
-   لینک کاربر
-========================================================= */
-
-.user-link {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-
-	text-decoration: none;
-	color: var(--text);
-
-	padding: 6px 10px;
-	border-radius: 14px;
-
-	transition: var(--transition);
+.customer-order-btn,
+.cart-btn,
+.back-link {
+    transition:
+        transform var(--transition),
+        background var(--transition),
+        box-shadow var(--transition);
 }
-
-.user-link:hover {
-	background: var(--surface-2);
-}
-
-.user-avatar {
-	width: 44px;
-	height: 44px;
-
-	border-radius: 50%;
-	object-fit: cover;
-
-	border: 2px solid var(--primary-soft);
-	background: var(--surface-3);
-}
-
-.user-name {
-	font-size: 16px;
-	font-weight: 500;
-	color: var(--text);
-	white-space: nowrap;
-}
-
-
-/* =========================================================
-   سبد خرید - دکمه
-========================================================= */
-
-.cart-btn {
-	position: relative;
-
-	width: 46px;
-	height: 46px;
-
-	border: 1px solid var(--border);
-	border-radius: 14px;
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	background: var(--surface-2);
-	color: var(--navy);
-
-	flex-shrink: 0;
-
-	font-size: 22px;
-
-	transition: var(--transition);
-}
-
-.cart-btn:hover {
-	background: var(--navy);
-	color: #fff;
-	transform: translateY(-2px);
-	box-shadow: 0 7px 18px rgba(49, 82, 107, .18);
-}
-
-#cart-count {
-	position: absolute;
-
-	top: -6px;
-	right: -6px;
-
-	width: 21px;
-	height: 21px;
-
-	border-radius: 50%;
-
-	background: var(--red);
-	color: #fff;
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	font-size: 11px;
-	border: 2px solid var(--surface);
-}
-
-
-/* =========================================================
-   بنر
-========================================================= */
-
-.hero {
-	width: 95%;
-	max-width: 1600px;
-	height: 420px;
-
-	margin: 35px auto;
-
-	border-radius: 28px;
-	overflow: hidden;
-
-	background:
-		url('https://cdn.yjcnews.ir/files/fa/news/1396/7/4/6818535_125.jpg');
-
-	background-size: cover;
-	background-position: center;
-
-	position: relative;
-
-	box-shadow: var(--shadow);
-}
-
-.hero-overlay {
-	position: absolute;
-	inset: 0;
-
-	background:
-		linear-gradient(
-			90deg,
-			rgba(24, 59, 86, .10),
-			rgba(24, 59, 86, .45)
-		);
-}
-
-.hero-text {
-	position: absolute;
-
-	right: 60px;
-	top: 50%;
-
-	transform: translateY(-50%);
-
-	text-align: right;
-}
-
-.hero-text h1 {
-	font-size: 64px;
-	color: #fff;
-
-	margin-bottom: 18px;
-
-	text-shadow: 0 4px 15px rgba(0, 0, 0, .25);
-}
-
-.hero-text p {
-	font-size: 30px;
-	color: #f8f2e9;
-
-	text-shadow: 0 3px 10px rgba(0, 0, 0, .25);
-}
-
-
-/* =========================================================
-   بخش جستجو
-========================================================= */
-
-.search-section {
-	width: 95%;
-	max-width: 1400px;
-
-	margin: 35px auto;
-
-	display: flex;
-	gap: 14px;
-}
-
-.search-section input,
-.search-section select {
-	flex: 1;
-
-	padding: 15px 18px;
-
-	border: 1px solid var(--border);
-	border-radius: 14px;
-
-	background: var(--surface);
-	color: var(--text);
-
-	font-size: 16px;
-
-	outline: none;
-
-	box-shadow: 0 4px 15px rgba(75, 55, 38, .04);
-
-	transition: var(--transition);
-}
-
-.search-section input::placeholder {
-	color: var(--muted);
-}
-
-.search-section input:focus,
-.search-section select:focus {
-	border-color: var(--navy);
-
-	box-shadow:
-		0 0 0 3px rgba(49, 82, 107, .10);
-}
-
-
-/* =========================================================
-   کانتینر اصلی
-========================================================= */
-
-.main-container {
-	width: 95%;
-	max-width: 1400px;
-
-	margin: auto;
-
-	padding-bottom: 60px;
-}
-
-
-/* =========================================================
-   هدر محصولات
-========================================================= */
-
-.products-header {
-	text-align: center;
-	margin-bottom: 40px;
-}
-
-.products-header h2 {
-	font-size: 42px;
-	color: var(--text);
-}
-
-.products-header p {
-	font-size: 18px;
-	color: var(--muted);
-	margin-top: 7px;
-}
-
-
-/* =========================================================
-   شبکه محصولات
-========================================================= */
-
-#product-grid,
-.products-grid {
-	display: grid;
-
-	grid-template-columns:
-		repeat(auto-fill, minmax(280px, 1fr));
-
-	gap: 24px;
-}
-
-
-/* =========================================================
-   کارت محصول
-========================================================= */
-
-.product-card {
-	background: var(--surface);
-
-	border: 1px solid var(--border);
-
-	border-radius: 22px;
-
-	overflow: hidden;
-
-	box-shadow: var(--shadow);
-
-	transition: .25s ease;
-
-	display: flex;
-	flex-direction: column;
-}
-
-.product-card:hover {
-	transform: translateY(-5px);
-
-	box-shadow: var(--shadow-lg);
-
-	border-color: #d9cbbb;
-}
-
-
-/* =========================================================
-   تصویر محصول
-========================================================= */
-
-.product-image-box {
-	width: 100%;
-	height: 280px;
-
-	overflow: hidden;
-
-	background: var(--surface-3);
-
-	cursor: pointer;
-}
-
-.product-image {
-	width: 100%;
-	height: 100%;
-
-	object-fit: cover;
-
-	display: block;
-
-	transition: .35s ease;
-}
-
-.product-card:hover .product-image {
-	transform: scale(1.035);
-}
-
-
-/* =========================================================
-   اطلاعات محصول
-========================================================= */
-
-.product-info {
-	padding: 20px;
-
-	display: flex;
-	flex-direction: column;
-
-	gap: 13px;
-
-	flex: 1;
-}
-
-.product-name {
-	font-size: 26px;
-	font-weight: 700;
-
-	color: var(--text);
-}
-
-.product-price {
-	font-size: 19px;
-	font-weight: 700;
-
-	color: var(--primary);
-}
-
-
-/* =========================================================
-   دکمه محصول
-========================================================= */
-
-.product-btn {
-	width: 100%;
-
-	border: none;
-
-	cursor: pointer;
-
-	padding: 13px 16px;
-
-	border-radius: 13px;
-
-	background: var(--navy);
-	color: #fff;
-
-	font-size: 18px;
-
-	transition: var(--transition);
-}
-
-.product-btn:hover {
-	background: var(--navy-dark);
-
-	transform: translateY(-2px);
-
-	box-shadow: 0 7px 18px rgba(49, 82, 107, .18);
-}
-
-
-/* =========================================================
-   دکمه ثبت سفارش
-========================================================= */
 
 .customer-order-btn {
-	border: none;
+    min-height: 44px;
+    padding: 0 20px;
 
-	border-radius: 12px;
+    border-radius: 12px;
 
-	padding: 11px 16px;
+    background: #fff;
+    color: var(--navy);
 
-	background: var(--primary);
-	color: #fff;
-
-	font-family: inherit;
-	font-size: 14px;
-	font-weight: 700;
-
-	cursor: pointer;
-
-	transition: var(--transition);
+    font-weight: 700;
+    cursor: pointer;
 }
 
 .customer-order-btn:hover {
-	background: var(--primary-dark);
-
-	transform: translateY(-1px);
-
-	box-shadow: 0 7px 18px rgba(139, 94, 60, .18);
+    background: #f4f7f9;
+    transform: translateY(-1px);
 }
 
+.cart-btn {
+    position: relative;
 
-/* =========================================================
-   سبد خرید
-========================================================= */
+    width: 46px;
+    height: 46px;
 
-.cart-modal {
-	position: fixed;
-	inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-	background: rgba(34, 29, 25, .55);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.12);
 
-	display: flex;
-	justify-content: flex-start;
-
-	z-index: 9999;
-
-	backdrop-filter: blur(3px);
+    color: #fff;
+    cursor: pointer;
 }
 
-.cart-modal.hidden {
-	display: none;
+.cart-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
 }
 
-.cart-panel {
-	width: 500px;
-	height: 100%;
-
-	background: var(--surface);
-
-	border-left: 1px solid var(--border);
-
-	padding: 28px;
-
-	display: flex;
-	flex-direction: column;
-
-	box-shadow: var(--shadow-lg);
+.cart-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: block;
 }
 
-.cart-header {
-	display: flex;
+#cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
 
-	justify-content: space-between;
-	align-items: center;
+    min-width: 20px;
+    height: 20px;
 
-	margin-bottom: 25px;
+    padding: 0 5px;
 
-	padding-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-	border-bottom: 1px solid var(--border);
+    border-radius: 999px;
+
+    background: var(--red);
+    color: #fff;
+
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
 }
-
-.cart-header h2 {
-	font-size: 28px;
-}
-
-.cart-header button {
-	width: 40px;
-	height: 40px;
-
-	border: none;
-
-	border-radius: 12px;
-
-	background: var(--surface-2);
-
-	color: var(--text);
-
-	font-size: 25px;
-
-	cursor: pointer;
-
-	transition: var(--transition);
-}
-
-.cart-header button:hover {
-	background: var(--red-soft);
-	color: var(--red);
-}
-
-.cart-items {
-	flex: 1;
-	overflow: auto;
-	padding-left: 3px;
-}
-
-.cart-footer {
-	border-top: 1px solid var(--border);
-
-	padding-top: 20px;
-
-	margin-top: 15px;
-}
-
-.cart-total {
-	display: flex;
-
-	justify-content: space-between;
-
-	font-size: 23px;
-
-	margin-bottom: 18px;
-
-	color: var(--text);
-}
-
-.cart-footer button {
-	width: 100%;
-
-	padding: 15px;
-
-	border: none;
-
-	border-radius: 14px;
-
-	font-size: 18px;
-
-	cursor: pointer;
-
-	background: var(--green);
-	color: #fff;
-
-	transition: var(--transition);
-}
-
-.cart-footer button:hover {
-	background: var(--green-dark);
-
-	transform: translateY(-1px);
-}
-
-
-/* =========================================================
-   آیتم سبد خرید
-========================================================= */
-
-.cart-item {
-	display: flex;
-
-	align-items: center;
-
-	gap: 16px;
-
-	padding: 17px 4px;
-
-	border-bottom: 1px solid var(--border);
-}
-
-.cart-item-image {
-	width: 80px;
-	height: 80px;
-
-	object-fit: cover;
-
-	border-radius: 14px;
-
-	display: block;
-
-	background: var(--surface-3);
-
-	padding: 0;
-
-	flex-shrink: 0;
-}
-
-.cart-item-info {
-	flex: 1;
-}
-
-.cart-item-name {
-	font-size: 18px;
-
-	font-weight: 700;
-
-	color: var(--text);
-
-	margin-bottom: 6px;
-}
-
-.cart-item-price {
-	font-size: 14px;
-
-	color: var(--muted);
-}
-
-.cart-item-quantity {
-	display: flex;
-
-	align-items: center;
-
-	gap: 8px;
-}
-
-.qty-btn {
-	width: 34px;
-	height: 34px;
-
-	border: 1px solid var(--border);
-
-	border-radius: 10px;
-
-	cursor: pointer;
-
-	font-size: 17px;
-
-	background: var(--surface-2);
-
-	color: var(--navy);
-
-	transition: var(--transition);
-}
-
-.qty-btn:hover {
-	background: var(--navy);
-	color: #fff;
-}
-
-.qty-number {
-	min-width: 24px;
-
-	text-align: center;
-
-	font-size: 17px;
-
-	font-weight: 700;
-}
-
-.cart-item-total {
-	width: 120px;
-
-	font-weight: 700;
-
-	text-align: center;
-
-	color: var(--primary);
-}
-
-.remove-btn {
-	width: 34px;
-	height: 34px;
-
-	border: none;
-
-	border-radius: 10px;
-
-	background: transparent;
-
-	color: var(--muted);
-
-	cursor: pointer;
-
-	font-size: 20px;
-
-	transition: var(--transition);
-}
-
-.remove-btn:hover {
-	background: var(--red-soft);
-	color: var(--red);
-	transform: scale(1.05);
-}
-
-
-/* =========================================================
-   پروفایل
-========================================================= */
-
-.profile-page {
-	width: 95%;
-	max-width: 900px;
-
-	margin: 40px auto;
-
-	padding: 10px 0 50px;
-}
-
-.profile-card {
-	background: var(--surface);
-
-	border: 1px solid var(--border);
-
-	border-radius: 24px;
-
-	padding: 38px;
-
-	box-shadow: var(--shadow-lg);
-}
-
-.profile-header {
-	display: flex;
-
-	flex-direction: column;
-
-	align-items: center;
-
-	text-align: center;
-}
-
-.profile-avatar {
-	width: 145px;
-	height: 145px;
-
-	border-radius: 50%;
-
-	object-fit: cover;
-
-	border: 5px solid var(--primary-soft);
-
-	background: var(--surface-3);
-
-	box-shadow: 0 10px 25px rgba(75, 55, 38, .10);
-}
-
-.profile-username {
-	font-size: 34px;
-
-	margin-top: 20px;
-
-	color: var(--text);
-}
-
-.profile-info {
-	color: var(--muted);
-
-	margin-top: 8px;
-
-	font-size: 17px;
-}
-
-.profile-section {
-	border-top: 1px solid var(--border);
-
-	margin-top: 40px;
-
-	padding-top: 30px;
-}
-
-.profile-title {
-	font-size: 27px;
-
-	margin-bottom: 22px;
-
-	color: var(--text);
-}
-
-.profile-form {
-	display: flex;
-
-	flex-direction: column;
-
-	gap: 15px;
-}
-
-.profile-input {
-	width: 100%;
-
-	border: 1px solid var(--border);
-
-	outline: none;
-
-	background: var(--surface-2);
-
-	color: var(--text);
-
-	border-radius: 13px;
-
-	padding: 14px 16px;
-
-	font-size: 16px;
-
-	transition: var(--transition);
-}
-
-.profile-input:focus {
-	background: var(--surface);
-
-	border-color: var(--navy);
-
-	box-shadow:
-		0 0 0 3px rgba(49, 82, 107, .10);
-}
-
-.profile-btn {
-	width: 100%;
-
-	border: none;
-
-	cursor: pointer;
-
-	border-radius: 13px;
-
-	padding: 14px;
-
-	color: #fff;
-
-	font-size: 17px;
-
-	transition: var(--transition);
-}
-
-.password-btn {
-	background: var(--yellow);
-}
-
-.password-btn:hover {
-	background: #9c742f;
-}
-
-.save-btn {
-	background: var(--navy);
-}
-
-.save-btn:hover {
-	background: var(--navy-dark);
-}
-
-.logout-btn {
-	background: var(--red);
-}
-
-.logout-btn:hover {
-	background: var(--red-dark);
-}
-
-
-/* =========================================================
-   سفارش‌ها
-========================================================= */
-
-.orders-container {
-	display: flex;
-
-	flex-direction: column;
-
-	gap: 16px;
-}
-
-#orders-list {
-	display: grid;
-
-	gap: 18px;
-
-	margin-top: 20px;
-}
-
-.order-card {
-	display: flex;
-
-	align-items: center;
-
-	gap: 18px;
-
-	background: var(--surface);
-
-	border: 1px solid var(--border);
-
-	border-radius: 18px;
-
-	padding: 18px;
-
-	box-shadow: var(--shadow);
-
-	transition: var(--transition);
-}
-
-.order-card:hover {
-	transform: translateY(-3px);
-
-	box-shadow: var(--shadow-lg);
-}
-
-.order-image {
-	width: 120px;
-	height: 120px;
-
-	object-fit: cover;
-
-	border-radius: 15px;
-
-	flex-shrink: 0;
-
-	background: var(--surface-3);
-
-	border: 1px solid var(--border);
-}
-
-.order-content {
-	flex: 1;
-
-	display: flex;
-
-	flex-direction: column;
-
-	gap: 10px;
-}
-
-.order-title {
-	font-size: 21px;
-
-	font-weight: 700;
-
-	color: var(--text);
-}
-
-.order-meta {
-	display: flex;
-
-	gap: 20px;
-
-	flex-wrap: wrap;
-
-	color: var(--muted);
-
-	font-size: 14px;
-}
-
-.order-meta span:last-child {
-	color: var(--green);
-
-	font-weight: 700;
-
-	font-size: 17px;
-}
-
-.order-footer {
-	display: flex;
-
-	justify-content: space-between;
-
-	align-items: center;
-
-	margin-top: auto;
-}
-
-.order-status {
-	background: var(--green-soft);
-
-	color: var(--green-dark);
-
-	padding: 6px 13px;
-
-	border-radius: 999px;
-
-	font-size: 13px;
-
-	font-weight: 700;
-}
-
-.order-date {
-	color: var(--muted);
-
-	font-size: 13px;
-}
-
-
-/* =========================================================
-   لینک بازگشت
-========================================================= */
 
 .back-link {
-	display: inline-flex;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-	align-items: center;
+    min-height: 44px;
+    padding: 0 18px;
 
-	text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
 
-	color: var(--navy);
-
-	font-size: 20px;
-
-	transition: var(--transition);
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
 }
 
 .back-link:hover {
-	color: var(--primary);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-.logo:visited,
-.back-link:visited {
-	color: inherit;
+/* =========================================
+   USER SECTION
+========================================= */
+
+#user-section {
+    display: flex;
+    align-items: center;
 }
 
+.user-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
 
-/* =========================================================
-   دکمه ورود
-========================================================= */
+    padding: 5px 9px 5px 12px;
 
-.login-btn {
-	width: 100%;
+    border-radius: 13px;
 
-	border: none;
+    color: #fff;
+    text-decoration: none;
 
-	cursor: pointer;
-
-	padding: 14px;
-
-	border-radius: 13px;
-
-	background: var(--navy);
-
-	color: #fff;
-
-	font-size: 16px;
-
-	transition: var(--transition);
+    transition: background var(--transition);
 }
 
-.login-btn:hover {
-	background: var(--navy-dark);
-
-	transform: translateY(-1px);
-
-	box-shadow: 0 7px 18px rgba(49, 82, 107, .18);
+.user-link:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
+.user-link img,
+.user-avatar {
+    width: 36px;
+    height: 36px;
 
-/* =========================================================
-   مودال ثبت سفارش
-========================================================= */
+    border-radius: 50%;
+    object-fit: cover;
 
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* =========================================
+   HERO
+========================================= */
+
+.hero {
+    position: relative;
+    min-height: 390px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(37, 63, 83, 0.78),
+            rgba(37, 63, 83, 0.32)
+        ),
+        url("https://cdn.yjc.ir/files/fa/news/1403/4/24/18599664_197.jpg")
+        center / cover no-repeat;
+
+    overflow: hidden;
+}
+
+.hero-overlay {
+    min-height: 390px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px 20px;
+}
+
+.hero-text {
+    text-align: center;
+    color: #fff;
+
+    animation: heroAppear 0.7s ease both;
+}
+
+.hero-text h1 {
+    margin: 0;
+
+    font-family: "Lalezar", sans-serif;
+    font-size: clamp(46px, 8vw, 82px);
+    line-height: 1.1;
+
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.hero-text p {
+    margin: 12px 0 0;
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 27px;
+    opacity: 0.92;
+    direction: ltr;
+}
+
+@keyframes heroAppear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   SEARCH
+========================================= */
+
+.search-section {
+    width: min(1200px, calc(100% - 40px));
+    margin: -35px auto 0;
+    position: relative;
+    z-index: 10;
+
+    padding: 22px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+
+    box-shadow: var(--shadow-lg);
+
+    display: grid;
+    grid-template-columns: minmax(240px, 1.5fr) repeat(2, minmax(170px, 0.6fr));
+    gap: 12px;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box::before {
+    content: "⌕";
+
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    color: var(--muted);
+    font-size: 22px;
+
+    pointer-events: none;
+}
+
+.search-box input,
+.search-section select,
+.type-filters input,
+.type-filters select {
+    width: 100%;
+    min-height: 48px;
+
+    padding: 0 15px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    background: var(--surface-2);
+    color: var(--text);
+
+    outline: none;
+
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+}
+
+.search-box input {
+    padding-right: 45px;
+}
+
+.search-box input:focus,
+.search-section select:focus,
+.type-filters input:focus,
+.type-filters select:focus {
+    border-color: var(--navy);
+    background: var(--surface);
+
+    box-shadow: 0 0 0 3px rgba(49, 82, 107, 0.1);
+}
+
+.search-box input::placeholder,
+.type-filters input::placeholder {
+    color: var(--muted);
+}
+
+.advanced-filters {
+    grid-column: 1 / -1;
+}
+
+.type-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 2px;
+}
+
+#jk-filters,
+#tb-filters,
+#cl-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.type-filters.hidden {
+    display: none;
+}
+
+/* =========================================
+   PRODUCTS
+========================================= */
+
+.products-header {
+    text-align: center;
+    padding: 70px 0 30px;
+}
+
+.products-header h2 {
+    margin: 0;
+
+    color: var(--text);
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 38px;
+}
+
+.products-header p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+
+    padding-bottom: 70px;
+}
+
+.product-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    box-shadow: var(--shadow);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: #d9c9b8;
+}
+
+.product-card-image {
+    position: relative;
+
+    width: 100%;
+    height: 250px;
+
+    overflow: hidden;
+
+    background: var(--surface-2);
+}
+
+.product-card-image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition: transform 0.35s ease;
+}
+
+.product-card:hover .product-card-image img {
+    transform: scale(1.045);
+}
+
+.product-card-content {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 18px;
+}
+
+.product-card h3 {
+    margin: 0;
+
+    color: var(--text);
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 21px;
+}
+
+.product-card p {
+    margin: 8px 0 0;
+
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.product-price {
+    margin-top: auto !important;
+    padding-top: 15px;
+
+    color: var(--primary) !important;
+
+    font-family: "Lalezar", sans-serif !important;
+    font-size: 20px !important;
+}
+
+.product-btn {
+    width: 100%;
+
+    margin-top: 15px;
+    padding: 13px 18px;
+
+    border-radius: 12px;
+
+    background: var(--navy);
+    color: #fff;
+
+    font-weight: 700;
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        transform var(--transition);
+}
+
+.product-btn:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+}
+
+.product-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* =========================================
+   CART MODAL
+========================================= */
+
+.cart-modal,
 .customer-order-modal {
-	position: fixed;
+    position: fixed;
+    inset: 0;
 
-	inset: 0;
+    z-index: 2000;
 
-	background: rgba(34, 29, 25, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-	z-index: 9999;
+    padding: 20px;
 
-	display: flex;
+    background: rgba(25, 22, 19, 0.58);
 
-	align-items: center;
-
-	justify-content: center;
-
-	padding: 20px;
-
-	box-sizing: border-box;
-
-	backdrop-filter: blur(3px);
+    backdrop-filter: blur(5px);
 }
 
+.cart-modal.hidden,
 .customer-order-modal.hidden {
-	display: none;
+    display: none;
 }
+
+.cart-panel {
+    width: min(520px, 100%);
+    max-height: min(720px, calc(100vh - 40px));
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+
+    box-shadow: var(--shadow-lg);
+
+    animation: modalAppear 0.2s ease both;
+}
+
+.cart-header {
+    min-height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 22px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.cart-header h2 {
+    margin: 0;
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 27px;
+}
+
+.cart-header button,
+.customer-order-close {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--surface-2);
+    color: var(--text);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 24px;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        color var(--transition);
+}
+
+.cart-header button:hover,
+.customer-order-close:hover {
+    background: var(--red-soft);
+    color: var(--red-dark);
+}
+
+.cart-items {
+    flex: 1;
+
+    min-height: 100px;
+    max-height: 450px;
+
+    overflow-y: auto;
+
+    padding: 14px 20px;
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: 74px minmax(0, 1fr) auto;
+    gap: 12px;
+
+    align-items: center;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.cart-item:last-child {
+    border-bottom: 0;
+}
+
+.cart-item img {
+    width: 74px;
+    height: 74px;
+
+    object-fit: cover;
+
+    border-radius: 13px;
+    background: var(--surface-2);
+}
+
+.cart-item-info {
+    min-width: 0;
+}
+
+.cart-item-info h4 {
+    margin: 0;
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 17px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cart-item-info p {
+    margin: 4px 0 0;
+
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+}
+
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.cart-item-actions button {
+    width: 29px;
+    height: 29px;
+
+    border-radius: 8px;
+
+    background: var(--surface-3);
+    color: var(--text);
+
+    cursor: pointer;
+}
+
+.cart-item-actions button:hover {
+    background: var(--navy-soft);
+    color: var(--navy-dark);
+}
+
+.cart-footer {
+    padding: 18px 20px;
+
+    border-top: 1px solid var(--border);
+    background: var(--surface-2);
+}
+
+.cart-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 13px;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+#cart-total {
+    color: var(--primary);
+    font-family: "Lalezar", sans-serif;
+    font-size: 21px;
+}
+
+.cart-footer > button {
+    width: 100%;
+
+    min-height: 48px;
+
+    border-radius: 12px;
+
+    background: var(--navy);
+    color: #fff;
+
+    font-weight: 700;
+    cursor: pointer;
+
+    transition: background var(--transition);
+}
+
+.cart-footer > button:hover {
+    background: var(--navy-dark);
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================================
+   CUSTOMER ORDER MODAL
+========================================= */
 
 .customer-order-panel {
-	width: min(760px, 100%);
+    width: min(850px, 100%);
+    max-height: calc(100vh - 40px);
 
-	max-height: 90vh;
+    overflow-y: auto;
 
-	overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
 
-	background: var(--surface);
+    box-shadow: var(--shadow-lg);
 
-	border: 1px solid var(--border);
-
-	border-radius: 22px;
-
-	box-shadow: var(--shadow-lg);
-
-	padding: 26px;
-
-	box-sizing: border-box;
+    animation: modalAppear 0.2s ease both;
 }
 
 .customer-order-header {
-	display: flex;
+    min-height: 72px;
 
-	align-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-	justify-content: space-between;
+    padding: 0 24px;
 
-	margin-bottom: 20px;
-
-	padding-bottom: 15px;
-
-	border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 }
 
 .customer-order-header h2 {
-	margin: 0;
+    margin: 0;
 
-	font-size: 25px;
-
-	color: var(--text);
+    font-family: "Lalezar", sans-serif;
+    font-size: 28px;
 }
 
 .customer-order-close {
-	border: none;
-
-	background: var(--surface-2);
-
-	color: var(--text);
-
-	border-radius: 11px;
-
-	width: 38px;
-
-	height: 38px;
-
-	font-size: 22px;
-
-	cursor: pointer;
-
-	transition: var(--transition);
+    flex-shrink: 0;
 }
 
-.customer-order-close:hover {
-	background: var(--red-soft);
-
-	color: var(--red);
+#customer-order-form {
+    padding: 24px;
 }
 
 .customer-order-grid {
-	display: grid;
-
-	grid-template-columns:
-		repeat(2, minmax(0, 1fr));
-
-	gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
 }
 
 .customer-order-field {
-	display: flex;
+    min-width: 0;
 
-	flex-direction: column;
-
-	gap: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .customer-order-field label {
-	font-size: 13px;
-
-	font-weight: 700;
-
-	color: var(--text);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
 }
 
 .customer-order-field input,
 .customer-order-field select,
 .customer-order-field textarea {
-	width: 100%;
+    width: 100%;
 
-	box-sizing: border-box;
+    min-height: 48px;
 
-	border: 1px solid var(--border);
+    padding: 12px 14px;
 
-	border-radius: 11px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
 
-	padding: 11px 12px;
+    background: var(--surface-2);
+    color: var(--text);
 
-	font-family: inherit;
+    outline: none;
 
-	font-size: 14px;
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+}
 
-	background: var(--surface-2);
-
-	color: var(--text);
-
-	outline: none;
-
-	transition: var(--transition);
+.customer-order-field textarea {
+    min-height: 110px;
+    resize: vertical;
 }
 
 .customer-order-field input:focus,
 .customer-order-field select:focus,
 .customer-order-field textarea:focus {
-	border-color: var(--navy);
+    border-color: var(--navy);
+    background: var(--surface);
 
-	background: var(--surface);
-
-	box-shadow:
-		0 0 0 3px rgba(49, 82, 107, .09);
-}
-
-.customer-order-field textarea {
-	min-height: 100px;
-
-	resize: vertical;
+    box-shadow: 0 0 0 3px rgba(49, 82, 107, 0.1);
 }
 
 .customer-order-full {
-	grid-column: 1 / -1;
+    grid-column: 1 / -1;
 }
 
-.customer-order-type-section {
-	margin-top: 20px;
-
-	padding: 18px;
-
-	background: var(--surface-2);
-
-	border: 1px solid var(--border);
-
-	border-radius: 15px;
+.customer-order-code-wrapper {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
 }
 
-.customer-order-type-section h3 {
-	margin: 0 0 15px;
+#customer-order-code {
+    font-family: Tahoma, sans-serif;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
 
-	font-size: 17px;
+.generate-code-btn {
+    min-width: 145px;
 
-	color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 0 15px;
+
+    border-radius: 12px;
+
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+
+    font-weight: 700;
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        transform var(--transition);
+}
+
+.generate-code-btn:hover {
+    background: #e9d2bb;
+    transform: translateY(-1px);
+}
+
+.generate-code-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+}
+
+.generate-code-btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.customer-order-code-hint {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+#customer-order-type-fields {
+    margin-top: 18px;
+}
+
+.customer-order-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+
+    padding: 18px;
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    background: var(--surface-2);
 }
 
 .customer-order-footer {
-	display: flex;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 
-	justify-content: flex-start;
+    margin-top: 22px;
+    padding-top: 18px;
 
-	gap: 10px;
-
-	margin-top: 22px;
+    border-top: 1px solid var(--border);
 }
 
 .customer-order-footer button {
-	border: none;
+    min-width: 130px;
+    min-height: 46px;
 
-	border-radius: 11px;
+    padding: 0 20px;
 
-	padding: 11px 20px;
+    border-radius: 12px;
 
-	font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
 
-	font-weight: 700;
-
-	cursor: pointer;
-
-	transition: var(--transition);
+    transition:
+        background var(--transition),
+        transform var(--transition);
 }
 
-.customer-order-footer button[type="submit"] {
-	background: var(--navy);
-
-	color: #fff;
-}
-
-.customer-order-footer button[type="submit"]:hover {
-	background: var(--navy-dark);
+.customer-order-footer button:hover {
+    transform: translateY(-1px);
 }
 
 .customer-order-cancel {
-	background: var(--surface-3);
-
-	color: var(--text);
+    background: var(--surface-3);
+    color: var(--text);
 }
 
 .customer-order-cancel:hover {
-	background: var(--border);
+    background: var(--border);
+}
+
+#customer-order-submit {
+    background: var(--navy);
+    color: #fff;
+}
+
+#customer-order-submit:hover {
+    background: var(--navy-dark);
+}
+
+#customer-order-submit:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
 }
 
 #customer-order-message {
-	margin-top: 15px;
-
-	border-radius: 11px;
-
-	font-size: 14px;
+    margin-top: 15px;
 }
 
-#customer-order-message.success {
-	padding: 12px;
+/* =========================================
+   PRODUCT PAGE
+========================================= */
 
-	background: var(--green-soft);
-
-	color: var(--green-dark);
-
-	border: 1px solid rgba(111, 128, 80, .20);
+.product-page {
+    padding: 50px 0 80px;
 }
 
-#customer-order-message.error {
-	padding: 12px;
-
-	background: var(--red-soft);
-
-	color: var(--red-dark);
-
-	border: 1px solid rgba(184, 107, 103, .20);
+.product-detail-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 35px;
+    align-items: start;
 }
 
-
-/* =========================================================
-   فیلدهای عمومی فرم
-========================================================= */
-
-input,
-select,
-textarea {
-	color: var(--text);
+.product-gallery-card,
+.product-info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
 }
 
-input::placeholder,
-textarea::placeholder {
-	color: var(--muted);
+.product-gallery-card {
+    overflow: hidden;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-	outline: none;
+.product-main-image-wrap {
+    width: 100%;
+    height: 520px;
+    background: var(--surface-2);
 }
 
+.product-main-image {
+    width: 100%;
+    height: 100%;
 
-/* =========================================================
-   اسکرول بار
-========================================================= */
+    display: block;
 
-::-webkit-scrollbar {
-	width: 9px;
-	height: 9px;
+    object-fit: cover;
 }
 
-::-webkit-scrollbar-track {
-	background: var(--surface-2);
+.product-thumbs {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 14px;
+
+    overflow-x: auto;
+
+    padding: 2px 2px 7px;
 }
 
-::-webkit-scrollbar-thumb {
-	background: #cdbfae;
-	border-radius: 20px;
+.product-thumb {
+    width: 82px;
+    height: 82px;
+
+    flex: 0 0 82px;
+
+    object-fit: cover;
+
+    border: 2px solid var(--border);
+    border-radius: 13px;
+
+    cursor: pointer;
+
+    opacity: 0.72;
+
+    transition:
+        border-color var(--transition),
+        opacity var(--transition),
+        transform var(--transition);
 }
 
-::-webkit-scrollbar-thumb:hover {
-	background: #b5a38e;
+.product-thumb:hover,
+.product-thumb.active {
+    border-color: var(--navy);
+    opacity: 1;
+    transform: translateY(-2px);
 }
 
-
-/* =========================================================
-   موبایل
-========================================================= */
-
-@media (max-width: 768px) {
-
-	.navbar {
-		padding: 12px 0;
-	}
-
-	.navbar-container {
-		width: 92%;
-	}
-
-	.logo {
-		font-size: 27px;
-	}
-
-	.navbar-actions {
-		gap: 7px;
-	}
-
-	.user-name {
-		display: none;
-	}
-
-	.user-avatar {
-		width: 40px;
-		height: 40px;
-	}
-
-	.cart-btn {
-		width: 42px;
-		height: 42px;
-	}
-
-	.hero {
-		height: 280px;
-
-		margin-top: 22px;
-
-		border-radius: 22px;
-	}
-
-	.hero-text {
-		right: 25px;
-
-		left: 25px;
-
-		text-align: right;
-	}
-
-	.hero-text h1 {
-		font-size: 42px;
-
-		margin-bottom: 10px;
-	}
-
-	.hero-text p {
-		font-size: 23px;
-	}
-
-	.search-section {
-		flex-direction: column;
-
-		margin-top: 25px;
-	}
-
-	.search-section input,
-	.search-section select {
-		width: 100%;
-	}
-
-	.products-header {
-		margin-bottom: 28px;
-	}
-
-	.products-header h2 {
-		font-size: 34px;
-	}
-
-	.products-header p {
-		font-size: 16px;
-	}
-
-	#product-grid,
-	.products-grid {
-		grid-template-columns:
-			repeat(auto-fill, minmax(220px, 1fr));
-
-		gap: 16px;
-	}
-
-	.product-image-box {
-		height: 230px;
-	}
-
-	.product-info {
-		padding: 16px;
-	}
-
-	.product-name {
-		font-size: 23px;
-	}
-
-	.product-price {
-		font-size: 17px;
-	}
-
-	.product-btn {
-		font-size: 16px;
-		padding: 12px;
-	}
-
-	.cart-panel {
-		width: 100%;
-		padding: 20px;
-	}
-
-	.cart-item {
-		flex-wrap: wrap;
-	}
-
-	.cart-item-total {
-		width: auto;
-	}
-
-	.profile-page {
-		width: 92%;
-		margin-top: 25px;
-	}
-
-	.profile-card {
-		padding: 24px 18px;
-		border-radius: 20px;
-	}
-
-	.profile-avatar {
-		width: 125px;
-		height: 125px;
-	}
-
-	.profile-username {
-		font-size: 29px;
-	}
-
-	.order-card {
-		flex-direction: column;
-
-		text-align: center;
-	}
-
-	.order-image {
-		width: 100%;
-
-		max-width: 220px;
-
-		height: 220px;
-	}
-
-	.order-footer {
-		flex-direction: column;
-
-		gap: 10px;
-	}
-
-	.order-meta {
-		justify-content: center;
-	}
-
-	.customer-order-grid {
-		grid-template-columns: 1fr;
-	}
-
-	.customer-order-full {
-		grid-column: auto;
-	}
-
-	.customer-order-panel {
-		padding: 18px;
-
-		border-radius: 18px;
-	}
+.product-info-card {
+    padding: 30px;
 }
 
+.product-info-card h1 {
+    margin: 0;
 
-/* =========================================================
-   موبایل خیلی کوچک
-========================================================= */
+    color: var(--navy-dark);
 
-@media (max-width: 450px) {
-
-	#product-grid,
-	.products-grid {
-		grid-template-columns: 1fr;
-	}
-
-	.product-image-box {
-		height: 270px;
-	}
-
-	.hero-text h1 {
-		font-size: 36px;
-	}
-
-	.hero-text p {
-		font-size: 20px;
-	}
-
-	.profile-title {
-		font-size: 24px;
-	}
-
-	.cart-total {
-		font-size: 20px;
-	}
+    font-family: "Lalezar", sans-serif;
+    font-size: clamp(32px, 4vw, 46px);
+    line-height: 1.3;
 }
-/* =========================================================
-   صفحات ورود و ثبت نام
-========================================================= */
+
+.product-detail-price {
+    margin: 14px 0 0;
+
+    color: var(--primary);
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 27px;
+}
+
+.product-description {
+    margin: 24px 0 0;
+
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 15px;
+    line-height: 2.2;
+}
+
+.product-detail-action {
+    margin-top: 30px;
+}
+
+.product-loading {
+    padding: 100px 20px;
+
+    text-align: center;
+
+    color: var(--muted);
+    font-size: 20px;
+}
+
+/* =========================================
+   PROFILE
+========================================= */
+
+.profile-page {
+    width: min(900px, calc(100% - 40px));
+
+    margin: 0 auto;
+
+    padding: 55px 0 80px;
+}
+
+.profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 26px;
+
+    box-shadow: var(--shadow-lg);
+
+    overflow: hidden;
+}
+
+.profile-header {
+    padding: 38px 30px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--navy-soft),
+            var(--surface)
+        );
+
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-avatar {
+    width: 110px;
+    height: 110px;
+
+    display: block;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 4px solid var(--surface);
+
+    box-shadow: 0 8px 25px rgba(37, 63, 83, 0.15);
+
+    background: var(--surface-2);
+}
+
+.profile-username {
+    margin: 0;
+
+    color: var(--navy-dark);
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 32px;
+}
+
+.profile-info {
+    margin: 6px 0 0;
+
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
+}
+
+.profile-section {
+    padding: 27px 30px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-section:last-child {
+    border-bottom: 0;
+}
+
+.profile-title {
+    margin: 0 0 18px;
+
+    color: var(--text);
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 24px;
+}
+
+.profile-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.profile-input {
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 12px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--surface-2);
+    color: var(--text);
+
+    outline: none;
+
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.profile-input:focus {
+    border-color: var(--navy);
+
+    box-shadow: 0 0 0 3px rgba(49, 82, 107, 0.1);
+}
+
+.profile-btn {
+    min-height: 48px;
+
+    padding: 0 18px;
+
+    border-radius: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        transform var(--transition);
+}
+
+.profile-btn:hover {
+    transform: translateY(-1px);
+}
+
+.password-btn {
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+}
+
+.password-btn:hover {
+    background: #ead4be;
+}
+
+.save-btn {
+    background: var(--navy);
+    color: #fff;
+}
+
+.save-btn:hover {
+    background: var(--navy-dark);
+}
+
+.logout-btn {
+    width: 100%;
+
+    background: var(--red-soft);
+    color: var(--red-dark);
+}
+
+.logout-btn:hover {
+    background: #efd2cf;
+}
+
+.orders-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.order-card {
+    padding: 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+
+    background: var(--surface-2);
+
+    transition:
+        border-color var(--transition),
+        transform var(--transition);
+}
+
+.order-card:hover {
+    border-color: #d6c7b7;
+    transform: translateY(-1px);
+}
+
+.order-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.order-card-title {
+    font-family: "Lalezar", sans-serif;
+    font-size: 18px;
+}
+
+.order-status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 10px;
+
+    border-radius: 999px;
+
+    background: var(--yellow-soft);
+    color: var(--yellow);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.order-status.completed {
+    background: var(--green-soft);
+    color: var(--green-dark);
+}
+
+/* =========================================
+   AUTH
+========================================= */
 
 .auth-page {
-	min-height: 100vh;
+    min-height: 100vh;
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-	padding: 40px 20px;
+    padding: 40px 20px;
 
-	background:
-		radial-gradient(
-			circle at top right,
-			rgba(49, 82, 107, .08),
-			transparent 32%
-		),
-		radial-gradient(
-			circle at bottom left,
-			rgba(139, 94, 60, .07),
-			transparent 30%
-		),
-		var(--bg);
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(49, 82, 107, 0.1),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at bottom left,
+            rgba(139, 94, 60, 0.08),
+            transparent 30%
+        ),
+        var(--bg);
 }
 
 .auth-container {
-	width: 100%;
-	max-width: 470px;
+    width: 100%;
+    max-width: 470px;
 }
 
 .auth-card {
-	width: 100%;
+    width: 100%;
 
-	background: var(--surface);
+    padding: 36px;
 
-	border: 1px solid var(--border);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
 
-	border-radius: 24px;
-
-	padding: 38px;
-
-	box-shadow: var(--shadow-lg);
-
-	position: relative;
-
-	overflow: hidden;
+    box-shadow: var(--shadow-lg);
 }
-
-
-/* نوار بالای کارت */
-
-.auth-card::before {
-	content: "";
-
-	position: absolute;
-
-	top: 0;
-	right: 0;
-	left: 0;
-
-	height: 5px;
-
-	background: var(--navy);
-}
-
-
-/* =========================================================
-   هدر
-========================================================= */
 
 .auth-header {
-	text-align: center;
-
-	margin-bottom: 30px;
+    margin-bottom: 28px;
+    text-align: center;
 }
 
 .auth-logo {
-	width: 72px;
-	height: 72px;
+    width: 68px;
+    height: 68px;
 
-	margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
+    margin: 0 auto 16px;
 
-	background: var(--navy);
+    border-radius: 19px;
 
-	color: #fff;
+    background: var(--navy);
+    color: #fff;
 
-	border-radius: 20px;
+    font-family: "Lalezar", sans-serif;
+    font-size: 30px;
 
-	text-decoration: none;
+    text-decoration: none;
 
-	font-size: 36px;
-
-	box-shadow:
-		0 10px 25px rgba(49, 82, 107, .18);
-
-	transition: var(--transition);
+    box-shadow: 0 10px 25px rgba(49, 82, 107, 0.2);
 }
 
-.auth-logo:hover {
-	transform: translateY(-3px);
+.auth-header h1,
+.auth-title {
+    margin: 0 0 8px;
 
-	background: var(--navy-dark);
+    color: var(--text);
 
-	color: #fff;
-}
-
-.auth-header h1 {
-	font-size: 31px;
-
-	color: var(--text);
-
-	margin-bottom: 7px;
+    font-family: "Lalezar", sans-serif;
+    font-size: 31px;
 }
 
 .auth-header p {
-	font-size: 14px;
+    margin: 0;
 
-	color: var(--muted);
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
 }
 
-
-/* =========================================================
-   فرم
-========================================================= */
-
 .auth-form {
-	display: flex;
-
-	flex-direction: column;
-
-	gap: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
 .auth-field {
-	display: flex;
+    position: relative;
 
-	flex-direction: column;
-
-	gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .auth-field label {
-	font-size: 14px;
+    color: var(--text);
 
-	font-weight: 700;
-
-	color: var(--text);
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
 }
 
 .auth-field input,
-.auth-field select,
-.auth-field textarea {
-	width: 100%;
+.auth-input {
+    width: 100%;
 
-	border: 1px solid var(--border);
+    min-height: 49px;
 
-	border-radius: 13px;
+    padding: 12px 14px;
 
-	padding: 14px 15px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
 
-	background: var(--surface-2);
+    background: var(--surface-2);
+    color: var(--text);
 
-	color: var(--text);
+    outline: none;
 
-	font-size: 14px;
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
 
-	outline: none;
-
-	transition: var(--transition);
-}
-
-.auth-field input::placeholder,
-.auth-field textarea::placeholder {
-	color: var(--muted);
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
 }
 
 .auth-field input:focus,
-.auth-field select:focus,
-.auth-field textarea:focus {
-	background: var(--surface);
+.auth-input:focus {
+    border-color: var(--navy);
+    background: var(--surface);
 
-	border-color: var(--navy);
-
-	box-shadow:
-		0 0 0 3px rgba(49, 82, 107, .10);
+    box-shadow: 0 0 0 3px rgba(49, 82, 107, 0.1);
 }
 
-
-/* =========================================================
-   رمز عبور
-========================================================= */
+.auth-field input::placeholder,
+.auth-input::placeholder {
+    color: var(--muted);
+}
 
 .auth-password-wrapper {
-	position: relative;
+    position: relative;
 }
 
 .auth-password-wrapper input {
-	padding-left: 65px;
+    padding-left: 70px;
 }
 
 .auth-password-toggle {
-	position: absolute;
+    position: absolute;
+    left: 7px;
+    top: 50%;
+    transform: translateY(-50%);
 
-	left: 7px;
-	top: 50%;
+    min-width: 55px;
+    height: 34px;
 
-	transform: translateY(-50%);
+    border-radius: 9px;
 
-	border: none;
+    background: transparent;
+    color: var(--muted);
 
-	background: transparent;
+    cursor: pointer;
 
-	color: var(--muted);
-
-	border-radius: 9px;
-
-	padding: 7px 9px;
-
-	font-size: 12px;
-
-	cursor: pointer;
-
-	transition: var(--transition);
+    font-size: 11px;
 }
 
 .auth-password-toggle:hover {
-	background: var(--surface-3);
-
-	color: var(--navy);
+    background: var(--surface-3);
+    color: var(--navy);
 }
 
-
-/* =========================================================
-   پیام
-========================================================= */
-
 .auth-message {
-	display: none;
+    display: none;
 
-	padding: 12px 14px;
+    padding: 12px 14px;
 
-	border-radius: 12px;
+    border-radius: 12px;
 
-	font-size: 13px;
-
-	line-height: 1.8;
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    line-height: 1.8;
 }
 
 .auth-message.error {
-	display: block;
+    display: block;
 
-	background: var(--red-soft);
+    background: var(--red-soft);
+    color: var(--red-dark);
 
-	color: var(--red-dark);
-
-	border: 1px solid rgba(184, 107, 103, .20);
+    border: 1px solid rgba(184, 107, 103, 0.25);
 }
 
 .auth-message.success {
-	display: block;
+    display: block;
 
-	background: var(--green-soft);
+    background: var(--green-soft);
+    color: var(--green-dark);
 
-	color: var(--green-dark);
-
-	border: 1px solid rgba(111, 128, 80, .20);
+    border: 1px solid rgba(111, 128, 80, 0.25);
 }
 
+.auth-submit,
+.auth-btn {
+    width: 100%;
 
-/* =========================================================
-   دکمه ورود
-========================================================= */
+    min-height: 49px;
 
-.auth-submit {
-	width: 100%;
+    border-radius: 13px;
 
-	border: none;
+    background: var(--navy);
+    color: #fff;
 
-	border-radius: 13px;
+    font-weight: 700;
 
-	padding: 14px 18px;
+    cursor: pointer;
 
-	background: var(--navy);
-
-	color: #fff;
-
-	font-size: 17px;
-
-	cursor: pointer;
-
-	transition: var(--transition);
-
-	box-shadow:
-		0 7px 18px rgba(49, 82, 107, .12);
+    transition:
+        background var(--transition),
+        transform var(--transition);
 }
 
-.auth-submit:hover {
-	background: var(--navy-dark);
-
-	transform: translateY(-2px);
-
-	box-shadow:
-		0 10px 25px rgba(49, 82, 107, .18);
+.auth-submit:hover,
+.auth-btn:hover {
+    background: var(--navy-dark);
+    transform: translateY(-1px);
 }
 
-.auth-submit:active {
-	transform: translateY(0);
+.auth-submit:disabled,
+.auth-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
 }
-
-.auth-submit:disabled {
-	opacity: .65;
-
-	cursor: not-allowed;
-
-	transform: none;
-
-	box-shadow: none;
-}
-
-
-/* =========================================================
-   جداکننده
-========================================================= */
 
 .auth-divider {
-	display: flex;
+    position: relative;
 
-	align-items: center;
+    margin: 25px 0;
 
-	gap: 12px;
-
-	margin: 25px 0 20px;
-
-	color: var(--muted);
-
-	font-size: 12px;
+    text-align: center;
 }
 
-.auth-divider::before,
-.auth-divider::after {
-	content: "";
+.auth-divider::before {
+    content: "";
 
-	height: 1px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
 
-	flex: 1;
+    height: 1px;
 
-	background: var(--border);
+    background: var(--border);
 }
 
 .auth-divider span {
-	padding: 0 5px;
+    position: relative;
+
+    padding: 0 12px;
+
+    background: var(--surface);
+
+    color: var(--muted);
+
+    font-size: 12px;
 }
-
-
-/* =========================================================
-   ثبت نام
-========================================================= */
 
 .auth-register {
-	display: flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
 
-	align-items: center;
+    color: var(--muted);
 
-	justify-content: center;
-
-	gap: 7px;
-
-	font-size: 13px;
-
-	color: var(--muted);
-
-	margin-bottom: 18px;
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
 }
 
-.auth-register a {
-	color: var(--navy);
+.auth-register a,
+.auth-link {
+    color: var(--navy);
 
-	font-weight: 700;
-
-	text-decoration: none;
-
-	transition: var(--transition);
+    font-weight: 700;
+    text-decoration: none;
 }
 
-.auth-register a:hover {
-	color: var(--primary);
-
-	text-decoration: underline;
+.auth-register a:hover,
+.auth-link:hover {
+    text-decoration: underline;
 }
-
-
-/* =========================================================
-   بازگشت به فروشگاه
-========================================================= */
 
 .auth-back {
-	display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-	align-items: center;
+    width: 100%;
 
-	justify-content: center;
+    min-height: 45px;
 
-	width: 100%;
+    margin-top: 20px;
 
-	padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
 
-	border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
 
-	border-radius: 12px;
+    text-decoration: none;
 
-	background: var(--surface-2);
+    font-size: 13px;
 
-	color: var(--text);
-
-	text-decoration: none;
-
-	font-size: 13px;
-
-	transition: var(--transition);
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition);
 }
 
 .auth-back:hover {
-	background: var(--surface-3);
-
-	border-color: var(--navy);
-
-	color: var(--navy);
+    background: var(--surface-3);
+    border-color: var(--navy);
+    color: var(--navy);
 }
 
+/* =========================================
+   PASSWORD RESET
+========================================= */
 
-/* =========================================================
-   ثبت نام - کارت بزرگ‌تر
-========================================================= */
+.reset-card {
+    max-width: 470px;
+}
+
+.reset-description {
+    margin: -4px 0 22px;
+
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
+
+    text-align: center;
+    line-height: 1.9;
+}
+
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper .password-input {
+    padding-left: 70px;
+}
+
+.password-toggle {
+    position: absolute;
+
+    left: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    min-width: 55px;
+    height: 34px;
+
+    border-radius: 9px;
+
+    background: transparent;
+    color: var(--muted);
+
+    cursor: pointer;
+
+    font-size: 11px;
+}
+
+.password-toggle:hover {
+    background: var(--surface-3);
+    color: var(--navy);
+}
+
+.password-strength {
+    margin-top: 10px;
+}
+
+.password-bar-bg,
+.password-strength-bar {
+    width: 100%;
+    height: 5px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: var(--surface-3);
+}
+
+.password-bar,
+.password-strength-fill {
+    width: 0;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: var(--red);
+
+    transition:
+        width 0.25s ease,
+        background 0.25s ease;
+}
+
+.strength-text,
+.password-strength-text {
+    margin: 6px 0 0;
+
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
+}
+
+.reset-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-top: 18px;
+}
+
+/* =========================================
+   SIGNUP
+========================================= */
 
 .signup-page {
-	min-height: 100vh;
+    min-height: 100vh;
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-	padding: 40px 20px;
+    padding: 40px 20px;
 
-	background:
-		radial-gradient(
-			circle at top right,
-			rgba(49, 82, 107, .08),
-			transparent 32%
-		),
-		radial-gradient(
-			circle at bottom left,
-			rgba(139, 94, 60, .07),
-			transparent 30%
-		),
-		var(--bg);
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(49, 82, 107, 0.08),
+            transparent 35%
+        ),
+        var(--bg);
 }
 
 .signup-container {
-	width: 100%;
-
-	max-width: 680px;
+    width: 100%;
+    max-width: 650px;
 }
 
 .signup-card {
-	width: 100%;
+    background: var(--surface);
 
-	background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
 
-	border: 1px solid var(--border);
+    padding: 36px;
 
-	border-radius: 24px;
-
-	padding: 38px;
-
-	box-shadow: var(--shadow-lg);
-
-	position: relative;
-
-	overflow: hidden;
-}
-
-.signup-card::before {
-	content: "";
-
-	position: absolute;
-
-	top: 0;
-	right: 0;
-	left: 0;
-
-	height: 5px;
-
-	background: var(--navy);
+    box-shadow: var(--shadow-lg);
 }
 
 .signup-header {
-	text-align: center;
-
-	margin-bottom: 30px;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .signup-logo {
-	width: 72px;
-	height: 72px;
+    width: 70px;
+    height: 70px;
 
-	margin: 0 auto 18px;
+    margin: 0 auto 16px;
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
+    border-radius: 20px;
 
-	background: var(--navy);
+    background: var(--navy);
+    color: #fff;
 
-	color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-	border-radius: 20px;
+    font-family: "Lalezar", sans-serif;
+    font-size: 32px;
 
-	font-size: 36px;
-
-	box-shadow:
-		0 10px 25px rgba(49, 82, 107, .18);
+    box-shadow: 0 10px 25px rgba(49, 82, 107, 0.2);
 }
 
 .signup-header h1 {
-	font-size: 31px;
+    margin: 0 0 8px;
 
-	color: var(--text);
+    color: var(--text);
 
-	margin-bottom: 7px;
+    font-family: "Lalezar", sans-serif;
+    font-size: 32px;
 }
 
 .signup-header p {
-	font-size: 14px;
+    margin: 0;
 
-	color: var(--muted);
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    line-height: 1.8;
 }
 
 .signup-form {
-	display: grid;
-
-	grid-template-columns:
-		repeat(2, minmax(0, 1fr));
-
-	gap: 18px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
 }
 
-.signup-form .form-group {
-	display: flex;
-
-	flex-direction: column;
-
-	gap: 8px;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.signup-form .form-group.full-width {
-	grid-column: 1 / -1;
+.form-group.full-width {
+    grid-column: 1 / -1;
 }
 
-.signup-form .form-group label {
-	font-size: 14px;
+.form-group label {
+    color: var(--text);
 
-	font-weight: 700;
-
-	color: var(--text);
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
 }
 
-.signup-form .form-group input,
-.signup-form .form-group select,
-.signup-form .form-group textarea {
-	width: 100%;
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
 
-	border: 1px solid var(--border);
+    min-height: 48px;
 
-	border-radius: 13px;
+    padding: 12px 14px;
 
-	padding: 13px 15px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
 
-	background: var(--surface-2);
+    background: var(--surface-2);
+    color: var(--text);
 
-	color: var(--text);
+    outline: none;
 
-	font-size: 14px;
+    font-family: Tahoma, sans-serif;
+    font-size: 13px;
 
-	outline: none;
-
-	transition: var(--transition);
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
 }
 
-.signup-form .form-group input::placeholder,
-.signup-form .form-group textarea::placeholder {
-	color: var(--muted);
+.form-group textarea {
+    min-height: 90px;
+    resize: vertical;
 }
 
-.signup-form .form-group input:focus,
-.signup-form .form-group select:focus,
-.signup-form .form-group textarea:focus {
-	background: var(--surface);
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--navy);
+    background: var(--surface);
 
-	border-color: var(--navy);
-
-	box-shadow:
-		0 0 0 3px rgba(49, 82, 107, .10);
+    box-shadow: 0 0 0 3px rgba(49, 82, 107, 0.1);
 }
 
-.signup-form .form-group textarea {
-	min-height: 90px;
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--muted);
+}
 
-	resize: vertical;
+.optional-label {
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+
+    margin-right: 5px;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-left: 70px;
+}
+
+.password-wrapper .password-toggle {
+    position: absolute;
+}
+
+.avatar-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    min-height: 96px;
+
+    padding: 14px;
+
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+
+    background: var(--surface-2);
+}
+
+.avatar-preview {
+    width: 62px;
+    height: 62px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--surface-3);
+    border: 2px solid var(--border);
+
+    object-fit: cover;
+
+    display: none;
+}
+
+.avatar-placeholder {
+    width: 62px;
+    height: 62px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--navy);
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 23px;
+}
+
+.avatar-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.avatar-info strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+}
+
+.avatar-info span {
+    display: block;
+
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
+}
+
+.avatar-input {
+    width: 100% !important;
+
+    min-height: auto !important;
+
+    margin-top: 8px;
+
+    padding: 7px !important;
+
+    font-size: 11px !important;
 }
 
 .signup-submit {
-	grid-column: 1 / -1;
+    grid-column: 1 / -1;
 
-	width: 100%;
+    width: 100%;
 
-	border: none;
+    min-height: 50px;
 
-	border-radius: 13px;
+    margin-top: 3px;
 
-	padding: 14px 18px;
+    border-radius: 14px;
 
-	background: var(--navy);
+    background: var(--navy);
+    color: #fff;
 
-	color: #fff;
+    font-weight: 700;
 
-	font-size: 17px;
+    cursor: pointer;
 
-	cursor: pointer;
-
-	transition: var(--transition);
-
-	margin-top: 2px;
+    transition:
+        background var(--transition),
+        transform var(--transition);
 }
 
 .signup-submit:hover {
-	background: var(--navy-dark);
+    background: var(--navy-dark);
+    transform: translateY(-1px);
+}
 
-	transform: translateY(-2px);
-
-	box-shadow:
-		0 10px 25px rgba(49, 82, 107, .18);
+.signup-submit:disabled {
+    opacity: 0.65;
+    cursor: wait;
+    transform: none;
 }
 
 .signup-message {
-	grid-column: 1 / -1;
+    grid-column: 1 / -1;
 
-	display: none;
+    display: none;
 
-	padding: 12px 14px;
+    padding: 12px 14px;
 
-	border-radius: 12px;
+    border-radius: 12px;
 
-	font-size: 13px;
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
 
-	line-height: 1.8;
+    line-height: 1.8;
 }
 
 .signup-message.error {
-	display: block;
+    display: block;
 
-	background: var(--red-soft);
+    background: var(--red-soft);
+    color: var(--red-dark);
 
-	color: var(--red-dark);
+    border: 1px solid rgba(184, 107, 103, 0.25);
 }
 
 .signup-message.success {
-	display: block;
+    display: block;
 
-	background: var(--green-soft);
+    background: var(--green-soft);
+    color: var(--green-dark);
 
-	color: var(--green-dark);
+    border: 1px solid rgba(111, 128, 80, 0.25);
 }
 
 .signup-footer {
-	margin-top: 22px;
+    margin-top: 24px;
+    padding-top: 20px;
 
-	padding-top: 20px;
+    border-top: 1px solid var(--border);
 
-	border-top: 1px solid var(--border);
-
-	text-align: center;
+    text-align: center;
 }
 
 .signup-footer p {
-	margin-bottom: 13px;
+    margin: 0 0 12px;
 
-	font-size: 13px;
+    color: var(--muted);
 
-	color: var(--muted);
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
 }
 
 .signup-footer a {
-	color: var(--navy);
+    color: var(--navy);
 
-	text-decoration: none;
-
-	font-weight: 700;
+    font-weight: 700;
+    text-decoration: none;
 }
 
 .signup-footer a:hover {
-	color: var(--primary);
-
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 .back-to-shop {
-	display: flex;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-	align-items: center;
+    width: 100%;
 
-	justify-content: center;
+    min-height: 44px;
 
-	width: 100%;
+    padding: 0 12px;
 
-	padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
 
-	border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--text);
 
-	border: 1px solid var(--border);
+    text-decoration: none;
 
-	background: var(--surface-2);
+    font-size: 12px;
 
-	color: var(--text) !important;
-
-	text-decoration: none !important;
-
-	font-size: 13px;
-
-	transition: var(--transition);
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition);
 }
 
 .back-to-shop:hover {
-	background: var(--surface-3);
-
-	border-color: var(--navy);
+    background: var(--surface-3);
+    border-color: var(--navy);
+    color: var(--navy);
 }
 
+/* =========================================
+   EMPTY / LOADING
+========================================= */
 
-/* =========================================================
-   موبایل صفحات احراز هویت
-========================================================= */
+.empty-state {
+    grid-column: 1 / -1;
 
-@media (max-width: 700px) {
+    padding: 50px 20px;
 
-	.auth-page,
-	.signup-page {
-		padding: 20px 12px;
+    border: 1px dashed var(--border);
+    border-radius: 18px;
 
-		align-items: flex-start;
-	}
+    background: var(--surface);
 
-	.auth-container,
-	.signup-container {
-		margin-top: 20px;
-	}
+    color: var(--muted);
 
-	.auth-card,
-	.signup-card {
-		padding: 28px 20px;
-
-		border-radius: 20px;
-	}
-
-	.auth-header h1,
-	.signup-header h1 {
-		font-size: 28px;
-	}
-
-	.auth-logo,
-	.signup-logo {
-		width: 65px;
-		height: 65px;
-
-		font-size: 32px;
-
-		border-radius: 18px;
-	}
-
-	.signup-form {
-		grid-template-columns: 1fr;
-	}
-
-	.signup-form .form-group.full-width,
-	.signup-submit,
-	.signup-message {
-		grid-column: auto;
-	}
-
-	.auth-submit,
-	.signup-submit {
-		padding: 14px;
-	}
+    text-align: center;
 }
 
-@media (max-width: 400px) {
+/* =========================================
+   SCROLLBAR
+========================================= */
 
-	.auth-card,
-	.signup-card {
-		padding: 24px 16px;
-	}
+::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
 
-	.auth-register {
-		flex-direction: column;
+::-webkit-scrollbar-track {
+    background: var(--surface-2);
+}
 
-		gap: 3px;
-	}
+::-webkit-scrollbar-thumb {
+    background: #cbbbaa;
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b7a593;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1050px) {
+    .products-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .search-section {
+        grid-template-columns: minmax(200px, 1fr) repeat(2, minmax(150px, 0.7fr));
+    }
+}
+
+@media (max-width: 850px) {
+    .product-detail-container {
+        grid-template-columns: 1fr;
+    }
+
+    .product-main-image-wrap {
+        height: 470px;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .search-section {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .search-box {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 650px) {
+    .main-container,
+    .navbar-container,
+    .search-section,
+    .profile-page {
+        width: min(100% - 24px, 1200px);
+    }
+
+    .navbar-container {
+        min-height: 68px;
+        gap: 8px;
+    }
+
+    .navbar-actions {
+        gap: 6px;
+    }
+
+    .logo {
+        font-size: 27px;
+    }
+
+    .customer-order-btn {
+        min-height: 40px;
+        padding: 0 13px;
+        font-size: 12px;
+    }
+
+    .cart-btn {
+        width: 42px;
+        height: 42px;
+    }
+
+    .back-link {
+        min-height: 40px;
+        padding: 0 13px;
+        font-size: 12px;
+    }
+
+    .user-name {
+        display: none;
+    }
+
+    .hero,
+    .hero-overlay {
+        min-height: 300px;
+    }
+
+    .hero-text h1 {
+        font-size: 54px;
+    }
+
+    .hero-text p {
+        font-size: 22px;
+    }
+
+    .search-section {
+        margin-top: -25px;
+
+        grid-template-columns: 1fr;
+
+        padding: 14px;
+
+        border-radius: 18px;
+    }
+
+    .search-box {
+        grid-column: auto;
+    }
+
+    .type-filters,
+    #jk-filters,
+    #tb-filters,
+    #cl-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .products-header {
+        padding: 50px 0 24px;
+    }
+
+    .products-header h2 {
+        font-size: 31px;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding-bottom: 45px;
+    }
+
+    .product-card-image {
+        height: 280px;
+    }
+
+    .product-info-card {
+        padding: 22px;
+    }
+
+    .product-main-image-wrap {
+        height: 360px;
+    }
+
+    .customer-order-grid,
+    .customer-order-type-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-order-full {
+        grid-column: auto;
+    }
+
+    .customer-order-code-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .generate-code-btn {
+        min-height: 46px;
+    }
+
+    .customer-order-footer {
+        flex-direction: column-reverse;
+    }
+
+    .customer-order-footer button {
+        width: 100%;
+    }
+
+    .profile-section {
+        padding: 22px 18px;
+    }
+
+    .profile-form {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-header {
+        padding: 30px 20px;
+    }
+
+    .profile-avatar {
+        width: 95px;
+        height: 95px;
+    }
+
+    .profile-username {
+        font-size: 28px;
+    }
+
+    .auth-page,
+    .signup-page {
+        padding: 20px 12px;
+    }
+
+    .auth-card,
+    .signup-card {
+        padding: 25px 18px;
+        border-radius: 20px;
+    }
+
+    .signup-form {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width,
+    .signup-submit,
+    .signup-message {
+        grid-column: auto;
+    }
+
+    .signup-header h1,
+    .auth-header h1,
+    .auth-title {
+        font-size: 27px;
+    }
+
+    .avatar-wrapper {
+        align-items: flex-start;
+    }
+
+    .reset-links {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 420px) {
+    .navbar-container {
+        width: calc(100% - 16px);
+    }
+
+    .customer-order-btn {
+        padding: 0 10px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .cart-btn {
+        width: 39px;
+        height: 39px;
+    }
+
+    .back-link {
+        padding: 0 10px;
+    }
+
+    .product-card-image {
+        height: 245px;
+    }
+
+    .cart-item {
+        grid-template-columns: 58px minmax(0, 1fr);
+    }
+
+    .cart-item img {
+        width: 58px;
+        height: 58px;
+    }
+
+    .cart-item-actions {
+        grid-column: 2;
+        justify-content: flex-start;
+    }
+
+    .customer-order-panel {
+        border-radius: 18px;
+    }
+
+    #customer-order-form {
+        padding: 18px;
+    }
 }
