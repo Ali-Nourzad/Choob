@@ -1,35 +1,157 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ورود | T-Choob</title>
-    <link rel="icon" type="image/png" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>ورود به حساب | T-Choob</title>
+
+	<link rel="stylesheet" href="style.css">
 </head>
-<body class="auth-page">
-    <main class="auth-card">
-        <div class="auth-logo">T-Choob</div>
-        <h1 class="auth-title">ورود به حساب</h1>
-        <div id="message-box" class="message-box hidden"></div>
-        <div class="auth-field">
-            <input id="login-email" type="email" placeholder="ایمیل خود را وارد کنید" class="auth-input" autocomplete="email">
-        </div>
-        <div class="auth-field">
-            <input id="login-password" type="password" placeholder="رمز عبور" class="auth-input password-input" autocomplete="current-password">
-            <button type="button" onclick="togglePassword()" class="password-toggle" aria-label="نمایش رمز">◉</button>
-        </div>
-        <button id="login-btn" onclick="handleLogin()" class="auth-btn">ورود</button>
-        <a href="./signup.html" class="auth-link">ساخت حساب جدید</a>
-        <a href="./index.html" class="auth-link auth-back">بازگشت به فروشگاه</a>
-    </main>
-    <script>
-        function togglePassword() {
-            const input = document.getElementById("login-password");
-            input.type = input.type === "password" ? "text" : "password";
-        }
-    </script>
-    <script src="auth.js"></script>
+
+<body>
+
+	<div class="auth-page">
+
+		<div class="auth-container">
+
+			<div class="auth-card">
+
+				<div class="auth-header">
+
+					<a href="index.html" class="auth-logo">
+						T
+					</a>
+
+					<h1>
+						ورود به حساب
+					</h1>
+
+					<p>
+						به T-Choob خوش آمدید
+					</p>
+
+				</div>
+
+
+				<form id="login-form" class="auth-form">
+
+					<div class="auth-field">
+
+						<label for="email">
+							ایمیل
+						</label>
+
+						<input
+							type="email"
+							id="email"
+							placeholder="example@email.com"
+							autocomplete="email"
+							required
+						>
+
+					</div>
+
+
+					<div class="auth-field">
+
+						<label for="password">
+							رمز عبور
+						</label>
+
+						<div class="auth-password-wrapper">
+
+							<input
+								type="password"
+								id="password"
+								placeholder="رمز عبور خود را وارد کنید"
+								autocomplete="current-password"
+								required
+							>
+
+							<button
+								type="button"
+								id="password-toggle"
+								class="auth-password-toggle"
+							>
+								نمایش
+							</button>
+
+						</div>
+
+					</div>
+
+
+					<div
+						id="login-message"
+						class="auth-message"
+					></div>
+
+
+					<button
+						type="submit"
+						id="login-button"
+						class="auth-submit"
+					>
+						ورود به حساب
+					</button>
+
+				</form>
+
+
+				<div class="auth-divider">
+					<span>یا</span>
+				</div>
+
+
+				<div class="auth-register">
+
+					<span>
+						حساب کاربری ندارید؟
+					</span>
+
+					<a href="signup.html">
+						ساخت حساب جدید
+					</a>
+
+				</div>
+
+
+				<a
+					href="index.html"
+					class="auth-back"
+				>
+					بازگشت به فروشگاه
+				</a>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<script>
+		const passwordInput = document.getElementById("password");
+		const passwordToggle = document.getElementById("password-toggle");
+
+		passwordToggle.addEventListener("click", () => {
+
+			if (passwordInput.type === "password") {
+				passwordInput.type = "text";
+				passwordToggle.textContent = "مخفی";
+			} else {
+				passwordInput.type = "password";
+				passwordToggle.textContent = "نمایش";
+			}
+
+		});
+	</script>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="supabase.js"></script>
+	<script src="auth.js"></script>
+
 </body>
 </html>
