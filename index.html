@@ -17,6 +17,7 @@
 <body>
 
 	<nav class="navbar">
+
 		<div class="navbar-container">
 
 			<h1
@@ -54,6 +55,7 @@
 			</div>
 
 		</div>
+
 	</nav>
 
 
@@ -62,8 +64,15 @@
 		<div class="hero-overlay">
 
 			<div class="hero-text">
-				<h1>چوب گالری</h1>
-				<p>T-Choob</p>
+
+				<h1>
+					چوب گالری
+				</h1>
+
+				<p>
+					T-Choob
+				</p>
+
 			</div>
 
 		</div>
@@ -429,7 +438,6 @@
 
 				<div class="customer-order-grid">
 
-
 					<div class="customer-order-field">
 
 						<label for="customer-order-type">
@@ -565,8 +573,7 @@
 
 						<textarea
 							id="customer-order-description"
-							placeholder="توضیحات محصول">
-						</textarea>
+							placeholder="توضیحات محصول"></textarea>
 
 					</div>
 
@@ -585,18 +592,14 @@
 						type="button"
 						onclick="closeCustomerOrderModal()"
 						class="customer-order-cancel">
-
 						انصراف
-
 					</button>
 
 
 					<button
 						type="submit"
 						id="customer-order-submit">
-
 						ثبت سفارش
-
 					</button>
 
 				</div>
@@ -614,9 +617,15 @@
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
 
-			const typeInput = document.getElementById("customer-order-type");
-			const codeInput = document.getElementById("customer-order-code");
-			const generateButton = document.getElementById("customer-order-generate-code");
+			const typeInput =
+				document.getElementById("customer-order-type");
+
+			const codeInput =
+				document.getElementById("customer-order-code");
+
+			const generateButton =
+				document.getElementById("customer-order-generate-code");
+
 
 			if (!typeInput || !codeInput || !generateButton) {
 				return;
@@ -645,12 +654,14 @@
 					return "";
 				}
 
-				const randomNumber = Math.floor(Math.random() * 0x10000);
+				const randomNumber =
+					Math.floor(Math.random() * 0x10000);
 
-				const hexCode = randomNumber
-					.toString(16)
-					.toUpperCase()
-					.padStart(4, "0");
+				const hexCode =
+					randomNumber
+						.toString(16)
+						.toUpperCase()
+						.padStart(4, "0");
 
 				return prefix + hexCode;
 			}
@@ -661,28 +672,29 @@
 				const prefix = getProductPrefix(type);
 
 				if (!prefix) {
-					throw new Error("ابتدا نوع محصول را انتخاب کنید.");
+					throw new Error(
+						"ابتدا نوع محصول را انتخاب کنید."
+					);
 				}
 
 
-				/*
-				 * چند کد تصادفی تولید می‌کنیم و وجودشان را در جدول
-				 * محصولات بررسی می‌کنیم.
-				 */
-
 				for (let attempt = 0; attempt < 30; attempt++) {
 
-					const code = createRandomHexCode(type);
+					const code =
+						createRandomHexCode(type);
 
-					const { data, error } = await shopDB
-						.from("products")
-						.select("id")
-						.eq("name", code)
-						.maybeSingle();
+					const { data, error } =
+						await shopDB
+							.from("products")
+							.select("id")
+							.eq("name", code)
+							.maybeSingle();
+
 
 					if (error) {
 						throw error;
 					}
+
 
 					if (!data) {
 						return code;
@@ -691,29 +703,34 @@
 				}
 
 
-				/*
-				 * اگر به‌صورت تصادفی کد آزاد پیدا نشد،
-				 * از اولین کد آزاد استفاده می‌کنیم.
-				 */
+				for (
+					let number = 0;
+					number <= 0xFFFF;
+					number++
+				) {
 
-				for (let number = 0; number <= 0xFFFF; number++) {
+					const hexCode =
+						number
+							.toString(16)
+							.toUpperCase()
+							.padStart(4, "0");
 
-					const hexCode = number
-						.toString(16)
-						.toUpperCase()
-						.padStart(4, "0");
+					const code =
+						prefix + hexCode;
 
-					const code = prefix + hexCode;
 
-					const { data, error } = await shopDB
-						.from("products")
-						.select("id")
-						.eq("name", code)
-						.maybeSingle();
+					const { data, error } =
+						await shopDB
+							.from("products")
+							.select("id")
+							.eq("name", code)
+							.maybeSingle();
+
 
 					if (error) {
 						throw error;
 					}
+
 
 					if (!data) {
 						return code;
@@ -725,134 +742,145 @@
 				throw new Error(
 					"تمام کدهای این نوع محصول استفاده شده‌اند."
 				);
-
 			}
 
 
-			generateButton.addEventListener("click", async function () {
+			generateButton.addEventListener(
+				"click",
+				async function () {
 
-				const type = typeInput.value;
+					const type = typeInput.value;
 
-				if (!type) {
+					if (!type) {
 
-					const message = document.getElementById(
-						"customer-order-message"
-					);
+						const message =
+							document.getElementById(
+								"customer-order-message"
+							);
 
-					if (message) {
+						if (message) {
 
-						message.className = "form-message error";
+							message.className =
+								"form-message error";
 
-						message.textContent =
-							"ابتدا نوع محصول را انتخاب کنید.";
+							message.textContent =
+								"ابتدا نوع محصول را انتخاب کنید.";
 
+						}
+
+						typeInput.focus();
+
+						return;
 					}
 
-					typeInput.focus();
 
-					return;
-				}
+					generateButton.disabled = true;
 
 
-				generateButton.disabled = true;
+					const text =
+						generateButton.querySelector("span");
 
-
-				const image = generateButton.querySelector("img");
-				const text = generateButton.querySelector("span");
-
-
-				if (text) {
-					text.textContent = "در حال بررسی...";
-				}
-
-
-				try {
-
-					const code = await generateUniqueProductCode(type);
-
-					codeInput.value = code;
-
-					codeInput.dispatchEvent(
-						new Event("input", {
-							bubbles: true
-						})
-					);
-
-				} catch (error) {
-
-					console.error(error);
-
-					const message = document.getElementById(
-						"customer-order-message"
-					);
-
-					if (message) {
-
-						message.className = "form-message error";
-
-						message.textContent =
-							"خطا در تولید کد محصول: " +
-							error.message;
-
-					}
-
-				} finally {
-
-					generateButton.disabled = false;
 
 					if (text) {
-						text.textContent = "تولید خودکار";
+						text.textContent =
+							"در حال بررسی...";
+					}
+
+
+					try {
+
+						const code =
+							await generateUniqueProductCode(type);
+
+						codeInput.value = code;
+
+						codeInput.dispatchEvent(
+							new Event("input", {
+								bubbles: true
+							})
+						);
+
+					} catch (error) {
+
+						console.error(error);
+
+						const message =
+							document.getElementById(
+								"customer-order-message"
+							);
+
+						if (message) {
+
+							message.className =
+								"form-message error";
+
+							message.textContent =
+								"خطا در تولید کد محصول: " +
+								error.message;
+
+						}
+
+					} finally {
+
+						generateButton.disabled = false;
+
+						if (text) {
+							text.textContent =
+								"تولید خودکار";
+						}
+
 					}
 
 				}
+			);
 
-			});
+
+			typeInput.addEventListener(
+				"change",
+				function () {
+
+					const type = typeInput.value;
+
+					const prefix =
+						getProductPrefix(type);
 
 
-			/*
-			 * وقتی نوع محصول تغییر کرد، اگر کد قبلی مربوط
-			 * به نوع دیگری باشد، آن را پاک می‌کنیم.
-			 */
+					if (!prefix) {
+						codeInput.value = "";
+						return;
+					}
 
-			typeInput.addEventListener("change", function () {
 
-				const type = typeInput.value;
-				const prefix = getProductPrefix(type);
+					const currentCode =
+						codeInput.value
+							.trim()
+							.toUpperCase();
 
-				if (!prefix) {
-					codeInput.value = "";
-					return;
+
+					if (
+						currentCode &&
+						!currentCode.startsWith(prefix)
+					) {
+						codeInput.value = "";
+					}
+
 				}
+			);
 
 
-				const currentCode = codeInput.value
-					.trim()
-					.toUpperCase();
+			codeInput.addEventListener(
+				"input",
+				function () {
 
+					let value =
+						codeInput.value
+							.toUpperCase()
+							.replace(/[^A-Z0-9]/g, "");
 
-				if (
-					currentCode &&
-					!currentCode.startsWith(prefix)
-				) {
-					codeInput.value = "";
+					codeInput.value = value;
+
 				}
-
-			});
-
-
-			/*
-			 * تبدیل حروف انگلیسی کد به حروف بزرگ
-			 */
-
-			codeInput.addEventListener("input", function () {
-
-				let value = codeInput.value
-					.toUpperCase()
-					.replace(/[^A-Z0-9]/g, "");
-
-				codeInput.value = value;
-
-			});
+			);
 
 		});
 	</script>
