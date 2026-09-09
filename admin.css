@@ -240,7 +240,6 @@ header {
 .sidebar-btn.active {
     background: var(--primary-soft);
     color: var(--primary-dark);
-    border-color: #e3c9af;
 }
 .main-content {
     min-width: 0;
