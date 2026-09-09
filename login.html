@@ -5,69 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ورود | T-Choob</title>
     <link rel="icon" type="image/png" href="favicon.ico">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap');
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-        }
-    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
-
-    <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md">
-        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">ورود</h1>
-
-        <!-- باکس نمایش پیام خطا یا موفقیت -->
-        <div id="message-box" class="hidden mb-4 p-3 rounded-xl text-center text-sm font-medium"></div>
-
-        <div class="mb-4">
-            <input
-                id="login-email"
-                type="email"
-                placeholder="ایمیل خود را وارد کنید"
-                class="w-full border p-4 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition"
-            >
+<body class="auth-page">
+    <main class="auth-card">
+        <div class="auth-logo">T-Choob</div>
+        <h1 class="auth-title">ورود به حساب</h1>
+        <div id="message-box" class="message-box hidden"></div>
+        <div class="auth-field">
+            <input id="login-email" type="email" placeholder="ایمیل خود را وارد کنید" class="auth-input" autocomplete="email">
         </div>
-
-        <div class="relative mb-6">
-            <input
-                id="login-password"
-                type="password"
-                placeholder="رمز عبور"
-                class="w-full border p-4 rounded-xl pl-14 outline-none focus:ring-2 focus:ring-blue-500 transition"
-            >
-            <button
-                type="button"
-                onclick="togglePassword()"
-                class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-            >
-                👁️
-            </button>
+        <div class="auth-field">
+            <input id="login-password" type="password" placeholder="رمز عبور" class="auth-input password-input" autocomplete="current-password">
+            <button type="button" onclick="togglePassword()" class="password-toggle" aria-label="نمایش رمز">◉</button>
         </div>
-
-        <button
-            id="login-btn"
-            onclick="handleLogin()"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold transition shadow-lg shadow-blue-500/30"
-        >
-            ورود
-        </button>
-
-        <a href="./signup.html" class="block text-center text-blue-600 mt-6 hover:underline">
-            ثبت‌نام
-        </a>
-
-        <a href="./index.html" class="block text-center mt-4 text-gray-600 hover:text-blue-600">
-            ⬅️ بازگشت به فروشگاه
-        </a>
-    </div>
-
+        <button id="login-btn" onclick="handleLogin()" class="auth-btn">ورود</button>
+        <a href="./signup.html" class="auth-link">ساخت حساب جدید</a>
+        <a href="./index.html" class="auth-link auth-back">بازگشت به فروشگاه</a>
+    </main>
     <script>
         function togglePassword() {
-            const input = document.getElementById('login-password');
-            input.type = input.type === 'password' ? 'text' : 'password';
+            const input = document.getElementById("login-password");
+            input.type = input.type === "password" ? "text" : "password";
         }
     </script>
     <script src="auth.js"></script>
