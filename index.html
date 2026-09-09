@@ -1,172 +1,862 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T-Choob | چوب گالری</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>T-Choob | چوب گالری</title>
+
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" href="style.css">
+
+	<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <h1 class="logo" onclick="window.location.reload()">T-Choob</h1>
-            <div class="navbar-actions">
-                <button type="button" onclick="openCustomerOrderModal()" class="customer-order-btn">ثبت سفارش</button>
-                <button type="button" onclick="toggleCart()" class="cart-btn" aria-label="سبد خرید">
-                    <span aria-hidden="true">🛒</span>
-                    <span id="cart-count">0</span>
-                </button>
-                <div id="user-section"></div>
-            </div>
-        </div>
-    </nav>
-    <section class="hero">
-        <div class="hero-overlay">
-            <div class="hero-text">
-                <h1>چوب گالری</h1>
-                <p>T-Choob</p>
-            </div>
-        </div>
-    </section>
-    <section class="search-section">
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="جستجوی محصول..." autocomplete="off">
-        </div>
-        <select id="product-type-filter">
-            <option value="">همه محصولات</option>
-            <option value="JK">جاکلیدی</option>
-            <option value="JS">جاسوئیچی</option>
-            <option value="TB">تابلو</option>
-            <option value="CL">ساعت</option>
-            <option value="OT">غیره</option>
-        </select>
-        <select id="sort-select">
-            <option value="">مرتب سازی...</option>
-            <option value="cheap">ارزان‌ترین</option>
-            <option value="expensive">گران‌ترین</option>
-            <option value="name">الفبا</option>
-        </select>
-        <div id="advanced-filters" class="advanced-filters">
-            <div id="js-filters" class="type-filters hidden">
-                <select id="js-wood-filter">
-                    <option value="">همه چوب‌ها</option>
-                    <option value="گردو">گردو</option>
-                    <option value="عناب">عناب</option>
-                    <option value="کرات">کرات</option>
-                    <option value="نارنج">نارنج</option>
-                    <option value="گردو سوخته">گردو سوخته</option>
-                    <option value="سنجد">سنجد</option>
-                    <option value="متفرقه">متفرقه</option>
-                </select>
-                <select id="js-size-filter">
-                    <option value="">همه اندازه‌ها</option>
-                    <option value="کوچک">کوچک</option>
-                    <option value="متوسط">متوسط</option>
-                    <option value="بزرگ">بزرگ</option>
-                </select>
-                <select id="js-font-filter">
-                    <option value="">همه فونت‌ها</option>
-                    <option value="1">فونت ۱</option>
-                    <option value="2">فونت ۲</option>
-                    <option value="3">فونت ۳</option>
-                    <option value="4">فونت ۴</option>
-                    <option value="ندارد">بدون فونت</option>
-                </select>
-            </div>
-            <div id="jk-filters" class="type-filters hidden">
-                <select id="jk-wood-filter">
-                    <option value="">همه چوب‌ها</option>
-                    <option value="گردو">گردو</option>
-                    <option value="عناب">عناب</option>
-                    <option value="کرات">کرات</option>
-                    <option value="نارنج">نارنج</option>
-                    <option value="گردو سوخته">گردو سوخته</option>
-                    <option value="سنجد">سنجد</option>
-                    <option value="متفرقه">متفرقه</option>
-                </select>
-                <input type="number" id="jk-hook-filter" min="1" placeholder="تعداد قلاب">
-            </div>
-            <div id="tb-filters" class="type-filters hidden">
-                <input type="number" id="tb-width-filter" min="0" placeholder="عرض">
-                <input type="number" id="tb-length-filter" min="0" placeholder="طول">
-            </div>
-            <div id="cl-filters" class="type-filters hidden">
-                <input type="number" id="cl-width-filter" min="0" placeholder="عرض">
-                <input type="number" id="cl-length-filter" min="0" placeholder="طول">
-            </div>
-        </div>
-    </section>
-    <main class="main-container">
-        <header class="products-header">
-            <h2>محصولات برتر ما</h2>
-            <p>کیفیت تضمین شده برای شما</p>
-        </header>
-        <div id="product-grid" class="products-grid"></div>
-    </main>
-    <div id="cart-modal" class="cart-modal hidden">
-        <div class="cart-panel">
-            <div class="cart-header">
-                <h2>سبد خرید</h2>
-                <button type="button" onclick="toggleCart()" aria-label="بستن سبد خرید">×</button>
-            </div>
-            <div id="cart-items-list" class="cart-items"></div>
-            <div class="cart-footer">
-                <div class="cart-total">
-                    <span>جمع کل</span>
-                    <span id="cart-total">۰ تومان</span>
-                </div>
-                <button type="button" onclick="checkout()">ثبت سفارش</button>
-            </div>
-        </div>
-    </div>
-    <div id="customer-order-modal" class="customer-order-modal hidden">
-        <div class="customer-order-panel">
-            <div class="customer-order-header">
-                <h2>ثبت سفارش</h2>
-                <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-close" aria-label="بستن">×</button>
-            </div>
-            <form id="customer-order-form">
-                <div class="customer-order-grid">
-                    <div class="customer-order-field">
-                        <label for="customer-order-type">نوع محصول</label>
-                        <select id="customer-order-type" required>
-                            <option value="">انتخاب کنید</option>
-                            <option value="JK">جاکلیدی</option>
-                            <option value="JS">جاسوئیچی</option>
-                            <option value="TB">تابلو</option>
-                            <option value="CL">ساعت</option>
-                            <option value="OT">غیره</option>
-                        </select>
-                    </div>
-                    <div class="customer-order-field">
-                        <label for="customer-order-quantity">تعداد</label>
-                        <input type="number" id="customer-order-quantity" min="1" value="1" required>
-                    </div>
-                    <div class="customer-order-field">
-                        <label for="customer-order-price">قیمت</label>
-                        <input type="number" id="customer-order-price" min="0" placeholder="قیمت به تومان" required>
-                    </div>
-                    <div class="customer-order-field">
-                        <label for="customer-order-images">تصاویر</label>
-                        <input type="text" id="customer-order-images" placeholder="لینک تصاویر با | جدا شود">
-                    </div>
-                    <div class="customer-order-field customer-order-full">
-                        <label for="customer-order-description">توضیحات</label>
-                        <textarea id="customer-order-description" placeholder="توضیحات محصول"></textarea>
-                    </div>
-                </div>
-                <div id="customer-order-type-fields"></div>
-                <div id="customer-order-message"></div>
-                <div class="customer-order-footer">
-                    <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-cancel">انصراف</button>
-                    <button type="submit" id="customer-order-submit">ثبت سفارش</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <script src="script.js"></script>
+
+	<nav class="navbar">
+		<div class="navbar-container">
+
+			<h1
+				class="logo"
+				onclick="window.location.reload()">
+				T-Choob
+			</h1>
+
+			<div class="navbar-actions">
+
+				<button
+					type="button"
+					onclick="openCustomerOrderModal()"
+					class="customer-order-btn">
+					ثبت سفارش
+				</button>
+
+				<button
+					type="button"
+					onclick="toggleCart()"
+					class="cart-btn"
+					aria-label="سبد خرید">
+
+					<img
+						src="assets/admin-icons/cart.png"
+						alt=""
+						class="cart-icon">
+
+					<span id="cart-count">0</span>
+
+				</button>
+
+				<div id="user-section"></div>
+
+			</div>
+
+		</div>
+	</nav>
+
+
+	<section class="hero">
+
+		<div class="hero-overlay">
+
+			<div class="hero-text">
+				<h1>چوب گالری</h1>
+				<p>T-Choob</p>
+			</div>
+
+		</div>
+
+	</section>
+
+
+	<section class="search-section">
+
+		<div class="search-box">
+
+			<input
+				type="text"
+				id="search-input"
+				placeholder="جستجوی محصول..."
+				autocomplete="off">
+
+		</div>
+
+
+		<select id="product-type-filter">
+
+			<option value="">
+				همه محصولات
+			</option>
+
+			<option value="JK">
+				جاکلیدی
+			</option>
+
+			<option value="JS">
+				جاسوئیچی
+			</option>
+
+			<option value="TB">
+				تابلو
+			</option>
+
+			<option value="CL">
+				ساعت
+			</option>
+
+			<option value="OT">
+				غیره
+			</option>
+
+		</select>
+
+
+		<select id="sort-select">
+
+			<option value="">
+				مرتب سازی...
+			</option>
+
+			<option value="cheap">
+				ارزان‌ترین
+			</option>
+
+			<option value="expensive">
+				گران‌ترین
+			</option>
+
+			<option value="name">
+				الفبا
+			</option>
+
+		</select>
+
+
+		<div
+			id="advanced-filters"
+			class="advanced-filters">
+
+			<div
+				id="js-filters"
+				class="type-filters hidden">
+
+				<select id="js-wood-filter">
+
+					<option value="">
+						همه چوب‌ها
+					</option>
+
+					<option value="گردو">
+						گردو
+					</option>
+
+					<option value="عناب">
+						عناب
+					</option>
+
+					<option value="کرات">
+						کرات
+					</option>
+
+					<option value="نارنج">
+						نارنج
+					</option>
+
+					<option value="گردو سوخته">
+						گردو سوخته
+					</option>
+
+					<option value="سنجد">
+						سنجد
+					</option>
+
+					<option value="متفرقه">
+						متفرقه
+					</option>
+
+				</select>
+
+
+				<select id="js-size-filter">
+
+					<option value="">
+						همه اندازه‌ها
+					</option>
+
+					<option value="کوچک">
+						کوچک
+					</option>
+
+					<option value="متوسط">
+						متوسط
+					</option>
+
+					<option value="بزرگ">
+						بزرگ
+					</option>
+
+				</select>
+
+
+				<select id="js-font-filter">
+
+					<option value="">
+						همه فونت‌ها
+					</option>
+
+					<option value="1">
+						فونت ۱
+					</option>
+
+					<option value="2">
+						فونت ۲
+					</option>
+
+					<option value="3">
+						فونت ۳
+					</option>
+
+					<option value="4">
+						فونت ۴
+					</option>
+
+					<option value="ندارد">
+						بدون فونت
+					</option>
+
+				</select>
+
+			</div>
+
+
+			<div
+				id="jk-filters"
+				class="type-filters hidden">
+
+				<select id="jk-wood-filter">
+
+					<option value="">
+						همه چوب‌ها
+					</option>
+
+					<option value="گردو">
+						گردو
+					</option>
+
+					<option value="عناب">
+						عناب
+					</option>
+
+					<option value="کرات">
+						کرات
+					</option>
+
+					<option value="نارنج">
+						نارنج
+					</option>
+
+					<option value="گردو سوخته">
+						گردو سوخته
+					</option>
+
+					<option value="سنجد">
+						سنجد
+					</option>
+
+					<option value="متفرقه">
+						متفرقه
+					</option>
+
+				</select>
+
+
+				<input
+					type="number"
+					id="jk-hook-filter"
+					min="1"
+					placeholder="تعداد قلاب">
+
+			</div>
+
+
+			<div
+				id="tb-filters"
+				class="type-filters hidden">
+
+				<input
+					type="number"
+					id="tb-width-filter"
+					min="0"
+					placeholder="عرض">
+
+				<input
+					type="number"
+					id="tb-length-filter"
+					min="0"
+					placeholder="طول">
+
+			</div>
+
+
+			<div
+				id="cl-filters"
+				class="type-filters hidden">
+
+				<input
+					type="number"
+					id="cl-width-filter"
+					min="0"
+					placeholder="عرض">
+
+				<input
+					type="number"
+					id="cl-length-filter"
+					min="0"
+					placeholder="طول">
+
+			</div>
+
+		</div>
+
+	</section>
+
+
+	<main class="main-container">
+
+		<header class="products-header">
+
+			<h2>
+				محصولات برتر ما
+			</h2>
+
+			<p>
+				کیفیت تضمین شده برای شما
+			</p>
+
+		</header>
+
+
+		<div
+			id="product-grid"
+			class="products-grid">
+		</div>
+
+	</main>
+
+
+	<div
+		id="cart-modal"
+		class="cart-modal hidden">
+
+		<div class="cart-panel">
+
+			<div class="cart-header">
+
+				<h2>
+					سبد خرید
+				</h2>
+
+				<button
+					type="button"
+					onclick="toggleCart()"
+					aria-label="بستن سبد خرید">
+					×
+				</button>
+
+			</div>
+
+
+			<div
+				id="cart-items-list"
+				class="cart-items">
+			</div>
+
+
+			<div class="cart-footer">
+
+				<div class="cart-total">
+
+					<span>
+						جمع کل
+					</span>
+
+					<span id="cart-total">
+						۰ تومان
+					</span>
+
+				</div>
+
+
+				<button
+					type="button"
+					onclick="checkout()">
+					ثبت سفارش
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<div
+		id="customer-order-modal"
+		class="customer-order-modal hidden">
+
+		<div class="customer-order-panel">
+
+			<div class="customer-order-header">
+
+				<h2>
+					ثبت سفارش
+				</h2>
+
+				<button
+					type="button"
+					onclick="closeCustomerOrderModal()"
+					class="customer-order-close"
+					aria-label="بستن">
+					×
+				</button>
+
+			</div>
+
+
+			<form id="customer-order-form">
+
+				<div class="customer-order-grid">
+
+
+					<div class="customer-order-field">
+
+						<label for="customer-order-type">
+							نوع محصول
+						</label>
+
+						<select
+							id="customer-order-type"
+							required>
+
+							<option value="">
+								انتخاب کنید
+							</option>
+
+							<option value="JK">
+								جاکلیدی
+							</option>
+
+							<option value="JS">
+								جاسوئیچی
+							</option>
+
+							<option value="TB">
+								تابلو
+							</option>
+
+							<option value="CL">
+								ساعت
+							</option>
+
+							<option value="OT">
+								غیره
+							</option>
+
+						</select>
+
+					</div>
+
+
+					<div class="customer-order-field">
+
+						<label for="customer-order-code">
+							کد محصول
+						</label>
+
+						<div class="customer-order-code-wrapper">
+
+							<input
+								type="text"
+								id="customer-order-code"
+								dir="ltr"
+								autocomplete="off"
+								placeholder="مثلاً TCJS0E1F"
+								maxlength="8"
+								pattern="TC(JK|JS|TB|CL|OT)[0-9A-Fa-f]{4}"
+								required>
+
+							<button
+								type="button"
+								id="customer-order-generate-code"
+								class="generate-code-btn">
+
+								<img
+									src="assets/admin-icons/generate.png"
+									alt="">
+
+								<span>
+									تولید خودکار
+								</span>
+
+							</button>
+
+						</div>
+
+						<small class="customer-order-code-hint">
+							می‌توانید کد را دستی وارد کنید یا آن را به‌صورت خودکار بسازید.
+						</small>
+
+					</div>
+
+
+					<div class="customer-order-field">
+
+						<label for="customer-order-quantity">
+							تعداد
+						</label>
+
+						<input
+							type="number"
+							id="customer-order-quantity"
+							min="1"
+							value="1"
+							required>
+
+					</div>
+
+
+					<div class="customer-order-field">
+
+						<label for="customer-order-price">
+							قیمت
+						</label>
+
+						<input
+							type="number"
+							id="customer-order-price"
+							min="0"
+							placeholder="قیمت به تومان"
+							required>
+
+					</div>
+
+
+					<div class="customer-order-field">
+
+						<label for="customer-order-images">
+							تصاویر
+						</label>
+
+						<input
+							type="text"
+							id="customer-order-images"
+							placeholder="لینک تصاویر با | جدا شود">
+
+					</div>
+
+
+					<div class="customer-order-field customer-order-full">
+
+						<label for="customer-order-description">
+							توضیحات
+						</label>
+
+						<textarea
+							id="customer-order-description"
+							placeholder="توضیحات محصول">
+						</textarea>
+
+					</div>
+
+				</div>
+
+
+				<div id="customer-order-type-fields"></div>
+
+
+				<div id="customer-order-message"></div>
+
+
+				<div class="customer-order-footer">
+
+					<button
+						type="button"
+						onclick="closeCustomerOrderModal()"
+						class="customer-order-cancel">
+
+						انصراف
+
+					</button>
+
+
+					<button
+						type="submit"
+						id="customer-order-submit">
+
+						ثبت سفارش
+
+					</button>
+
+				</div>
+
+			</form>
+
+		</div>
+
+	</div>
+
+
+	<script src="script.js"></script>
+
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+
+			const typeInput = document.getElementById("customer-order-type");
+			const codeInput = document.getElementById("customer-order-code");
+			const generateButton = document.getElementById("customer-order-generate-code");
+
+			if (!typeInput || !codeInput || !generateButton) {
+				return;
+			}
+
+
+			function getProductPrefix(type) {
+
+				const prefixes = {
+					JK: "TCJK",
+					JS: "TCJS",
+					TB: "TCTB",
+					CL: "TCCL",
+					OT: "TCOT"
+				};
+
+				return prefixes[type] || null;
+			}
+
+
+			function createRandomHexCode(type) {
+
+				const prefix = getProductPrefix(type);
+
+				if (!prefix) {
+					return "";
+				}
+
+				const randomNumber = Math.floor(Math.random() * 0x10000);
+
+				const hexCode = randomNumber
+					.toString(16)
+					.toUpperCase()
+					.padStart(4, "0");
+
+				return prefix + hexCode;
+			}
+
+
+			async function generateUniqueProductCode(type) {
+
+				const prefix = getProductPrefix(type);
+
+				if (!prefix) {
+					throw new Error("ابتدا نوع محصول را انتخاب کنید.");
+				}
+
+
+				/*
+				 * چند کد تصادفی تولید می‌کنیم و وجودشان را در جدول
+				 * محصولات بررسی می‌کنیم.
+				 */
+
+				for (let attempt = 0; attempt < 30; attempt++) {
+
+					const code = createRandomHexCode(type);
+
+					const { data, error } = await shopDB
+						.from("products")
+						.select("id")
+						.eq("name", code)
+						.maybeSingle();
+
+					if (error) {
+						throw error;
+					}
+
+					if (!data) {
+						return code;
+					}
+
+				}
+
+
+				/*
+				 * اگر به‌صورت تصادفی کد آزاد پیدا نشد،
+				 * از اولین کد آزاد استفاده می‌کنیم.
+				 */
+
+				for (let number = 0; number <= 0xFFFF; number++) {
+
+					const hexCode = number
+						.toString(16)
+						.toUpperCase()
+						.padStart(4, "0");
+
+					const code = prefix + hexCode;
+
+					const { data, error } = await shopDB
+						.from("products")
+						.select("id")
+						.eq("name", code)
+						.maybeSingle();
+
+					if (error) {
+						throw error;
+					}
+
+					if (!data) {
+						return code;
+					}
+
+				}
+
+
+				throw new Error(
+					"تمام کدهای این نوع محصول استفاده شده‌اند."
+				);
+
+			}
+
+
+			generateButton.addEventListener("click", async function () {
+
+				const type = typeInput.value;
+
+				if (!type) {
+
+					const message = document.getElementById(
+						"customer-order-message"
+					);
+
+					if (message) {
+
+						message.className = "form-message error";
+
+						message.textContent =
+							"ابتدا نوع محصول را انتخاب کنید.";
+
+					}
+
+					typeInput.focus();
+
+					return;
+				}
+
+
+				generateButton.disabled = true;
+
+
+				const image = generateButton.querySelector("img");
+				const text = generateButton.querySelector("span");
+
+
+				if (text) {
+					text.textContent = "در حال بررسی...";
+				}
+
+
+				try {
+
+					const code = await generateUniqueProductCode(type);
+
+					codeInput.value = code;
+
+					codeInput.dispatchEvent(
+						new Event("input", {
+							bubbles: true
+						})
+					);
+
+				} catch (error) {
+
+					console.error(error);
+
+					const message = document.getElementById(
+						"customer-order-message"
+					);
+
+					if (message) {
+
+						message.className = "form-message error";
+
+						message.textContent =
+							"خطا در تولید کد محصول: " +
+							error.message;
+
+					}
+
+				} finally {
+
+					generateButton.disabled = false;
+
+					if (text) {
+						text.textContent = "تولید خودکار";
+					}
+
+				}
+
+			});
+
+
+			/*
+			 * وقتی نوع محصول تغییر کرد، اگر کد قبلی مربوط
+			 * به نوع دیگری باشد، آن را پاک می‌کنیم.
+			 */
+
+			typeInput.addEventListener("change", function () {
+
+				const type = typeInput.value;
+				const prefix = getProductPrefix(type);
+
+				if (!prefix) {
+					codeInput.value = "";
+					return;
+				}
+
+
+				const currentCode = codeInput.value
+					.trim()
+					.toUpperCase();
+
+
+				if (
+					currentCode &&
+					!currentCode.startsWith(prefix)
+				) {
+					codeInput.value = "";
+				}
+
+			});
+
+
+			/*
+			 * تبدیل حروف انگلیسی کد به حروف بزرگ
+			 */
+
+			codeInput.addEventListener("input", function () {
+
+				let value = codeInput.value
+					.toUpperCase()
+					.replace(/[^A-Z0-9]/g, "");
+
+				codeInput.value = value;
+
+			});
+
+		});
+	</script>
+
 </body>
+
 </html>
