@@ -1,128 +1,147 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-        <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>جزئیات محصول | T-Choob</title>
-                <link rel="icon" href="favicon.ico">
-                <script src="https://cdn.tailwindcss.com"></script>
-                <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-                <script src="script.js"></script>
-                <link rel="icon" href="favicon.ico">
-        </head>
-        <body class="bg-gray-100">
-                <nav class="text-black shadow-md sticky top-0 z-40 p-4" style="background:#E6D5B8">
-                        <div class="container mx-auto flex justify-between items-center">
-                                <h1 class="text-2xl font-bold cursor-pointer" onclick="window.location.reload()">T-Choob</h1>
-                                <div class="flex items-center gap-4">
-                                        <!-- سبد خرید -->
-                                        <button onclick="toggleCart()" class="relative p-2 bg-white/20 rounded-full hover:bg-white/30 transition">
-                                                <span class="text-2xl">🛒</span>
-                                                <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
-                                        </button>
-                                        <a href="index.html" class="text-gray-600 hover:text-blue-600">بازگشت</a>
-                                </div>
-                        </div>
-                </nav>
-                <!-- صفحه -->
-                <div class="max-w-7xl mx-auto p-6">
-                        <div id="product-container" class="hidden grid lg:grid-cols-2 gap-12">
-                                <!-- تصاویر -->
-                                <div>
-                                        <div class="bg-white rounded-3xl shadow overflow-hidden">
-                                                <div class="w-full h-[500px]">
-                                                        <img id="main-image" class="w-full h-full object-cover">
-                                                </div>
-                                        </div>
-                                        <div id="thumbs" class="flex gap-3 mt-4 overflow-x-auto">   
-                                        </div>
-                                </div>
-                                <!-- اطلاعات -->
-                                <div>
-                                        <div class="bg-white rounded-3xl p-8 shadow">
-                                                <h1 id="product-name" class="text-4xl font-bold mb-6"></h1>
-                                                <p id="product-price" class="text-3xl text-blue-600 font-bold mb-8"></p>
-                                                <p id="product-description" class="text-gray-600 leading-9"></p>
-                                                <button onclick="addCurrentProductToCart()" class="w-full mt-10 bg-green-600 text-white py-4 rounded-2xl text-xl font-bold">افزودن به سبد خرید</button>
-                                        </div>
-                                </div>
-                        </div>
-                        <!-- لودینگ -->
-                        <div id="loading" class="text-center py-20">در حال بارگذاری...</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جزئیات محصول | T-Choob</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <h1 class="logo" onclick="window.location.reload()">T-Choob</h1>
+            <div class="navbar-actions">
+                <button type="button" onclick="toggleCart()" class="cart-btn" aria-label="سبد خرید">
+                    <span aria-hidden="true">🛒</span>
+                    <span id="cart-count">0</span>
+                </button>
+                <a href="index.html" class="back-link">بازگشت</a>
+            </div>
+        </div>
+    </nav>
+    <main class="main-container" style="padding-top: 40px;">
+        <div id="product-container" class="hidden" style="display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 35px; align-items: start;">
+            <section>
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 28px; overflow: hidden; box-shadow: var(--shadow);">
+                    <div style="width: 100%; height: 520px; background: var(--surface-2);">
+                        <img id="main-image" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="تصویر محصول">
+                    </div>
                 </div>
-                <div id="cart-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
-                        <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 flex flex-col">
-                                <div class="flex justify-between items-center mb-6">
-                                        <h2 class="text-xl font-bold">سبد خرید</h2>
-                                        <button onclick="toggleCart()" class="text-3xl">&times;</button>
-                                </div>
-                                <div id="cart-items-list" class="flex-1 overflow-y-auto"></div>
-                                <div class="border-t pt-4">
-                                        <div class="flex justify-between text-lg font-bold mb-4">
-                                                <span>جمع کل</span>
-                                                <span id="cart-total">
-                                                        ۰ تومان
-                                                </span>
-                                        </div>
-                                        <button onclick="checkout()" class="w-full bg-green-600 text-white py-4 rounded-xl">ثبت سفارش</button>
-                                </div>
-                        </div>
+                <div id="thumbs" style="display: flex; gap: 10px; margin-top: 14px; overflow-x: auto; padding-bottom: 4px;"></div>
+            </section>
+            <section>
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 30px; box-shadow: var(--shadow);">
+                    <h1 id="product-name" style="color: var(--navy-dark); font-size: clamp(32px, 4vw, 46px);"></h1>
+                    <p id="product-price" style="margin-top: 12px; color: var(--wood-dark); font-size: 26px;"></p>
+                    <p id="product-description" style="margin-top: 22px; color: var(--muted); line-height: 2.2; font-size: 17px;"></p>
+                    <button onclick="addCurrentProductToCart()" class="product-btn" style="margin-top: 30px;">افزودن به سبد خرید</button>
                 </div>
-                <script>
-                        let currentProduct = null;
-                        document.addEventListener('DOMContentLoaded', loadProduct);
-                        async function loadProduct(){
-                                const id = new URLSearchParams(window.location.search).get('id');
-                                if(!id){
-                                        return location.href='index.html';
-                                }
-                                const {
-                                        data,
-                                        error
-                                } = await shopDB.from('products').select('*').eq('id',id).single();
-                                if(error || !data){
-                                        return location.href='index.html';
-                                }
-                                currentProduct = data;
-                                document.getElementById('loading').classList.add('hidden');
-                                document.getElementById('product-container').classList.remove('hidden');
-                                document.getElementById('product-name').innerText = data.name;
-                                document.getElementById('product-price').innerText = `${Number(data.price).toLocaleString()} تومان`;
-                                document.getElementById('product-description').innerText = data.description || 'توضیحاتی ثبت نشده است.';
-                                let images = [];
-                                if(data.images){
-                                        images = data.images.split('|').filter(Boolean);
-                                }
-                                if(images.length===0){
-                                        images.push(data.image_url);
-                                }
-                                document.getElementById('main-image').src = images[0];
-                                document.getElementById('thumbs').innerHTML = images.map(img => `
-                                <img src="${img}" onclick="changeImage('${img}')" class="w-24 h-24 rounded-xl border cursor-pointer object-cover hover:scale-105 transition">`).join('');
-                        }
-                        function changeImage(url){
-                                document.getElementById('main-image').src = url;
-                        }
-                        function addCurrentProductToCart(){
-                                if(!currentProduct){
-                                        return;
-                                }
-                                addToCart(currentProduct.id);
-                                // let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                                // const item = cart.find(i => i.id == currentProduct.id);
-                                // if(item){
-                                //         item.quantity++;
-                                // }
-                                // else{
-                                //         cart.push({
-                                //                 id: currentProduct.id,
-                                //                 quantity: 1
-                                //         });
-                                // }
-                                // localStorage.setItem('cart', JSON.stringify(cart));
-                                alert('محصول به سبد خرید اضافه شد.');
-                        }
-                        updateCartCount();
-                </script>
-        </body>
+            </section>
+        </div>
+        <div id="loading" style="padding: 100px 0; text-align: center; color: var(--muted); font-size: 20px;">در حال بارگذاری...</div>
+    </main>
+    <div id="cart-modal" class="cart-modal hidden">
+        <div class="cart-panel">
+            <div class="cart-header">
+                <h2>سبد خرید</h2>
+                <button type="button" onclick="toggleCart()" aria-label="بستن">×</button>
+            </div>
+            <div id="cart-items-list" class="cart-items"></div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>جمع کل</span>
+                    <span id="cart-total">۰ تومان</span>
+                </div>
+                <button type="button" onclick="checkout()">ثبت سفارش</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentProduct = null;
+        document.addEventListener("DOMContentLoaded", loadProduct);
+
+        async function loadProduct() {
+            const id = new URLSearchParams(window.location.search).get("id");
+
+            if (!id) {
+                location.href = "index.html";
+                return;
+            }
+
+            const { data, error } = await shopDB
+                .from("products")
+                .select("*")
+                .eq("id", id)
+                .single();
+
+            if (error || !data) {
+                location.href = "index.html";
+                return;
+            }
+
+            currentProduct = data;
+            document.getElementById("loading").classList.add("hidden");
+            document.getElementById("product-container").classList.remove("hidden");
+            document.getElementById("product-name").innerText = data.name;
+            document.getElementById("product-price").innerText = `${Number(data.price).toLocaleString()} تومان`;
+            document.getElementById("product-description").innerText = data.description || "توضیحاتی ثبت نشده است.";
+
+            let images = [];
+
+            if (data.images) {
+                images = data.images.split("|").filter(Boolean);
+            }
+
+            if (images.length === 0 && data.image_url) {
+                images.push(data.image_url);
+            }
+
+            const mainImage = document.getElementById("main-image");
+
+            if (images.length > 0) {
+                mainImage.src = images[0];
+            }
+
+            document.getElementById("thumbs").innerHTML = images.map((img, index) => `
+                <img
+                    src="${img}"
+                    onclick="changeImage('${img.replace(/'/g, "\'")}')"
+                    alt="تصویر ${index + 1}"
+                    style="width: 82px; height: 82px; flex: 0 0 82px; object-fit: cover; border-radius: 14px; border: 2px solid var(--border); cursor: pointer;"
+                >
+            `).join("");
+        }
+
+        function changeImage(url) {
+            document.getElementById("main-image").src = url;
+        }
+
+        function addCurrentProductToCart() {
+            if (!currentProduct) {
+                return;
+            }
+
+            addToCart(currentProduct.id);
+            alert("محصول به سبد خرید اضافه شد.");
+        }
+
+        updateCartCount();
+    </script>
+    <style>
+        @media (max-width: 850px) {
+            #product-container {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #product-container > section:first-child > div:first-child > div {
+                height: 360px !important;
+            }
+        }
+    </style>
+</body>
 </html>
