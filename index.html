@@ -1,549 +1,172 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>T-Choob</title>
-
-    <link
-        rel="icon"
-        href="favicon.ico"
-    >
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
-    <!-- Fuse.js -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Choob | چوب گالری</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 </head>
-
-
 <body>
-
-
-<!-- =========================================
-     ناوبار
-========================================= -->
-
-<nav class="navbar">
-
-    <div class="navbar-container">
-
-        <h1
-            class="logo"
-            onclick="window.location.reload()"
-        >
-            T-Choob
-        </h1>
-
-
-        <div class="navbar-actions">
-            <button type="button" onclick="openCustomerOrderModal()" class="customer-order-btn">ثبت سفارش</button>
-            <button type="button" onclick="toggleCart()" class="cart-btn" aria-label="سبد خرید">🛒<span id="cart-count">0</span></button>
-            <div id="user-section"></div>
-        </div>
-
-    </div>
-
-</nav>
-
-
-
-<!-- =========================================
-     بنر
-========================================= -->
-
-<section class="hero">
-
-    <div class="hero-overlay">
-
-        <div class="hero-text">
-
-            <h1>
-                چوب گالری
-            </h1>
-
-            <p>
-                T-Choob
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-<!-- =========================================
-     جستجو و فیلتر
-========================================= -->
-
-<section class="search-section">
-
-
-    <!-- جستجو -->
-
-    <div class="search-box">
-
-        <input
-            type="text"
-            id="search-input"
-            placeholder="جستجوی محصول..."
-            autocomplete="off"
-        >
-
-    </div>
-
-
-
-    <!-- نوع محصول -->
-
-    <select id="product-type-filter">
-
-        <option value="">
-            همه محصولات
-        </option>
-
-        <option value="JK">
-            جاکلیدی
-        </option>
-
-        <option value="JS">
-            جاسوئیچی
-        </option>
-
-        <option value="TB">
-            تابلو
-        </option>
-
-        <option value="CL">
-            ساعت
-        </option>
-
-        <option value="OT">
-            غیره
-        </option>
-
-    </select>
-
-
-
-    <!-- مرتب سازی -->
-
-    <select id="sort-select">
-
-        <option value="">
-            مرتب سازی...
-        </option>
-
-        <option value="cheap">
-            ارزان‌ترین
-        </option>
-
-        <option value="expensive">
-            گران‌ترین
-        </option>
-
-        <option value="name">
-            الفبا
-        </option>
-
-    </select>
-
-
-
-    <!-- =====================================
-         فیلترهای پیشرفته
-    ====================================== -->
-
-    <div
-        id="advanced-filters"
-        class="advanced-filters"
-    >
-
-
-        <!-- =================================
-             جاسوئیچی
-        ================================== -->
-
-        <div
-            id="js-filters"
-            class="type-filters hidden"
-        >
-
-            <select id="js-wood-filter">
-
-                <option value="">
-                    همه چوب‌ها
-                </option>
-
-                <option value="گردو">
-                    گردو
-                </option>
-
-                <option value="عناب">
-                    عناب
-                </option>
-
-                <option value="کرات">
-                    کرات
-                </option>
-
-                <option value="نارنج">
-                    نارنج
-                </option>
-
-                <option value="گردو سوخته">
-                    گردو سوخته
-                </option>
-
-                <option value="سنجد">
-                    سنجد
-                </option>
-
-                <option value="متفرقه">
-                    متفرقه
-                </option>
-
-            </select>
-
-
-
-            <select id="js-size-filter">
-
-                <option value="">
-                    همه اندازه‌ها
-                </option>
-
-                <option value="کوچک">
-                    کوچک
-                </option>
-
-                <option value="متوسط">
-                    متوسط
-                </option>
-
-                <option value="بزرگ">
-                    بزرگ
-                </option>
-
-            </select>
-
-
-
-            <select id="js-font-filter">
-
-                <option value="">
-                    همه فونت‌ها
-                </option>
-
-                <option value="1">
-                    فونت ۱
-                </option>
-
-                <option value="2">
-                    فونت ۲
-                </option>
-
-                <option value="3">
-                    فونت ۳
-                </option>
-
-                <option value="4">
-                    فونت ۴
-                </option>
-
-                <option value="ندارد">
-                    بدون فونت
-                </option>
-
-            </select>
-
-        </div>
-
-
-
-        <!-- =================================
-             جاکلیدی
-        ================================== -->
-
-        <div
-            id="jk-filters"
-            class="type-filters hidden"
-        >
-
-            <select id="jk-wood-filter">
-
-                <option value="">
-                    همه چوب‌ها
-                </option>
-
-                <option value="گردو">
-                    گردو
-                </option>
-
-                <option value="عناب">
-                    عناب
-                </option>
-
-                <option value="کرات">
-                    کرات
-                </option>
-
-                <option value="نارنج">
-                    نارنج
-                </option>
-
-                <option value="گردو سوخته">
-                    گردو سوخته
-                </option>
-
-                <option value="سنجد">
-                    سنجد
-                </option>
-
-                <option value="متفرقه">
-                    متفرقه
-                </option>
-
-            </select>
-
-
-
-            <input
-                type="number"
-                id="jk-hook-filter"
-                min="1"
-                placeholder="تعداد قلاب"
-            >
-
-        </div>
-
-
-
-        <!-- =================================
-             تابلو
-        ================================== -->
-
-        <div
-            id="tb-filters"
-            class="type-filters hidden"
-        >
-
-            <input
-                type="number"
-                id="tb-width-filter"
-                min="0"
-                placeholder="عرض"
-            >
-
-            <input
-                type="number"
-                id="tb-length-filter"
-                min="0"
-                placeholder="طول"
-            >
-
-        </div>
-
-
-
-        <!-- =================================
-             ساعت
-        ================================== -->
-
-        <div
-            id="cl-filters"
-            class="type-filters hidden"
-        >
-
-            <input
-                type="number"
-                id="cl-width-filter"
-                min="0"
-                placeholder="عرض"
-            >
-
-            <input
-                type="number"
-                id="cl-length-filter"
-                min="0"
-                placeholder="طول"
-            >
-
-        </div>
-
-
-    </div>
-
-</section>
-
-
-
-<!-- =========================================
-     محصولات
-========================================= -->
-
-<main class="main-container">
-
-
-    <header class="products-header">
-
-        <h2>
-            محصولات برتر ما
-        </h2>
-
-        <p>
-            کیفیت تضمین شده برای شما
-        </p>
-
-    </header>
-
-
-
-    <div
-        id="product-grid"
-        class="products-grid"
-    ></div>
-
-
-</main>
-
-
-
-<!-- =========================================
-     سبد خرید
-========================================= -->
-
-<div
-    id="cart-modal"
-    class="cart-modal hidden"
->
-
-    <div class="cart-panel">
-
-
-        <div class="cart-header">
-
-            <h2>
-                سبد خرید
-            </h2>
-
-
-            <button
-                type="button"
-                onclick="toggleCart()"
-                aria-label="بستن سبد خرید"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-
-        <div
-            id="cart-items-list"
-            class="cart-items"
-        ></div>
-
-
-
-        <div class="cart-footer">
-
-            <div class="cart-total">
-
-                <span>
-                    جمع کل
-                </span>
-
-                <span id="cart-total">
-                    ۰ تومان
-                </span>
-
+    <nav class="navbar">
+        <div class="navbar-container">
+            <h1 class="logo" onclick="window.location.reload()">T-Choob</h1>
+            <div class="navbar-actions">
+                <button type="button" onclick="openCustomerOrderModal()" class="customer-order-btn">ثبت سفارش</button>
+                <button type="button" onclick="toggleCart()" class="cart-btn" aria-label="سبد خرید">
+                    <span aria-hidden="true">🛒</span>
+                    <span id="cart-count">0</span>
+                </button>
+                <div id="user-section"></div>
             </div>
-
-
-            <button
-                type="button"
-                onclick="checkout()"
-            >
-                ثبت سفارش
-            </button>
-
         </div>
-
-
-    </div>
-
-</div>
-<div id="customer-order-modal" class="customer-order-modal hidden">
-    <div class="customer-order-panel">
-        <div class="customer-order-header">
-            <h2>ثبت سفارش</h2>
-            <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-close">×</button>
+    </nav>
+    <section class="hero">
+        <div class="hero-overlay">
+            <div class="hero-text">
+                <h1>چوب گالری</h1>
+                <p>T-Choob</p>
+            </div>
         </div>
-        <form id="customer-order-form">
-            <div class="customer-order-grid">
-                <div class="customer-order-field">
-                    <label for="customer-order-type">نوع محصول</label>
-                    <select id="customer-order-type" required>
-                        <option value="">انتخاب کنید</option>
-                        <option value="JK">جاکلیدی</option>
-                        <option value="JS">جاسوئیچی</option>
-                        <option value="TB">تابلو</option>
-                        <option value="CL">ساعت</option>
-                        <option value="OT">غیره</option>
-                    </select>
-                </div>
-                <div class="customer-order-field">
-                    <label for="customer-order-quantity">تعداد</label>
-                    <input type="number" id="customer-order-quantity" min="1" value="1" required>
-                </div>
-                <div class="customer-order-field">
-                    <label for="customer-order-price">قیمت</label>
-                    <input type="number" id="customer-order-price" min="0" placeholder="قیمت به تومان" required>
-                </div>
-                <div class="customer-order-field">
-                    <label for="customer-order-images">تصاویر</label>
-                    <input type="text" id="customer-order-images" placeholder="لینک تصاویر با | جدا شود">
-                </div>
-                <div class="customer-order-field customer-order-full">
-                    <label for="customer-order-description">توضیحات</label>
-                    <textarea id="customer-order-description" placeholder="توضیحات محصول"></textarea>
-                </div>
+    </section>
+    <section class="search-section">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="جستجوی محصول..." autocomplete="off">
+        </div>
+        <select id="product-type-filter">
+            <option value="">همه محصولات</option>
+            <option value="JK">جاکلیدی</option>
+            <option value="JS">جاسوئیچی</option>
+            <option value="TB">تابلو</option>
+            <option value="CL">ساعت</option>
+            <option value="OT">غیره</option>
+        </select>
+        <select id="sort-select">
+            <option value="">مرتب سازی...</option>
+            <option value="cheap">ارزان‌ترین</option>
+            <option value="expensive">گران‌ترین</option>
+            <option value="name">الفبا</option>
+        </select>
+        <div id="advanced-filters" class="advanced-filters">
+            <div id="js-filters" class="type-filters hidden">
+                <select id="js-wood-filter">
+                    <option value="">همه چوب‌ها</option>
+                    <option value="گردو">گردو</option>
+                    <option value="عناب">عناب</option>
+                    <option value="کرات">کرات</option>
+                    <option value="نارنج">نارنج</option>
+                    <option value="گردو سوخته">گردو سوخته</option>
+                    <option value="سنجد">سنجد</option>
+                    <option value="متفرقه">متفرقه</option>
+                </select>
+                <select id="js-size-filter">
+                    <option value="">همه اندازه‌ها</option>
+                    <option value="کوچک">کوچک</option>
+                    <option value="متوسط">متوسط</option>
+                    <option value="بزرگ">بزرگ</option>
+                </select>
+                <select id="js-font-filter">
+                    <option value="">همه فونت‌ها</option>
+                    <option value="1">فونت ۱</option>
+                    <option value="2">فونت ۲</option>
+                    <option value="3">فونت ۳</option>
+                    <option value="4">فونت ۴</option>
+                    <option value="ندارد">بدون فونت</option>
+                </select>
             </div>
-            <div id="customer-order-type-fields"></div>
-            <div id="customer-order-message"></div>
-            <div class="customer-order-footer">
-                <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-cancel">انصراف</button>
-                <button type="submit" id="customer-order-submit">ثبت سفارش</button>
+            <div id="jk-filters" class="type-filters hidden">
+                <select id="jk-wood-filter">
+                    <option value="">همه چوب‌ها</option>
+                    <option value="گردو">گردو</option>
+                    <option value="عناب">عناب</option>
+                    <option value="کرات">کرات</option>
+                    <option value="نارنج">نارنج</option>
+                    <option value="گردو سوخته">گردو سوخته</option>
+                    <option value="سنجد">سنجد</option>
+                    <option value="متفرقه">متفرقه</option>
+                </select>
+                <input type="number" id="jk-hook-filter" min="1" placeholder="تعداد قلاب">
             </div>
-        </form>
+            <div id="tb-filters" class="type-filters hidden">
+                <input type="number" id="tb-width-filter" min="0" placeholder="عرض">
+                <input type="number" id="tb-length-filter" min="0" placeholder="طول">
+            </div>
+            <div id="cl-filters" class="type-filters hidden">
+                <input type="number" id="cl-width-filter" min="0" placeholder="عرض">
+                <input type="number" id="cl-length-filter" min="0" placeholder="طول">
+            </div>
+        </div>
+    </section>
+    <main class="main-container">
+        <header class="products-header">
+            <h2>محصولات برتر ما</h2>
+            <p>کیفیت تضمین شده برای شما</p>
+        </header>
+        <div id="product-grid" class="products-grid"></div>
+    </main>
+    <div id="cart-modal" class="cart-modal hidden">
+        <div class="cart-panel">
+            <div class="cart-header">
+                <h2>سبد خرید</h2>
+                <button type="button" onclick="toggleCart()" aria-label="بستن سبد خرید">×</button>
+            </div>
+            <div id="cart-items-list" class="cart-items"></div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>جمع کل</span>
+                    <span id="cart-total">۰ تومان</span>
+                </div>
+                <button type="button" onclick="checkout()">ثبت سفارش</button>
+            </div>
+        </div>
     </div>
-</div>
-
-
-<!-- =========================================
-     اسکریپت اصلی
-========================================= -->
-
-<script src="script.js"></script>
-
-
+    <div id="customer-order-modal" class="customer-order-modal hidden">
+        <div class="customer-order-panel">
+            <div class="customer-order-header">
+                <h2>ثبت سفارش</h2>
+                <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-close" aria-label="بستن">×</button>
+            </div>
+            <form id="customer-order-form">
+                <div class="customer-order-grid">
+                    <div class="customer-order-field">
+                        <label for="customer-order-type">نوع محصول</label>
+                        <select id="customer-order-type" required>
+                            <option value="">انتخاب کنید</option>
+                            <option value="JK">جاکلیدی</option>
+                            <option value="JS">جاسوئیچی</option>
+                            <option value="TB">تابلو</option>
+                            <option value="CL">ساعت</option>
+                            <option value="OT">غیره</option>
+                        </select>
+                    </div>
+                    <div class="customer-order-field">
+                        <label for="customer-order-quantity">تعداد</label>
+                        <input type="number" id="customer-order-quantity" min="1" value="1" required>
+                    </div>
+                    <div class="customer-order-field">
+                        <label for="customer-order-price">قیمت</label>
+                        <input type="number" id="customer-order-price" min="0" placeholder="قیمت به تومان" required>
+                    </div>
+                    <div class="customer-order-field">
+                        <label for="customer-order-images">تصاویر</label>
+                        <input type="text" id="customer-order-images" placeholder="لینک تصاویر با | جدا شود">
+                    </div>
+                    <div class="customer-order-field customer-order-full">
+                        <label for="customer-order-description">توضیحات</label>
+                        <textarea id="customer-order-description" placeholder="توضیحات محصول"></textarea>
+                    </div>
+                </div>
+                <div id="customer-order-type-fields"></div>
+                <div id="customer-order-message"></div>
+                <div class="customer-order-footer">
+                    <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-cancel">انصراف</button>
+                    <button type="submit" id="customer-order-submit">ثبت سفارش</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
