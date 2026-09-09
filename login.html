@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<title>ورود به حساب | T-Choob</title>
 
+	<link rel="icon" href="favicon.ico">
 	<link rel="stylesheet" href="style.css">
 </head>
 
@@ -19,7 +21,9 @@
 
 				<div class="auth-header">
 
-					<a href="index.html" class="auth-logo">
+					<a
+						href="index.html"
+						class="auth-logo">
 						T
 					</a>
 
@@ -36,8 +40,7 @@
 
 				<form
 					id="login-form"
-					class="auth-form"
-				>
+					class="auth-form">
 
 					<div class="auth-field">
 
@@ -50,8 +53,7 @@
 							id="login-email"
 							placeholder="example@email.com"
 							autocomplete="email"
-							required
-						>
+							required>
 
 					</div>
 
@@ -69,14 +71,12 @@
 								id="login-password"
 								placeholder="رمز عبور خود را وارد کنید"
 								autocomplete="current-password"
-								required
-							>
+								required>
 
 							<button
 								type="button"
 								id="password-toggle"
-								class="auth-password-toggle"
-							>
+								class="auth-password-toggle">
 								نمایش
 							</button>
 
@@ -87,15 +87,14 @@
 
 					<div
 						id="login-message"
-						class="auth-message"
-					></div>
+						class="auth-message">
+					</div>
 
 
 					<button
 						type="submit"
 						id="login-btn"
-						class="auth-submit"
-					>
+						class="auth-submit">
 						ورود
 					</button>
 
@@ -103,7 +102,9 @@
 
 
 				<div class="auth-divider">
-					<span>یا</span>
+					<span>
+						یا
+					</span>
 				</div>
 
 
@@ -122,8 +123,7 @@
 
 				<a
 					href="index.html"
-					class="auth-back"
-				>
+					class="auth-back">
 					بازگشت به فروشگاه
 				</a>
 
@@ -134,51 +134,82 @@
 	</div>
 
 
-	<script>
-		const loginForm = document.getElementById('login-form');
-
-		if (loginForm) {
-			loginForm.addEventListener('submit', function(event) {
-				event.preventDefault();
-				handleLogin();
-			});
-		}
-
-
-		const passwordInput =
-			document.getElementById('login-password');
-
-		const passwordToggle =
-			document.getElementById('password-toggle');
-
-
-		if (passwordToggle && passwordInput) {
-
-			passwordToggle.addEventListener('click', () => {
-
-				if (passwordInput.type === 'password') {
-
-					passwordInput.type = 'text';
-
-					passwordToggle.textContent = 'مخفی';
-
-				} else {
-
-					passwordInput.type = 'password';
-
-					passwordToggle.textContent = 'نمایش';
-
-				}
-
-			});
-
-		}
-	</script>
-
-
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 	<script src="auth.js"></script>
 
+
+	<script>
+		const loginForm =
+			document.getElementById(
+				"login-form"
+			);
+
+
+		if (loginForm) {
+
+			loginForm.addEventListener(
+				"submit",
+				function (event) {
+
+					event.preventDefault();
+
+					handleLogin();
+
+				}
+			);
+
+		}
+
+
+		const passwordInput =
+			document.getElementById(
+				"login-password"
+			);
+
+
+		const passwordToggle =
+			document.getElementById(
+				"password-toggle"
+			);
+
+
+		if (
+			passwordToggle &&
+			passwordInput
+		) {
+
+			passwordToggle.addEventListener(
+				"click",
+				function () {
+
+					if (
+						passwordInput.type ===
+						"password"
+					) {
+
+						passwordInput.type =
+							"text";
+
+						passwordToggle.textContent =
+							"مخفی";
+
+					} else {
+
+						passwordInput.type =
+							"password";
+
+						passwordToggle.textContent =
+							"نمایش";
+
+					}
+
+				}
+			);
+
+		}
+	</script>
+
 </body>
+
 </html>
