@@ -1513,9 +1513,7 @@ img {
 
 .profile-page {
     width: min(900px, calc(100% - 40px));
-
     margin: 0 auto;
-
     padding: 55px 0 80px;
 }
 
@@ -1523,15 +1521,12 @@ img {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 26px;
-
     box-shadow: var(--shadow-lg);
-
     overflow: hidden;
 }
 
 .profile-header {
     padding: 38px 30px;
-
     text-align: center;
 
     background:
@@ -1549,11 +1544,9 @@ img {
     height: 110px;
 
     display: block;
-
     margin: 0 auto 15px;
 
     border-radius: 50%;
-
     object-fit: cover;
 
     border: 4px solid var(--surface);
@@ -1583,7 +1576,6 @@ img {
 
 .profile-section {
     padding: 27px 30px;
-
     border-bottom: 1px solid var(--border);
 }
 
@@ -1600,6 +1592,10 @@ img {
     font-size: 24px;
 }
 
+/* -----------------------------------------
+   PROFILE FORM
+----------------------------------------- */
+
 .profile-form {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1608,7 +1604,6 @@ img {
 
 .profile-input {
     width: 100%;
-
     min-height: 48px;
 
     padding: 12px 14px;
@@ -1623,20 +1618,29 @@ img {
 
     transition:
         border-color var(--transition),
-        box-shadow var(--transition);
+        box-shadow var(--transition),
+        background var(--transition);
 }
 
 .profile-input:focus {
     border-color: var(--navy);
 
-    box-shadow: 0 0 0 3px rgba(49, 82, 107, 0.1);
+    box-shadow:
+        0 0 0 3px rgba(49, 82, 107, 0.1);
+
+    background: var(--surface);
 }
+
+/* -----------------------------------------
+   PROFILE BUTTONS
+----------------------------------------- */
 
 .profile-btn {
     min-height: 48px;
 
     padding: 0 18px;
 
+    border: 0;
     border-radius: 12px;
 
     font-weight: 700;
@@ -1645,7 +1649,8 @@ img {
 
     transition:
         background var(--transition),
-        transform var(--transition);
+        transform var(--transition),
+        box-shadow var(--transition);
 }
 
 .profile-btn:hover {
@@ -1681,51 +1686,92 @@ img {
     background: #efd2cf;
 }
 
+/* =========================================
+   ORDERS
+========================================= */
+
 .orders-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 
     font-family: Tahoma, sans-serif;
-    font-size: 13px;
-    line-height: 1.9;
 }
 
+/* -----------------------------------------
+   ORDER CARD
+----------------------------------------- */
+
 .order-card {
-    padding: 16px;
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    padding: 0;
 
     border: 1px solid var(--border);
-    border-radius: 15px;
+    border-radius: 18px;
 
     background: var(--surface-2);
 
     transition:
         border-color var(--transition),
-        transform var(--transition);
+        transform var(--transition),
+        box-shadow var(--transition);
 }
 
 .order-card:hover {
     border-color: #d6c7b7;
-    transform: translateY(-1px);
+
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow);
 }
+
+/* -----------------------------------------
+   ORDER HEADER
+----------------------------------------- */
 
 .order-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+
+    gap: 15px;
+
+    padding: 16px 18px;
+
+    background: var(--surface);
+
+    border-bottom: 1px solid var(--border);
 }
 
 .order-card-title {
+    margin: 0;
+
+    color: var(--text);
+
     font-family: "Lalezar", sans-serif;
-    font-size: 18px;
+    font-size: 20px;
 }
+
+/* -----------------------------------------
+   ORDER STATUS
+----------------------------------------- */
 
 .order-status {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
 
-    padding: 4px 10px;
+    flex-shrink: 0;
+
+    min-height: 30px;
+
+    padding: 4px 12px;
 
     border-radius: 999px;
 
@@ -1734,11 +1780,335 @@ img {
 
     font-size: 11px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .order-status.completed {
     background: var(--green-soft);
     color: var(--green-dark);
+}
+
+/* -----------------------------------------
+   ORDER BODY
+----------------------------------------- */
+
+.order-card-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+
+    gap: 18px;
+
+    padding: 18px;
+}
+
+/* -----------------------------------------
+   ORDER INFO
+----------------------------------------- */
+
+.order-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.order-info-item {
+    min-width: 0;
+
+    padding: 11px 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--surface);
+}
+
+.order-info-label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.order-info-value {
+    display: block;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 700;
+
+    line-height: 1.8;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* -----------------------------------------
+   ORDER PRICE
+----------------------------------------- */
+
+.order-price {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 150px;
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    background: var(--primary-soft);
+
+    text-align: center;
+}
+
+.order-price-label {
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.order-price-value {
+    color: var(--primary-dark);
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 22px;
+}
+
+/* -----------------------------------------
+   ORDER FOOTER
+----------------------------------------- */
+
+.order-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 13px 18px;
+
+    border-top: 1px solid var(--border);
+
+    background: var(--surface);
+}
+
+.order-date {
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.order-quantity {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    color: var(--text);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* -----------------------------------------
+   ORDER IMAGE
+----------------------------------------- */
+
+.order-product-image {
+    width: 82px;
+    height: 82px;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    background: var(--surface-3);
+}
+
+.order-product-image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+/* -----------------------------------------
+   ORDER WITH IMAGE
+----------------------------------------- */
+
+.order-card-product {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    min-width: 0;
+}
+
+.order-card-product-info {
+    min-width: 0;
+}
+
+.order-card-product-name {
+    margin: 0 0 5px;
+
+    color: var(--text);
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 18px;
+}
+
+.order-card-product-code {
+    color: var(--muted);
+
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
+}
+
+/* -----------------------------------------
+   ORDER EMPTY STATE
+----------------------------------------- */
+
+.orders-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 180px;
+
+    padding: 30px;
+
+    border: 1px dashed var(--border);
+    border-radius: 18px;
+
+    background: var(--surface-2);
+
+    color: var(--muted);
+
+    text-align: center;
+}
+
+.orders-empty-title {
+    margin: 0 0 5px;
+
+    color: var(--text);
+
+    font-family: "Lalezar", sans-serif;
+    font-size: 21px;
+}
+
+.orders-empty-text {
+    margin: 0;
+
+    font-size: 13px;
+}
+
+/* =========================================
+   PROFILE RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .profile-page {
+        width: min(100% - 24px, 900px);
+
+        padding: 30px 0 55px;
+    }
+
+    .profile-header {
+        padding: 30px 20px;
+    }
+
+    .profile-avatar {
+        width: 95px;
+        height: 95px;
+    }
+
+    .profile-username {
+        font-size: 28px;
+    }
+
+    .profile-section {
+        padding: 22px 18px;
+    }
+
+    .profile-form {
+        grid-template-columns: 1fr;
+    }
+
+    .order-card-body {
+        grid-template-columns: 1fr;
+    }
+
+    .order-price {
+        width: 100%;
+        min-width: 0;
+
+        align-items: flex-start;
+
+        text-align: right;
+    }
+
+    .order-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .profile-page {
+        width: calc(100% - 16px);
+    }
+
+    .profile-header {
+        padding: 25px 15px;
+    }
+
+    .profile-section {
+        padding: 20px 14px;
+    }
+
+    .order-card-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .order-card-body {
+        padding: 14px;
+    }
+
+    .order-card-footer {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .order-product-image {
+        width: 68px;
+        height: 68px;
+    }
+
+    .order-card-product-name {
+        font-size: 16px;
+    }
 }
 
 /* =========================================
