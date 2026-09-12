@@ -1545,12 +1545,6 @@ async function loadOrders() {
                                     onerror="this.onerror=null;this.src='${DEFAULT_PRODUCT_IMAGE}'"
                                 >
 
-                                <span class="order-image-zoom">
-                                    <img
-                                        src="assets/admin-icons/zoom.png"
-                                        alt=""
-                                    >
-                                </span>
                             </button>
 
                             <div class="order-content">
@@ -1626,17 +1620,33 @@ function openImageViewer(imageUrl) {
         return;
     }
 
-    const viewer =
+    let viewer =
         document.getElementById(
             'image-viewer'
         );
+
+    if (!viewer) {
+        viewer = document.createElement('div');
+        viewer.id = 'image-viewer';
+        viewer.className = 'image-viewer hidden';
+        viewer.setAttribute('role', 'dialog');
+        viewer.setAttribute('aria-modal', 'true');
+        viewer.innerHTML = `
+            <img
+                id="image-viewer-image"
+                class="image-viewer-image"
+                alt="تصویر سفارش"
+            >
+        `;
+        document.body.appendChild(viewer);
+    }
 
     const viewerImage =
         document.getElementById(
             'image-viewer-image'
         );
 
-    if (!viewer || !viewerImage) {
+    if (!viewerImage) {
         return;
     }
 
@@ -2947,9 +2957,178 @@ function populateStorefrontProductTypes() {
 	});
 }
 
-populateStorefrontProductTypes();
-updateAdvancedFilters();
-document.getElementById("customer-order-type")?.addEventListener("change",updateCustomerOrderTypeFields);
-document.getElementById("customer-order-form")?.addEventListener("submit",submitCustomerOrder);
-async function submitCustomerOrder(event){event.preventDefault();const button=document.getElementById("customer-order-submit");const message=document.getElementById("customer-order-message");message.className="";message.textContent="";const {data:{user},error:userError}=await shopDB.auth.getUser();if(userError||!user){message.className="error";message.textContent="برای ثبت سفارش ابتدا وارد حساب کاربری خود شوید.";return;}const type=document.getElementById("customer-order-type").value;const price=Number(document.getElementById("customer-order-price").value);const quantity=Number(document.getElementById("customer-order-quantity").value);if(!type||!CUSTOMER_PRODUCT_TYPES[type]){message.className="error";message.textContent="نوع محصول را انتخاب کنید.";return;}if(!Number.isFinite(price)||price<0){message.className="error";message.textContent="قیمت واردشده معتبر نیست.";return;}if(!Number.isInteger(quantity)||quantity<1){message.className="error";message.textContent="تعداد باید حداقل ۱ باشد.";return;}const imagesText=document.getElementById("customer-order-images").value.trim();const images=imagesText?imagesText.split("|").map(x=>x.trim()).filter(Boolean):[];const imageUrl=images[0]||null;const description=document.getElementById("customer-order-description").value.trim();const details=buildCustomerOrderDetails(type);button.disabled=true;button.textContent="در حال ثبت...";try{const {data,error}=await shopDB.rpc("create_customer_order",{p_product_type:type,p_price:price,p_image_url:imageUrl,p_description:description,p_images:images,p_details:details,p_quantity:quantity});if(error)throw error;message.className="success";message.textContent="سفارش شما با موفقیت ثبت شد.";document.getElementById("customer-order-form").reset();document.getElementById("customer-order-type-fields").innerHTML="";setTimeout(closeCustomerOrderModal,1200);}catch(error){message.className="error";message.textContent="خطا در ثبت سفارش: "+(error.message||"خطای نامشخص");}finally{button.disabled=false;button.textContent="ثبت سفارش";}}
+document.addEventListener("DOMContentLoaded", () => {
+
+    populateStorefrontProductTypes();
+    updateAdvancedFilters();
+
+    document
+        .getElementById("customer-order-type")
+        ?.addEventListener(
+            "change",
+            updateCustomerOrderTypeFields
+        );
+
+    document
+        .getElementById("customer-order-form")
+        ?.addEventListener(
+            "submit",
+            submitCustomerOrder
+        );
+
+});
+async function submitCustomerOrder(event) {
+
+    event.preventDefault();
+
+    const button =
+        document.getElementById(
+            "customer-order-submit"
+        );
+
+    const message =
+        document.getElementById(
+            "customer-order-message"
+        );
+
+    if (!button || !message) {
+        return;
+    }
+
+    message.className = "";
+    message.textContent = "";
+
+    const {
+        data: { user },
+        error: userError
+    } = await shopDB.auth.getUser();
+
+    if (userError || !user) {
+        message.className = "error";
+        message.textContent =
+            "برای ثبت سفارش ابتدا وارد حساب کاربری خود شوید.";
+        return;
+    }
+
+    const type =
+        document.getElementById(
+            "customer-order-type"
+        )?.value || "";
+
+    const price = Number(
+        document.getElementById(
+            "customer-order-price"
+        )?.value
+    );
+
+    const quantity = Number(
+        document.getElementById(
+            "customer-order-quantity"
+        )?.value
+    );
+
+    if (!type || !CUSTOMER_PRODUCT_TYPES[type]) {
+        message.className = "error";
+        message.textContent =
+            "نوع محصول را انتخاب کنید.";
+        return;
+    }
+
+    if (!Number.isFinite(price) || price < 0) {
+        message.className = "error";
+        message.textContent =
+            "قیمت واردشده معتبر نیست.";
+        return;
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+        message.className = "error";
+        message.textContent =
+            "تعداد باید حداقل ۱ باشد.";
+        return;
+    }
+
+    const imagesText =
+        document.getElementById(
+            "customer-order-images"
+        )?.value.trim() || "";
+
+    const images = imagesText
+        ? imagesText
+            .split("|")
+            .map(image => image.trim())
+            .filter(Boolean)
+        : [];
+
+    const imageUrl = images[0] || null;
+
+    const description =
+        document.getElementById(
+            "customer-order-description"
+        )?.value.trim() || "";
+
+    const details =
+        buildCustomerOrderDetails(type);
+
+    button.disabled = true;
+    button.textContent = "در حال ثبت...";
+
+    try {
+
+        const { data, error } =
+            await shopDB.rpc(
+                "create_customer_order",
+                {
+                    p_product_type: type,
+                    p_price: price,
+                    p_image_url: imageUrl,
+                    p_description: description,
+                    p_images: images,
+                    p_details: details,
+                    p_quantity: quantity
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        message.className = "success";
+        message.textContent =
+            "سفارش شما با موفقیت ثبت شد.";
+
+        document
+            .getElementById(
+                "customer-order-form"
+            )
+            ?.reset();
+
+        const typeFields =
+            document.getElementById(
+                "customer-order-type-fields"
+            );
+
+        if (typeFields) {
+            typeFields.innerHTML = "";
+        }
+
+        setTimeout(
+            closeCustomerOrderModal,
+            1200
+        );
+
+    } catch (error) {
+
+        message.className = "error";
+        message.textContent =
+            "خطا در ثبت سفارش: " +
+            (error.message || "خطای نامشخص");
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = "ثبت سفارش";
+
+    }
+}
 document.getElementById("customer-order-modal")?.addEventListener("click",function(event){if(event.target===this)closeCustomerOrderModal();});
