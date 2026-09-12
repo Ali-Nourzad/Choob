@@ -19,31 +19,40 @@
                     <img src="assets/cart-icons/cart.png" alt="" class="cart-icon">
                     <span id="cart-count">0</span>
                 </button>
+                <button
+                    type="button"
+                    id="shop-theme-toggle"
+                    class="theme-toggle"
+                    onclick="toggleShopTheme()"
+                    aria-label="تغییر حالت نمایش"
+                >
+                    <span>حالت تاریک</span>
+                </button>
                 <a href="index.html" class="back-link">بازگشت</a>
             </div>
         </div>
     </nav>
-    <main class="main-container" style="padding-top: 40px;">
-        <div id="product-container" class="hidden" style="display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 35px; align-items: start;">
-            <section>
-                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 28px; overflow: hidden; box-shadow: var(--shadow);">
-                    <div style="width: 100%; height: 520px; background: var(--surface-2);">
-                        <img id="main-image" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="تصویر محصول">
+    <main class="main-container product-page-main">
+        <div id="product-container" class="product-container hidden">
+            <section class="product-gallery-section">
+                <div class="product-main-image-card">
+                    <div class="product-main-image-box">
+                        <img id="main-image" alt="تصویر محصول">
                     </div>
                 </div>
-                <div id="thumbs" style="display: flex; gap: 10px; margin-top: 14px; overflow-x: auto; padding-bottom: 4px;"></div>
+                <div id="thumbs" class="product-thumbs"></div>
             </section>
-            <section>
-                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 30px; box-shadow: var(--shadow);">
-                    <h1 id="product-name" style="color: var(--navy-dark); font-size: clamp(32px, 4vw, 46px);"></h1>
-                    <p id="product-price" style="margin-top: 12px; color: var(--wood-dark); font-size: 26px;"></p>
-                    <p id="product-description" style="margin-top: 22px; color: var(--muted); line-height: 2.2; font-size: 17px;"></p>
+            <section class="product-info-section">
+                <div class="product-detail-card">
+                    <h1 id="product-name"></h1>
+                    <p id="product-price"></p>
+                    <p id="product-description"></p>
                     <div id="product-details" class="product-details"></div>
-                    <button onclick="addCurrentProductToCart()" class="product-btn" style="margin-top: 30px;">افزودن به سبد خرید</button>
+                    <button onclick="addCurrentProductToCart()" class="product-btn">افزودن به سبد خرید</button>
                 </div>
             </section>
         </div>
-        <div id="loading" style="padding: 100px 0; text-align: center; color: var(--muted); font-size: 20px;">در حال بارگذاری...</div>
+        <div id="loading" class="product-loading">در حال بارگذاری...</div>
     </main>
     <div id="cart-modal" class="cart-modal hidden">
         <div class="cart-panel">
@@ -112,10 +121,12 @@
 
             document.getElementById("thumbs").innerHTML = images.map((img, index) => `
                 <img
-                    src="${img}"
-                    onclick="changeImage('${img.replace(/'/g, "\'")}')"
+                    src="${escapeHTML(img)}"
+                    data-image="${escapeHTML(img)}"
+                    onclick="changeImage(this.dataset.image)"
                     alt="تصویر ${index + 1}"
-                    style="width: 82px; height: 82px; flex: 0 0 82px; object-fit: cover; border-radius: 14px; border: 2px solid var(--border); cursor: pointer;"
+                    class="product-thumb"
+                    onerror="this.style.display='none'"
                 >
             `).join("");
         }
@@ -179,18 +190,6 @@
 
         updateCartCount();
     </script>
-    <style>
-        @media (max-width: 850px) {
-            #product-container {
-                grid-template-columns: 1fr !important;
-            }
-        }
 
-        @media (max-width: 600px) {
-            #product-container > section:first-child > div:first-child > div {
-                height: 360px !important;
-            }
-        }
-    </style>
 </body>
 </html>
