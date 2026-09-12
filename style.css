@@ -2949,7 +2949,7 @@ body.profile-image-viewer-open {
 	border: 1px solid rgba(255, 255, 255, 0.35);
 	border-radius: 12px;
 
-	background: #ffffff;
+	background: #f7f1e7;
 	color: #31526b;
 
 	font-family: "Lalezar", sans-serif;
@@ -2973,7 +2973,7 @@ body.profile-image-viewer-open {
 /* حالت هاور */
 
 .login-btn:hover {
-	background: #f2e9df;
+	background: #fffaf2;
 	color: #253f53;
 
 	transform: translateY(-2px);
