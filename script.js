@@ -1391,456 +1391,282 @@ async function checkout() {
 
 async function loadOrders() {
 
-	const ordersBox =
-		document.getElementById(
-			"orders-list"
-		);
-
-
-	if (!ordersBox) {
-		return;
-	}
-
-
-	const {
-		data: {
-			user
-		}
-	} =
-		await shopDB.auth.getUser();
-
-
-	if (!user) {
-
-		ordersBox.innerHTML =
-			'<p class="orders-empty-message">ابتدا وارد حساب شوید.</p>';
-
-		return;
-
-	}
-
-
-	const {
-		data: orders,
-		error
-	} =
-		await shopDB
-			.from("orders")
-			.select("*")
-			.eq(
-				"user_id",
-				user.id
-			)
-			.order(
-				"created_at",
-				{
-					ascending: false
-				}
-			);
-
-
-	if (error) {
-
-		console.error(
-			"خطا در دریافت سفارش‌ها:",
-			error
-		);
-
-
-		ordersBox.innerHTML =
-			'<p class="orders-error-message">خطا در دریافت سفارش‌ها</p>';
-
-		return;
-
-	}
-
-
-	if (
-		!orders ||
-		orders.length === 0
-	) {
-
-		ordersBox.innerHTML =
-			'<p class="orders-empty-message">هنوز سفارشی ثبت نشده است.</p>';
-
-		return;
-
-	}
-
-
-	ordersBox.innerHTML =
-		orders
-			.map(
-				order => {
-
-					const image =
-						order.image_url ||
-						DEFAULT_PRODUCT_IMAGE;
-
-
-					const quantity =
-						Number(
-							order.quantity || 1
-						);
-
-
-					const unitPrice =
-						Number(
-							order.price || 0
-						);
-
-
-					const totalPrice =
-						unitPrice *
-						quantity;
-
-
-					const status =
-						String(
-							order.status || ""
-						);
-
-
-					let statusText =
-						"در حال بررسی";
-
-
-					let statusClass =
-						"";
-
-
-					if (
-						status === "completed"
-					) {
-
-						statusText =
-							"تکمیل شده";
-
-						statusClass =
-							"completed";
-
-					}
-					else if (
-						status === "in progress"
-					) {
-
-						statusText =
-							"در حال بررسی";
-
-					}
-
-
-					const date =
-						order.created_at
-							? new Date(
-								order.created_at
-							).toLocaleDateString(
-								"fa-IR"
-							)
-							: "---";
-
-
-					return `
-						<article class="order-card">
-
-
-							<button
-								type="button"
-								class="order-image-button"
-								onclick="openImageViewer(this.dataset.image)"
-								data-image="${escapeHTML(image)}"
-								aria-label="بزرگ کردن تصویر سفارش"
-							>
-
-								<img
-									src="${escapeHTML(image)}"
-									class="order-image"
-									alt="${escapeHTML(
-										order.product_name ||
-										"محصول"
-									)}"
-									onerror="
-										this.onerror = null;
-										this.src = '${DEFAULT_PRODUCT_IMAGE}';
-									"
-								>
-
-
-								<span class="order-image-zoom">
-
-									<img
-										src="assets/admin-icons/zoom.png"
-										alt=""
-									>
-
-								</span>
-
-							</button>
-
-
-
-							<div class="order-content">
-
-
-								<div class="order-main-info">
-
-
-									<div class="order-card-header">
-
-
-										<h3 class="order-title">
-
-											${escapeHTML(
-												order.product_name ||
-												"محصول بدون نام"
-											)}
-
-										</h3>
-
-
-										${
-											order.code
-												? `
-													<span class="order-code">
-														${escapeHTML(
-															order.code
-														)}
-													</span>
-												`
-												: ""
-										}
-
-
-									</div>
-
-
-
-									<div class="order-meta">
-
-
-										<span>
-											تعداد:
-											${quantity.toLocaleString(
-												"fa-IR"
-											)}
-										</span>
-
-
-										<span>
-											تاریخ:
-											${date}
-										</span>
-
-
-									</div>
-
-
-
-									<div class="order-status-row">
-
-
-										<span
-											class="order-status ${statusClass}"
-										>
-
-											${statusText}
-
-										</span>
-
-
-									</div>
-
-
-								</div>
-
-
-
-								<div class="order-price-block">
-
-
-									<span class="order-price-label">
-
-										مبلغ
-
-									</span>
-
-
-									<strong class="order-price">
-
-										${totalPrice.toLocaleString(
-											"fa-IR"
-										)}
-
-										تومان
-
-									</strong>
-
-
-									${
-										quantity > 1
-											? `
-												<span class="order-unit-price">
-
-													هر عدد
-													${unitPrice.toLocaleString(
-														"fa-IR"
-													)}
-													تومان
-
-												</span>
-											`
-											: ""
-									}
-
-
-								</div>
-
-
-							</div>
-
-
-						</article>
-					`;
-
-				}
-			)
-			.join("");
-
+    const ordersBox =
+        document.getElementById(
+            'orders-list'
+        );
+
+    if (!ordersBox) {
+        return;
+    }
+
+    const {
+        data: {
+            user
+        }
+    } =
+        await shopDB.auth.getUser();
+
+    if (!user) {
+        ordersBox.innerHTML =
+            '<p class="orders-empty-message">ابتدا وارد حساب شوید.</p>';
+        return;
+    }
+
+    const {
+        data: orders,
+        error
+    } =
+        await shopDB
+            .from('orders')
+            .select('*')
+            .eq(
+                'user_id',
+                user.id
+            )
+            .order(
+                'created_at',
+                {
+                    ascending: false
+                }
+            );
+
+    if (error) {
+        console.error(
+            'خطا در دریافت سفارش‌ها:',
+            error
+        );
+
+        ordersBox.innerHTML =
+            '<p class="orders-error-message">خطا در دریافت سفارش‌ها</p>';
+
+        return;
+    }
+
+    if (
+        !orders ||
+        orders.length === 0
+    ) {
+        ordersBox.innerHTML =
+            '<p class="orders-empty-message">هنوز سفارشی ثبت نشده است.</p>';
+
+        return;
+    }
+
+    ordersBox.innerHTML =
+        orders
+            .map(
+                order => {
+
+                    const image =
+                        order.image_url ||
+                        DEFAULT_PRODUCT_IMAGE;
+
+                    const quantity =
+                        Number(
+                            order.quantity || 1
+                        );
+
+                    const unitPrice =
+                        Number(
+                            order.price || 0
+                        );
+
+                    const totalPrice =
+                        unitPrice * quantity;
+
+                    const status =
+                        String(
+                            order.status || ''
+                        );
+
+                    let statusText =
+                        'در حال بررسی';
+
+                    let statusClass = '';
+
+                    if (status === 'completed') {
+                        statusText = 'تکمیل شده';
+                        statusClass = 'completed';
+                    } else if (status === 'in progress') {
+                        statusText = 'در حال بررسی';
+                    }
+
+                    const date =
+                        order.created_at
+                            ? new Date(
+                                order.created_at
+                            ).toLocaleDateString(
+                                'fa-IR'
+                            )
+                            : '---';
+
+                    return `
+                        <article class="order-card">
+
+                            <button
+                                type="button"
+                                class="order-image-button"
+                                onclick="openImageViewer(this.dataset.image)"
+                                data-image="${escapeHTML(image)}"
+                                aria-label="بزرگ کردن تصویر سفارش"
+                            >
+                                <img
+                                    src="${escapeHTML(image)}"
+                                    class="order-image"
+                                    alt="${escapeHTML(order.product_name || 'محصول')}"
+                                    onerror="this.onerror=null;this.src='${DEFAULT_PRODUCT_IMAGE}'"
+                                >
+
+                                <span class="order-image-zoom">
+                                    <img
+                                        src="assets/admin-icons/zoom.png"
+                                        alt=""
+                                    >
+                                </span>
+                            </button>
+
+                            <div class="order-content">
+
+                                <div class="order-main-info">
+
+                                    <div class="order-card-header">
+                                        <h3 class="order-title">
+                                            ${escapeHTML(order.product_name || 'محصول بدون نام')}
+                                        </h3>
+
+                                        ${order.code ? `
+                                            <span class="order-code">
+                                                ${escapeHTML(order.code)}
+                                            </span>
+                                        ` : ''}
+                                    </div>
+
+                                    <div class="order-meta">
+                                        <span>
+                                            تعداد:
+                                            ${quantity.toLocaleString('fa-IR')}
+                                        </span>
+
+                                        <span>
+                                            تاریخ:
+                                            ${date}
+                                        </span>
+                                    </div>
+
+                                    <div class="order-status-row">
+                                        <span class="order-status ${statusClass}">
+                                            ${statusText}
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <div class="order-price-block">
+                                    <span class="order-price-label">
+                                        مبلغ
+                                    </span>
+
+                                    <strong class="order-price">
+                                        ${totalPrice.toLocaleString('fa-IR')}
+                                        تومان
+                                    </strong>
+
+                                    ${quantity > 1 ? `
+                                        <span class="order-unit-price">
+                                            هر عدد ${unitPrice.toLocaleString('fa-IR')} تومان
+                                        </span>
+                                    ` : ''}
+                                </div>
+
+                            </div>
+
+                        </article>
+                    `;
+                }
+            )
+            .join('');
 }
-
 
 
 // ============================================================
 // بزرگ‌نمایی تصویر سفارش
 // ============================================================
 
-function openImageViewer(
-	imageUrl
-) {
+function openImageViewer(imageUrl) {
 
-	if (!imageUrl) {
-		return;
-	}
+    if (!imageUrl) {
+        return;
+    }
 
+    const viewer =
+        document.getElementById(
+            'image-viewer'
+        );
 
-	const viewer =
-		document.getElementById(
-			"image-viewer"
-		);
+    const viewerImage =
+        document.getElementById(
+            'image-viewer-image'
+        );
 
+    if (!viewer || !viewerImage) {
+        return;
+    }
 
-	const viewerImage =
-		document.getElementById(
-			"image-viewer-image"
-		);
+    viewerImage.src = imageUrl;
+    viewerImage.alt = 'تصویر سفارش';
 
-
-	if (
-		!viewer ||
-		!viewerImage
-	) {
-		return;
-	}
-
-
-	viewerImage.src =
-		imageUrl;
-
-
-	viewerImage.alt =
-		"تصویر سفارش";
-
-
-	viewer.classList.remove(
-		"hidden"
-	);
-
-
-	document.body.classList.add(
-		"image-viewer-open"
-	);
-
+    viewer.classList.remove('hidden');
+    document.body.classList.add('image-viewer-open');
 }
 
-
-
-// ============================================================
-// بستن نمایشگر تصویر
-// ============================================================
 
 function closeImageViewer() {
 
-	const viewer =
-		document.getElementById(
-			"image-viewer"
-		);
+    const viewer =
+        document.getElementById(
+            'image-viewer'
+        );
 
+    if (!viewer) {
+        return;
+    }
 
-	if (!viewer) {
-		return;
-	}
-
-
-	viewer.classList.add(
-		"hidden"
-	);
-
-
-	document.body.classList.remove(
-		"image-viewer-open"
-	);
-
+    viewer.classList.add('hidden');
+    document.body.classList.remove('image-viewer-open');
 }
 
 
-
-// ============================================================
-// بستن تصویر با Escape
-// ============================================================
-
 document.addEventListener(
-	"keydown",
-	event => {
+    'keydown',
+    event => {
 
-		if (
-			event.key === "Escape"
-		) {
-
-			closeImageViewer();
-
-		}
-
-	}
+        if (
+            event.key === 'Escape'
+        ) {
+            closeImageViewer();
+        }
+    }
 );
 
 
-
-// ============================================================
-// بستن تصویر با کلیک روی فضای تاریک اطراف
-// ============================================================
-
 document.addEventListener(
-	"click",
-	event => {
+    'click',
+    event => {
 
-		const viewer =
-			document.getElementById(
-				"image-viewer"
-			);
+        const viewer =
+            document.getElementById(
+                'image-viewer'
+            );
 
-
-		if (
-			viewer &&
-			event.target === viewer
-		) {
-
-			closeImageViewer();
-
-		}
-
-	}
+        if (
+            viewer &&
+            event.target === viewer
+        ) {
+            closeImageViewer();
+        }
+    }
 );
-
 
 
 // ============================================================
@@ -2312,298 +2138,12 @@ function filterProducts() {
 
     }
 
+	result = applyTypeSpecificFilters(result, type);
 
 
-    // ========================================================
-    // جاسوئیچی
-    // ========================================================
 
-    if (
-        type === 'JS'
-    ) {
+    // مرتب‌سازی نتیجه
 
-        const wood =
-            document.getElementById(
-                'js-wood-filter'
-            )?.value || '';
-
-        const size =
-            document.getElementById(
-                'js-size-filter'
-            )?.value || '';
-
-        const font =
-            document.getElementById(
-                'js-font-filter'
-            )?.value || '';
-
-
-
-        if (wood) {
-
-            result =
-                result.filter(
-                    product =>
-                        String(
-                            getDetail(
-                                product,
-                                'wood'
-                            )
-                        ) === wood
-                );
-
-        }
-
-
-
-        if (size) {
-
-            result =
-                result.filter(
-                    product =>
-                        String(
-                            getDetail(
-                                product,
-                                'size'
-                            )
-                        ) === size
-                );
-
-        }
-
-
-
-        if (font) {
-
-            result =
-                result.filter(
-                    product =>
-                        String(
-                            getDetail(
-                                product,
-                                'font'
-                            )
-                        ) === font
-                );
-
-        }
-
-    }
-
-
-
-    // ========================================================
-    // جاکلیدی
-    // ========================================================
-
-    if (
-        type === 'JK'
-    ) {
-
-        const wood =
-            document.getElementById(
-                'jk-wood-filter'
-            )?.value || '';
-
-        const hookCount =
-            document.getElementById(
-                'jk-hook-filter'
-            )?.value || '';
-
-
-
-        if (wood) {
-
-            result =
-                result.filter(
-                    product =>
-                        String(
-                            getDetail(
-                                product,
-                                'wood'
-                            )
-                        ) === wood
-                );
-
-        }
-
-
-
-        if (hookCount) {
-
-            result =
-                result.filter(
-                    product => {
-
-                        const value =
-                            numericDetail(
-                                product,
-                                'hook_count'
-                            );
-
-                        return (
-                            value !== null &&
-                            value ===
-                            Number(
-                                hookCount
-                            )
-                        );
-
-                    }
-                );
-
-        }
-
-    }
-
-
-
-    // ========================================================
-    // تابلو
-    // ========================================================
-
-    if (
-        type === 'TB'
-    ) {
-
-        const width =
-            document.getElementById(
-                'tb-width-filter'
-            )?.value || '';
-
-        const length =
-            document.getElementById(
-                'tb-length-filter'
-            )?.value || '';
-
-
-
-        if (width) {
-
-            result =
-                result.filter(
-                    product => {
-
-                        const value =
-                            numericDetail(
-                                product,
-                                'width'
-                            );
-
-                        return (
-                            value !== null &&
-                            value ===
-                            Number(width)
-                        );
-
-                    }
-                );
-
-        }
-
-
-
-        if (length) {
-
-            result =
-                result.filter(
-                    product => {
-
-                        const value =
-                            numericDetail(
-                                product,
-                                'length'
-                            );
-
-                        return (
-                            value !== null &&
-                            value ===
-                            Number(length)
-                        );
-
-                    }
-                );
-
-        }
-
-    }
-
-
-
-    // ========================================================
-    // ساعت
-    // ========================================================
-
-    if (
-        type === 'CL'
-    ) {
-
-        const width =
-            document.getElementById(
-                'cl-width-filter'
-            )?.value || '';
-
-        const length =
-            document.getElementById(
-                'cl-length-filter'
-            )?.value || '';
-
-
-
-        if (width) {
-
-            result =
-                result.filter(
-                    product => {
-
-                        const value =
-                            numericDetail(
-                                product,
-                                'width'
-                            );
-
-                        return (
-                            value !== null &&
-                            value ===
-                            Number(width)
-                        );
-
-                    }
-                );
-
-        }
-
-
-
-        if (length) {
-
-            result =
-                result.filter(
-                    product => {
-
-                        const value =
-                            numericDetail(
-                                product,
-                                'length'
-                            );
-
-                        return (
-                            value !== null &&
-                            value ===
-                            Number(length)
-                        );
-
-                    }
-                );
-
-        }
-
-    }
-
-
-
-    // ========================================================
-    // مرتب سازی
     // ========================================================
 
     switch (sort) {
@@ -2684,80 +2224,57 @@ function filterProducts() {
 
 
 // ============================================================
-// 31. نمایش/مخفی کردن فیلترهای اختصاصی
+// 31. فیلترهای اختصاصی بر اساس رجیستری نوع محصول
 // ============================================================
 
 function updateAdvancedFilters() {
+	const type = document.getElementById('product-type-filter')?.value || '';
+	const container = document.getElementById('advanced-filters');
+	if (!container) return;
 
-    const type =
-        document.getElementById(
-            'product-type-filter'
-        )?.value || '';
+	if (!type || !TCHOO_PRODUCT_TYPES[type]) {
+		container.innerHTML = '';
+		return;
+	}
 
+	const config = TCHOO_PRODUCT_TYPES[type];
+	const filters = (config.fields || []).filter(field => field.filter);
+	container.innerHTML = filters.map(field => {
+		const id = `${type.toLowerCase()}-${field.key}-filter`;
+		if (field.type === 'select') {
+			const options = (field.options || []).map(option => `<option value="${escapeHTML(option)}">${escapeHTML(option)}</option>`).join('');
+			return `<select id="${id}"><option value="">${escapeHTML(field.filterLabel || `همه ${field.label}ها`)}</option>${options}</select>`;
+		}
+		return `<input id="${id}" type="${field.type === 'number' ? 'number' : 'text'}" min="0" placeholder="${escapeHTML(field.placeholder || field.label)}">`;
+	}).join('');
 
-
-    document
-        .querySelectorAll(
-            '.type-filters'
-        )
-        .forEach(
-            element => {
-
-                element.classList.add(
-                    'hidden'
-                );
-
-            }
-        );
-
-
-
-    const filterMap = {
-
-        JS:
-            'js-filters',
-
-        JK:
-            'jk-filters',
-
-        TB:
-            'tb-filters',
-
-        CL:
-            'cl-filters'
-
-    };
-
-
-
-    const targetId =
-        filterMap[type];
-
-
-
-    if (targetId) {
-
-        const target =
-            document.getElementById(
-                targetId
-            );
-
-
-        if (target) {
-
-            target.classList.remove(
-                'hidden'
-            );
-
-        }
-
-    }
-
+	container.querySelectorAll('select, input').forEach(element => {
+		element.addEventListener('input', filterProducts);
+		element.addEventListener('change', filterProducts);
+	});
 }
 
+function applyTypeSpecificFilters(result, type) {
+	const config = TCHOO_PRODUCT_TYPES[type];
+	if (!config) return result;
 
+	for (const field of (config.fields || []).filter(field => field.filter)) {
+		const filterId = `${type.toLowerCase()}-${field.key}-filter`;
+		const filterValue = document.getElementById(filterId)?.value || '';
+		if (!filterValue) continue;
 
-// ============================================================
+		result = result.filter(product => {
+			const value = getDetail(product, field.key);
+			if (field.type === 'number') {
+				return value !== null && Number(value) === Number(filterValue);
+			}
+			return String(value ?? '') === String(filterValue);
+		});
+	}
+
+	return result;
+}
+
 // 32. راه‌اندازی فیلترها
 // ============================================================
 
@@ -3340,11 +2857,48 @@ async function checkUser() {
     }
 
 }
-const CUSTOMER_PRODUCT_TYPES={JK:"جاکلیدی",JS:"جاسوئیچی",TB:"تابلو",CL:"ساعت",OT:"غیره"};
+const CUSTOMER_PRODUCT_TYPES=Object.fromEntries(Object.entries(TCHOO_PRODUCT_TYPES).map(([code,config])=>[code,config.name]));
 function openCustomerOrderModal(){const modal=document.getElementById("customer-order-modal");modal.classList.remove("hidden");document.body.classList.add("customer-order-open");updateCustomerOrderTypeFields();}
 function closeCustomerOrderModal(){const modal=document.getElementById("customer-order-modal");modal.classList.add("hidden");document.body.classList.remove("customer-order-open");}
-function updateCustomerOrderTypeFields(){const type=document.getElementById("customer-order-type")?.value;const container=document.getElementById("customer-order-type-fields");if(!container)return;if(type==="JS"){container.innerHTML='<div class="customer-order-type-section"><h3>مشخصات جاسوئیچی</h3><div class="customer-order-grid"><div class="customer-order-field"><label>نوع چوب</label><select id="customer-order-wood"><option value="">انتخاب کنید</option><option value="گردو">گردو</option><option value="عناب">عناب</option><option value="کرات">کرات</option><option value="نارنج">نارنج</option><option value="گردو سوخته">گردو سوخته</option><option value="سنجد">سنجد</option><option value="متفرقه">متفرقه</option></select></div><div class="customer-order-field"><label>اندازه</label><select id="customer-order-size"><option value="">انتخاب کنید</option><option value="کوچک">کوچک</option><option value="متوسط">متوسط</option><option value="بزرگ">بزرگ</option></select></div><div class="customer-order-field"><label>طرح</label><input id="customer-order-design" type="text"></div><div class="customer-order-field"><label>فونت</label><select id="customer-order-font"><option value="">انتخاب کنید</option><option value="1">فونت ۱</option><option value="2">فونت ۲</option><option value="3">فونت ۳</option><option value="4">فونت ۴</option><option value="ندارد">بدون فونت</option></select></div></div></div>'}else if(type==="JK"){container.innerHTML='<div class="customer-order-type-section"><h3>مشخصات جاکلیدی</h3><div class="customer-order-grid"><div class="customer-order-field"><label>نوع چوب</label><select id="customer-order-wood"><option value="">انتخاب کنید</option><option value="گردو">گردو</option><option value="عناب">عناب</option><option value="کرات">کرات</option><option value="نارنج">نارنج</option><option value="گردو سوخته">گردو سوخته</option><option value="سنجد">سنجد</option><option value="متفرقه">متفرقه</option></select></div><div class="customer-order-field"><label>تعداد قلاب</label><input id="customer-order-hook-count" type="number" min="1"></div><div class="customer-order-field"><label>عرض</label><input id="customer-order-width" type="number" min="0"></div><div class="customer-order-field"><label>طول</label><input id="customer-order-length" type="number" min="0"></div><div class="customer-order-field customer-order-full"><label>طرح</label><input id="customer-order-design" type="text"></div></div></div>'}else if(type==="TB"||type==="CL"){container.innerHTML='<div class="customer-order-type-section"><h3>مشخصات '+(type==="TB"?"تابلو":"ساعت")+'</h3><div class="customer-order-grid"><div class="customer-order-field"><label>عرض</label><input id="customer-order-width" type="number" min="0"></div><div class="customer-order-field"><label>طول</label><input id="customer-order-length" type="number" min="0"></div><div class="customer-order-field customer-order-full"><label>طرح</label><input id="customer-order-design" type="text"></div></div></div>'}else if(type==="OT"){container.innerHTML='<div class="customer-order-type-section"><h3>مشخصات محصول</h3><div class="customer-order-grid"><div class="customer-order-field customer-order-full"><label>نام محصول</label><input id="customer-order-product-name" type="text"></div><div class="customer-order-field customer-order-full"><label>طرح</label><input id="customer-order-design" type="text"></div></div></div>'}else container.innerHTML="";}
-function buildCustomerOrderDetails(type){if(type==="JS")return{wood:document.getElementById("customer-order-wood")?.value||"",size:document.getElementById("customer-order-size")?.value||"",design:document.getElementById("customer-order-design")?.value||"",font:document.getElementById("customer-order-font")?.value||""};if(type==="JK")return{wood:document.getElementById("customer-order-wood")?.value||"",width:document.getElementById("customer-order-width")?.value||"",length:document.getElementById("customer-order-length")?.value||"",hook_count:document.getElementById("customer-order-hook-count")?.value||"",design:document.getElementById("customer-order-design")?.value||""};if(type==="TB"||type==="CL")return{width:document.getElementById("customer-order-width")?.value||"",length:document.getElementById("customer-order-length")?.value||"",design:document.getElementById("customer-order-design")?.value||""};if(type==="OT")return{product_name:document.getElementById("customer-order-product-name")?.value||"",design:document.getElementById("customer-order-design")?.value||""};return{};}
+function renderCustomerField(field, id, value = "") {
+	const fullClass = field.full ? " customer-order-full" : "";
+	if (field.type === "select") {
+		const options = (field.options || []).map(option => `<option value="${escapeHTML(option)}">${escapeHTML(option)}</option>`).join("");
+		return `<div class="customer-order-field${fullClass}"><label for="${escapeHTML(id)}">${escapeHTML(field.label)}</label><select id="${escapeHTML(id)}"><option value="">انتخاب کنید</option>${options}</select></div>`;
+	}
+	const type = field.type === "number" ? "number" : "text";
+	const attrs = type === "number" ? ' min="0" step="0.01"' : "";
+	return `<div class="customer-order-field${fullClass}"><label for="${escapeHTML(id)}">${escapeHTML(field.label)}</label><input id="${escapeHTML(id)}" type="${type}" value="${escapeHTML(value)}" placeholder="${escapeHTML(field.placeholder || "")}"${attrs}></div>`;
+}
+
+function updateCustomerOrderTypeFields() {
+	const type = document.getElementById("customer-order-type")?.value;
+	const container = document.getElementById("customer-order-type-fields");
+	if (!container) return;
+	const config = TCHOO_PRODUCT_TYPES[type];
+	if (!config) { container.innerHTML = ""; return; }
+	container.innerHTML = `<div class="customer-order-type-section"><h3>مشخصات ${escapeHTML(config.name)}</h3><div class="customer-order-grid">${config.fields.map(field => renderCustomerField(field, `customer-order-${field.key}`)).join("")}</div></div>`;
+}
+
+function buildCustomerOrderDetails(type) {
+	const config = TCHOO_PRODUCT_TYPES[type];
+	if (!config) return {};
+	const details = {};
+	config.fields.forEach(field => {
+		details[field.key] = document.getElementById(`customer-order-${field.key}`)?.value || "";
+	});
+	return details;
+}
+
+function populateStorefrontProductTypes() {
+	document.querySelectorAll("#product-type-filter, #customer-order-type").forEach(select => {
+		const placeholder = select.id === "product-type-filter" ? "همه محصولات" : "انتخاب کنید";
+		select.innerHTML = `<option value="">${placeholder}</option>` + Object.entries(TCHOO_PRODUCT_TYPES).map(([code, config]) => `<option value="${escapeHTML(code)}">${escapeHTML(config.name)}</option>`).join("");
+	});
+}
+
+populateStorefrontProductTypes();
+updateAdvancedFilters();
 document.getElementById("customer-order-type")?.addEventListener("change",updateCustomerOrderTypeFields);
 document.getElementById("customer-order-form")?.addEventListener("submit",submitCustomerOrder);
 async function submitCustomerOrder(event){event.preventDefault();const button=document.getElementById("customer-order-submit");const message=document.getElementById("customer-order-message");message.className="";message.textContent="";const {data:{user},error:userError}=await shopDB.auth.getUser();if(userError||!user){message.className="error";message.textContent="برای ثبت سفارش ابتدا وارد حساب کاربری خود شوید.";return;}const type=document.getElementById("customer-order-type").value;const price=Number(document.getElementById("customer-order-price").value);const quantity=Number(document.getElementById("customer-order-quantity").value);if(!type||!CUSTOMER_PRODUCT_TYPES[type]){message.className="error";message.textContent="نوع محصول را انتخاب کنید.";return;}if(!Number.isFinite(price)||price<0){message.className="error";message.textContent="قیمت واردشده معتبر نیست.";return;}if(!Number.isInteger(quantity)||quantity<1){message.className="error";message.textContent="تعداد باید حداقل ۱ باشد.";return;}const imagesText=document.getElementById("customer-order-images").value.trim();const images=imagesText?imagesText.split("|").map(x=>x.trim()).filter(Boolean):[];const imageUrl=images[0]||null;const description=document.getElementById("customer-order-description").value.trim();const details=buildCustomerOrderDetails(type);button.disabled=true;button.textContent="در حال ثبت...";try{const {data,error}=await shopDB.rpc("create_customer_order",{p_product_type:type,p_price:price,p_image_url:imageUrl,p_description:description,p_images:images,p_details:details,p_quantity:quantity});if(error)throw error;message.className="success";message.textContent="سفارش شما با موفقیت ثبت شد.";document.getElementById("customer-order-form").reset();document.getElementById("customer-order-type-fields").innerHTML="";setTimeout(closeCustomerOrderModal,1200);}catch(error){message.className="error";message.textContent="خطا در ثبت سفارش: "+(error.message||"خطای نامشخص");}finally{button.disabled=false;button.textContent="ثبت سفارش";}}
