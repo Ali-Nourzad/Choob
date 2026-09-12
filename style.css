@@ -1698,88 +1698,47 @@ a {
     display: none !important;
 }
 
-
 /* ============================================================
-   PRODUCT DETAILS
+   هدر تصویری تمام‌عرض + هم‌پوشانی فیلترها
    ============================================================ */
 
-.product-details {
-    margin-top: 24px;
+.hero {
+    position: relative;
+    width: 100%;
+    height: 650px;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    box-shadow: none;
 }
 
-.product-details-card {
-    padding: 17px;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: var(--surface-2);
+.search-section {
+    position: relative;
+    z-index: 20;
+    width: min(1400px, 92%);
+    margin: -150px auto 58px;
 }
 
-.product-details-card h2 {
-    margin: 0 0 12px;
-    color: var(--text);
-    font-family: "Lalezar", sans-serif;
-    font-size: 22px;
-}
+/* در موبایل، ارتفاع تصویر کمتر و هم‌پوشانی کمی کمتر می‌شود */
+@media (max-width: 850px) {
+    .hero {
+        height: 500px;
+    }
 
-.product-detail-list {
-    display: grid;
-    gap: 8px;
-}
-
-.product-detail-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 10px 12px;
-    border-radius: 11px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-}
-
-.product-detail-label {
-    color: var(--muted);
-    font-family: Tahoma, sans-serif;
-    font-size: 12px;
-}
-
-.product-detail-value {
-    color: var(--text);
-    font-family: Tahoma, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    text-align: left;
-    overflow-wrap: anywhere;
-}
-
-.cart-icon {
-    width: 24px;
-    height: 24px;
-    display: block;
-    object-fit: contain;
-}
-
-.cart-close-btn {
-    display: grid !important;
-    place-items: center;
-    padding: 0 !important;
-}
-
-.cart-close-icon {
-    width: 19px;
-    height: 19px;
-    display: block;
-    object-fit: contain;
+    .search-section {
+        margin-top: -95px;
+    }
 }
 
 @media (max-width: 560px) {
-    .product-detail-row {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 4px;
+    .hero {
+        height: 390px;
     }
 
-    .product-detail-value {
-        text-align: right;
+    .search-section {
+        width: 94%;
+        margin-top: -70px;
     }
 }
