@@ -1126,7 +1126,18 @@
 							<label for="edit-product-code">
 								کد محصول
 							</label>
-							<input class="form-input" dir="ltr" id="edit-product-code" required="" type="text"/>
+							<div class="code-generator-row">
+								<div class="code-input-group">
+									<input class="form-input" autocomplete="off" dir="ltr" id="edit-product-code" placeholder="مثلاً TCJS0000" required="" type="text"/>
+								</div>
+								<button class="generate-code-btn" id="edit-generate-code-btn" type="button">
+									<img alt="" class="ui-icon" src="assets/admin-icons/generate.png"/>
+									تولید خودکار
+								</button>
+							</div>
+							<small>
+								برای ساخت کد جدید، نوع محصول را انتخاب کنید و روی «تولید خودکار» بزنید.
+							</small>
 						</div>
 						<div class="form-group">
 							<label for="edit-product-type">
@@ -1358,6 +1369,7 @@ async function generateFirstFreeCode(typeCode){const existing=await getExistingP
 async function generateCodeFor(typeInput,codeInput,button){const type=document.getElementById(typeInput).value;if(!type){alert("ابتدا نوع محصول را انتخاب کنید.");return;}button.disabled=true;button.textContent="در حال بررسی...";try{document.getElementById(codeInput).value=await generateFirstFreeCode(type);}catch(error){alert(error.message);}finally{button.disabled=false;button.innerHTML='<img class="ui-icon" src="assets/admin-icons/generate.png" alt=""> تولید خودکار';}}
 document.getElementById("generate-code-btn").addEventListener("click",function(){generateCodeFor("product-type","product-code",this);});
 document.getElementById("add-generate-code-btn").addEventListener("click",function(){generateCodeFor("add-product-type","add-product-code",this);});
+document.getElementById("edit-generate-code-btn").addEventListener("click",function(){generateCodeFor("edit-product-type","edit-product-code",this);});
 function updateTypeFields(){const type=document.getElementById("product-type").value;document.querySelectorAll("#create-order-form .type-fields").forEach(x=>x.classList.remove("show"));if(type)document.getElementById(`fields-${type.toLowerCase()}`)?.classList.add("show");}
 function updateAddTypeFields(){const type=document.getElementById("add-product-type").value;document.querySelectorAll("#add-product-form .type-fields").forEach(x=>x.classList.remove("show"));if(type)document.getElementById(`add-fields-${type.toLowerCase()}`)?.classList.add("show");}
 document.getElementById("product-type").addEventListener("change",updateTypeFields);
