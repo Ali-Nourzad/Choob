@@ -114,18 +114,48 @@
 
 
 			<section class="profile-section">
-
+			
 				<h2 class="profile-title">
 					سفارش‌های من
 				</h2>
-
+			
 				<div
 					id="orders-list"
 					class="orders-container">
 					در حال بارگذاری...
 				</div>
-
+			
 			</section>
+			
+			
+			<!-- =========================================
+			     IMAGE MODAL
+			========================================= -->
+			
+			<div
+				id="image-modal"
+				class="image-modal"
+				onclick="closeImageModal()">
+			
+				<div
+					class="image-modal-content"
+					onclick="event.stopPropagation()">
+			
+					<button
+						type="button"
+						class="image-modal-close"
+						onclick="closeImageModal()">
+						×
+					</button>
+			
+					<img
+						id="image-modal-img"
+						src=""
+						alt="تصویر سفارش">
+			
+				</div>
+			
+			</div>
 
 
 			<section class="profile-section">
