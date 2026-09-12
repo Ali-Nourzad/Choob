@@ -59,7 +59,18 @@
         <div class="cart-panel">
             <div class="cart-header">
                 <h2>سبد خرید</h2>
-                <button type="button" onclick="toggleCart()" aria-label="بستن سبد خرید">×</button>
+                <button
+                    type="button"
+                    onclick="toggleCart()"
+                    aria-label="بستن سبد خرید"
+                    class="cart-close-btn"
+                >
+                    <img
+                        src="assets/cart-icons/close.png"
+                        alt=""
+                        class="cart-close-icon"
+                    >
+                </button>
             </div>
             <div id="cart-items-list" class="cart-items"></div>
             <div class="cart-footer">
