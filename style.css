@@ -3986,6 +3986,6 @@ html.dark-mode .product-detail-card .product-btn:hover {
     color: #ffffff !important;
 }
 
-.dark-mode .hero h1 {
-    color: #e8edf1 !important;
+html.dark-mode .hero-text h1 {
+	color: #e8edf1 !important;
 }
