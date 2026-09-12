@@ -27,6 +27,15 @@ window.TCHOO_PRODUCT_TYPES = {
         ]
     },
 
+    JS: {
+        name: 'گوشواره',
+        fields: [
+            { key: 'wood', label: 'چوب', type: 'select', options: ['گردو', 'عناب', 'کرات', 'نارنج', 'گردو سوخته', 'سنجد', 'متفرقه'], filter: true, filterLabel: 'همه چوب‌ها' },
+            { key: 'size', label: 'اندازه', type: 'select', options: ['کوچک', 'متوسط', 'بزرگ' ,'غیره'], filter: true, filterLabel: 'همه اندازه‌ها' },
+            { key: 'design', label: 'طرح', type: 'text', placeholder: 'URL تصویر یا نام طرح' },
+        ]
+    },
+    
     TB: {
         name: 'تابلو',
         fields: [
