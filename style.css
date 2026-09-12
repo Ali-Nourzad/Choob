@@ -3727,3 +3727,261 @@ footer {
         gap: 4px;
     }
 }
+
+/* ============================================================
+   اصلاح نهایی رنگ‌بندی حالت تاریک
+   ناوبار، جستجو، پروفایل، سفارش‌ها و جزئیات محصول
+   ============================================================ */
+
+html.dark-mode .navbar {
+    background: #1b2a34 !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.38) !important;
+}
+
+html.dark-mode .navbar .logo,
+html.dark-mode .navbar .back-link,
+html.dark-mode .navbar .back-link:visited,
+html.dark-mode .navbar .back-link:active {
+    color: #e9e1d8 !important;
+}
+
+html.dark-mode .navbar .logo:hover,
+html.dark-mode .navbar .back-link:hover {
+    color: #ffffff !important;
+}
+
+html.dark-mode .customer-order-btn {
+    background: #2a3943 !important;
+    color: #eee5dc !important;
+    border-color: #465661 !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.22) !important;
+}
+
+html.dark-mode .customer-order-btn:hover {
+    background: #344650 !important;
+    color: #ffffff !important;
+    border-color: #596b77 !important;
+}
+
+html.dark-mode .cart-btn {
+    background: #263640 !important;
+    color: #eee5dc !important;
+    border-color: #465661 !important;
+}
+
+html.dark-mode .cart-btn:hover {
+    background: #344650 !important;
+    border-color: #627582 !important;
+}
+
+html.dark-mode .theme-toggle {
+    background: #263640 !important;
+    color: #eee5dc !important;
+    border-color: #465661 !important;
+}
+
+html.dark-mode .theme-toggle:hover {
+    background: #344650 !important;
+    border-color: #627582 !important;
+}
+
+/* -----------------------------
+   بخش جستجو و فیلتر
+   ----------------------------- */
+
+html.dark-mode .search-section {
+    background: #24201d !important;
+    color: #eee5dc !important;
+    border-color: #40372f !important;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.34) !important;
+}
+
+html.dark-mode .search-section::before {
+    color: #eee5dc !important;
+}
+
+html.dark-mode .search-section input,
+html.dark-mode .search-section select {
+    background: #2b2622 !important;
+    color: #eee5dc !important;
+    border-color: #4a4037 !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025) !important;
+}
+
+html.dark-mode .search-section input::placeholder {
+    color: #a99b8e !important;
+}
+
+html.dark-mode .search-section input:hover,
+html.dark-mode .search-section select:hover {
+    border-color: #596b77 !important;
+}
+
+html.dark-mode .search-section input:focus,
+html.dark-mode .search-section select:focus {
+    border-color: #52728b !important;
+    box-shadow: 0 0 0 4px rgba(49, 82, 107, 0.22) !important;
+}
+
+html.dark-mode .search-box::before {
+    color: #a99b8e !important;
+}
+
+html.dark-mode .advanced-filters {
+    background: #2b2622 !important;
+    color: #eee5dc !important;
+    border-color: #40372f !important;
+}
+
+/* -----------------------------
+   کارت پروفایل و دکمه‌های آن
+   ----------------------------- */
+
+html.dark-mode .profile-card {
+    background: #24201d !important;
+    color: #eee5dc !important;
+    border-color: #40372f !important;
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.36) !important;
+}
+
+html.dark-mode .profile-username,
+html.dark-mode .profile-title {
+    color: #eee5dc !important;
+}
+
+html.dark-mode .profile-info,
+html.dark-mode .profile-section {
+    color: #b7a99c;
+}
+
+html.dark-mode .profile-section {
+    border-top-color: #40372f !important;
+}
+
+html.dark-mode .profile-input {
+    background: #2b2622 !important;
+    color: #eee5dc !important;
+    border-color: #4a4037 !important;
+}
+
+html.dark-mode .profile-input::placeholder {
+    color: #a99b8e !important;
+}
+
+html.dark-mode .profile-input:focus {
+    border-color: #52728b !important;
+    box-shadow: 0 0 0 4px rgba(49, 82, 107, 0.20) !important;
+}
+
+html.dark-mode .profile-btn {
+    color: #eee5dc !important;
+    border: 1px solid #4a4037 !important;
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.20) !important;
+}
+
+html.dark-mode .password-btn {
+    background: #4a3b2d !important;
+    border-color: #68533d !important;
+}
+
+html.dark-mode .password-btn:hover {
+    background: #5a4735 !important;
+}
+
+html.dark-mode .save-btn {
+    background: #344b3d !important;
+    border-color: #4e6857 !important;
+}
+
+html.dark-mode .save-btn:hover {
+    background: #405b49 !important;
+}
+
+html.dark-mode .logout-btn {
+    background: #4a2f2d !important;
+    border-color: #68403d !important;
+}
+
+html.dark-mode .logout-btn:hover {
+    background: #5a3936 !important;
+}
+
+/* -----------------------------
+   کارت سفارش
+   ----------------------------- */
+
+html.dark-mode .order-card {
+    background: #24201d !important;
+    color: #eee5dc !important;
+    border-color: #40372f !important;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.30) !important;
+}
+
+html.dark-mode .order-card:hover {
+    border-color: #51473e !important;
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.38) !important;
+}
+
+html.dark-mode .order-title {
+    color: #eee5dc !important;
+}
+
+html.dark-mode .order-meta {
+    color: #b7a99c !important;
+}
+
+html.dark-mode .order-image {
+    background: #2b2622 !important;
+}
+
+/* -----------------------------
+   کارت جزئیات محصول و دکمه آن
+   ----------------------------- */
+
+html.dark-mode .product-detail-card {
+    background: #24201d !important;
+    color: #eee5dc !important;
+    border-color: #40372f !important;
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.36) !important;
+}
+
+html.dark-mode .product-detail-card > h1,
+html.dark-mode .product-details-card h2 {
+    color: #eee5dc !important;
+}
+
+html.dark-mode .product-detail-card > #product-price {
+    color: #c6a47f !important;
+}
+
+html.dark-mode .product-detail-card > #product-description,
+html.dark-mode .product-detail-label,
+html.dark-mode .product-loading {
+    color: #b7a99c !important;
+}
+
+html.dark-mode .product-details-card {
+    background: #2b2622 !important;
+    border-color: #40372f !important;
+}
+
+html.dark-mode .product-detail-row {
+    border-bottom-color: #40372f !important;
+}
+
+html.dark-mode .product-detail-value {
+    color: #eee5dc !important;
+}
+
+html.dark-mode .product-detail-card .product-btn {
+    background: #344b5a !important;
+    color: #eee5dc !important;
+    border: 1px solid #4d6878 !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24) !important;
+}
+
+html.dark-mode .product-detail-card .product-btn:hover {
+    background: #405d6e !important;
+    color: #ffffff !important;
+}
