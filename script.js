@@ -3132,3 +3132,50 @@ async function submitCustomerOrder(event) {
     }
 }
 document.getElementById("customer-order-modal")?.addEventListener("click",function(event){if(event.target===this)closeCustomerOrderModal();});
+
+// ============================================================
+// حالت روشن و تاریک فروشگاه
+// ============================================================
+
+function applyShopTheme() {
+
+    const dark =
+        localStorage.getItem('tchoob-shop-theme') === 'dark';
+
+    document.documentElement.classList.toggle(
+        'dark-mode',
+        dark
+    );
+
+    const button =
+        document.getElementById('shop-theme-toggle');
+
+    if (button) {
+        const text =
+            button.querySelector('span');
+
+        if (text) {
+            text.textContent =
+                dark ? 'حالت روشن' : 'حالت تاریک';
+        } else {
+            button.textContent =
+                dark ? 'حالت روشن' : 'حالت تاریک';
+        }
+    }
+}
+
+function toggleShopTheme() {
+
+    const dark =
+        document.documentElement.classList.contains('dark-mode');
+
+    localStorage.setItem(
+        'tchoob-shop-theme',
+        dark ? 'light' : 'dark'
+    );
+
+    applyShopTheme();
+document.addEventListener('DOMContentLoaded', applyShopTheme);
+}
+
+applyShopTheme();
