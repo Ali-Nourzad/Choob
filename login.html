@@ -76,7 +76,8 @@
 							<button
 								type="button"
 								id="password-toggle"
-								class="auth-password-toggle">
+								class="auth-password-toggle"
+								aria-label="نمایش یا مخفی کردن رمز عبور">
 								نمایش
 							</button>
 
@@ -87,7 +88,8 @@
 
 					<div
 						id="login-message"
-						class="auth-message">
+						class="auth-message"
+						role="alert">
 					</div>
 
 
@@ -183,10 +185,12 @@
 				"click",
 				function () {
 
-					if (
+					const isPassword =
 						passwordInput.type ===
-						"password"
-					) {
+						"password";
+
+
+					if (isPassword) {
 
 						passwordInput.type =
 							"text";
