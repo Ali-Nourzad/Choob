@@ -1,135 +1,135 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T-Choob | چوب گالری</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="product-types.js"></script>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <h1 class="logo" onclick="window.location.reload()">T-Choob</h1>
-            <div class="navbar-actions">
-                <button type="button" onclick="openCustomerOrderModal()" class="customer-order-btn">ثبت سفارش</button>
-                <button type="button" onclick="toggleCart()" class="cart-btn" aria-label="سبد خرید">
-                    <img src="assets/cart-icons/cart.png" alt="" class="cart-icon">
-                    <span id="cart-count">0</span>
-                </button>
-                <button
-                    type="button"
-                    id="shop-theme-toggle"
-                    class="theme-toggle"
-                    onclick="toggleShopTheme()"
-                    aria-label="تغییر حالت نمایش"
-                >
-                    <span>حالت تاریک</span>
-                </button>
-                <div id="user-section"></div>
-            </div>
-        </div>
-    </nav>
-    <section class="hero">
-        <div class="hero-overlay">
-            <div class="hero-text">
-                <h1>چوب گالری</h1>
-                <p>T-Choob</p>
-            </div>
-        </div>
-    </section>
-    <section class="search-section">
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="جستجوی محصول..." autocomplete="off">
-        </div>
-        <select id="product-type-filter">
-            <option value="">همه محصولات</option>
-        </select>
-        <select id="sort-select">
-            <option value="">مرتب سازی...</option>
-            <option value="cheap">ارزان‌ترین</option>
-            <option value="expensive">گران‌ترین</option>
-            <option value="name">الفبا</option>
-        </select>
-        <div id="advanced-filters" class="advanced-filters"></div>
-    </section>
-    <main class="main-container">
-        <header class="products-header">
-            <h2>محصولات برتر ما</h2>
-            <p>کیفیت تضمین شده برای شما</p>
-        </header>
-        <div id="product-grid" class="products-grid"></div>
-    </main>
-    <div id="cart-modal" class="cart-modal hidden">
-        <div class="cart-panel">
-            <div class="cart-header">
-                <h2>سبد خرید</h2>
-                <button
-                    type="button"
-                    onclick="toggleCart()"
-                    aria-label="بستن سبد خرید"
-                    class="cart-close-btn"
-                >
-                    <img
-                        src="assets/cart-icons/close.png"
-                        alt=""
-                        class="cart-close-icon"
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>T-Choob | چوب گالری</title>
+        <link rel="icon" href="favicon.ico">
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="product-types.js"></script>
+    </head>
+    <body>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <h1 class="logo" onclick="window.location.reload()">T-Choob</h1>
+                <div class="navbar-actions">
+                    <button type="button" onclick="openCustomerOrderModal()" class="customer-order-btn">ثبت سفارش</button>
+                    <button type="button" onclick="toggleCart()" class="cart-btn" aria-label="سبد خرید">
+                        <img src="assets/cart-icons/cart.png" alt="" class="cart-icon">
+                        <span id="cart-count">0</span>
+                    </button>
+                    <button
+                        type="button"
+                        id="shop-theme-toggle"
+                        class="theme-toggle"
+                        onclick="toggleShopTheme()"
+                        aria-label="تغییر حالت نمایش"
                     >
-                </button>
-            </div>
-            <div id="cart-items-list" class="cart-items"></div>
-            <div class="cart-footer">
-                <div class="cart-total">
-                    <span>جمع کل</span>
-                    <span id="cart-total">۰ تومان</span>
+                        <span>حالت تاریک</span>
+                    </button>
+                    <div id="user-section"></div>
                 </div>
-                <button type="button" onclick="checkout()">ثبت سفارش</button>
+            </div>
+        </nav>
+        <section class="hero">
+            <div class="hero-overlay">
+                <div class="hero-text">
+                    <h1>چوب گالری</h1>
+                    <p>T-Choob</p>
+                </div>
+            </div>
+        </section>
+        <section class="search-section">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="جستجوی محصول..." autocomplete="off">
+            </div>
+            <select id="product-type-filter">
+                <option value="">همه محصولات</option>
+            </select>
+            <select id="sort-select">
+                <option value="">مرتب سازی...</option>
+                <option value="cheap">ارزان‌ترین</option>
+                <option value="expensive">گران‌ترین</option>
+                <option value="name">الفبا</option>
+            </select>
+            <div id="advanced-filters" class="advanced-filters"></div>
+        </section>
+        <main class="main-container">
+            <header class="products-header">
+                <h2>محصولات برتر ما</h2>
+                <p>کیفیت تضمین شده برای شما</p>
+            </header>
+            <div id="product-grid" class="products-grid"></div>
+        </main>
+        <div id="cart-modal" class="cart-modal hidden">
+            <div class="cart-panel">
+                <div class="cart-header">
+                    <h2>سبد خرید</h2>
+                    <button
+                        type="button"
+                        onclick="toggleCart()"
+                        aria-label="بستن سبد خرید"
+                        class="cart-close-btn"
+                    >
+                        <img
+                            src="assets/cart-icons/close.png"
+                            alt=""
+                            class="cart-close-icon"
+                        >
+                    </button>
+                </div>
+                <div id="cart-items-list" class="cart-items"></div>
+                <div class="cart-footer">
+                    <div class="cart-total">
+                        <span>جمع کل</span>
+                        <span id="cart-total">۰ تومان</span>
+                    </div>
+                    <button type="button" onclick="checkout()">ثبت سفارش</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="customer-order-modal" class="customer-order-modal hidden">
-        <div class="customer-order-panel">
-            <div class="customer-order-header">
-                <h2>ثبت سفارش</h2>
-                <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-close" aria-label="بستن">×</button>
+        <div id="customer-order-modal" class="customer-order-modal hidden">
+            <div class="customer-order-panel">
+                <div class="customer-order-header">
+                    <h2>ثبت سفارش</h2>
+                    <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-close" aria-label="بستن">×</button>
+                </div>
+                <form id="customer-order-form">
+                    <div class="customer-order-grid">
+                        <div class="customer-order-field">
+                            <label for="customer-order-type">نوع محصول</label>
+                            <select id="customer-order-type" required>
+                                <option value="">انتخاب کنید</option>
+                            </select>
+                        </div>
+                        <div class="customer-order-field">
+                            <label for="customer-order-quantity">تعداد</label>
+                            <input type="number" id="customer-order-quantity" min="1" value="1" required>
+                        </div>
+                        <div class="customer-order-field">
+                            <label for="customer-order-price">قیمت</label>
+                            <input type="number" id="customer-order-price" min="0" placeholder="قیمت به تومان" required>
+                        </div>
+                        <div class="customer-order-field">
+                            <label for="customer-order-images">تصاویر</label>
+                            <input type="text" id="customer-order-images" placeholder="لینک تصاویر با | جدا شود">
+                        </div>
+                        <div class="customer-order-field customer-order-full">
+                            <label for="customer-order-description">توضیحات</label>
+                            <textarea id="customer-order-description" placeholder="توضیحات محصول"></textarea>
+                        </div>
+                    </div>
+                    <div id="customer-order-type-fields"></div>
+                    <div id="customer-order-message"></div>
+                    <div class="customer-order-footer">
+                        <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-cancel">انصراف</button>
+                        <button type="submit" id="customer-order-submit">ثبت سفارش</button>
+                    </div>
+                </form>
             </div>
-            <form id="customer-order-form">
-                <div class="customer-order-grid">
-                    <div class="customer-order-field">
-                        <label for="customer-order-type">نوع محصول</label>
-                        <select id="customer-order-type" required>
-                            <option value="">انتخاب کنید</option>
-                        </select>
-                    </div>
-                    <div class="customer-order-field">
-                        <label for="customer-order-quantity">تعداد</label>
-                        <input type="number" id="customer-order-quantity" min="1" value="1" required>
-                    </div>
-                    <div class="customer-order-field">
-                        <label for="customer-order-price">قیمت</label>
-                        <input type="number" id="customer-order-price" min="0" placeholder="قیمت به تومان" required>
-                    </div>
-                    <div class="customer-order-field">
-                        <label for="customer-order-images">تصاویر</label>
-                        <input type="text" id="customer-order-images" placeholder="لینک تصاویر با | جدا شود">
-                    </div>
-                    <div class="customer-order-field customer-order-full">
-                        <label for="customer-order-description">توضیحات</label>
-                        <textarea id="customer-order-description" placeholder="توضیحات محصول"></textarea>
-                    </div>
-                </div>
-                <div id="customer-order-type-fields"></div>
-                <div id="customer-order-message"></div>
-                <div class="customer-order-footer">
-                    <button type="button" onclick="closeCustomerOrderModal()" class="customer-order-cancel">انصراف</button>
-                    <button type="submit" id="customer-order-submit">ثبت سفارش</button>
-                </div>
-            </form>
         </div>
-    </div>
-    <script src="script.js"></script>
-</body>
+        <script src="script.js"></script>
+    </body>
 </html>
