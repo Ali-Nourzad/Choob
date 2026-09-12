@@ -1742,3 +1742,306 @@ a {
         margin-top: -70px;
     }
 }
+
+/* ============================================================
+   T-Choob — اصلاح نهایی هدر، هیرو، فیلتر و سبد خرید
+   ============================================================ */
+
+html,
+body {
+    overflow-x: hidden;
+}
+
+/* -----------------------------
+   ناوبار سرمه‌ای برند
+   ----------------------------- */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 12px 0;
+    background: #31526b !important;
+    border-bottom: 1px solid rgba(255, 255, 255, .10);
+    box-shadow: 0 6px 22px rgba(28, 45, 58, .18);
+    backdrop-filter: none;
+}
+
+.navbar-container {
+    width: min(1400px, 92%);
+    min-height: 52px;
+    margin: 0 auto;
+}
+
+.logo {
+    color: #fff !important;
+    font-size: 32px;
+}
+
+.logo:hover {
+    color: #f5eadb !important;
+}
+
+.navbar-actions {
+    gap: 10px;
+}
+
+.customer-order-btn {
+    min-height: 44px;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 14px;
+    background: #f7f1e7 !important;
+    color: #31526b !important;
+    box-shadow: 0 5px 15px rgba(20, 38, 50, .12);
+}
+
+.customer-order-btn:hover {
+    background: #fffaf2 !important;
+    color: #243e52 !important;
+}
+
+/* استایل اصلی آیکون سبد خرید — بدون تغییر شکل یا فیلتر */
+.cart-btn {
+    position: relative;
+    width: 46px !important;
+    height: 46px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    border: 1px solid rgba(255, 255, 255, .34) !important;
+    border-radius: 14px !important;
+    background: transparent !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+.cart-btn:hover {
+    background: rgba(255, 255, 255, .10) !important;
+    border-color: rgba(255, 255, 255, .55) !important;
+    transform: translateY(-1px);
+}
+
+.cart-icon {
+    display: block;
+    width: 25px !important;
+    height: 25px !important;
+    margin: 0 !important;
+    object-fit: contain;
+    object-position: center;
+}
+
+#cart-count {
+    top: -5px !important;
+    right: -5px !important;
+    min-width: 21px;
+    height: 21px;
+    border: 2px solid #31526b !important;
+    background: #b86b67 !important;
+    color: #fff !important;
+    font-size: 11px;
+}
+
+.user-link {
+    color: #fff !important;
+}
+
+.user-avatar {
+    border-color: rgba(255, 255, 255, .40);
+}
+
+/* -----------------------------
+   هیرو تمام‌عرض
+   ----------------------------- */
+.hero {
+    position: relative;
+    width: 100% !important;
+    height: 540px;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center center;
+    box-shadow: none !important;
+}
+
+.hero-overlay {
+    background:
+        linear-gradient(90deg, rgba(25, 35, 40, .05), rgba(36, 62, 82, .30));
+}
+
+.hero-text {
+    right: clamp(25px, 8vw, 110px);
+}
+
+/* -----------------------------
+   فیلتر — فقط قسمت بالایی روی عکس
+   ----------------------------- */
+.search-section {
+    position: relative;
+    z-index: 20;
+    width: min(1400px, 92%) !important;
+    margin: -82px auto 52px !important;
+    padding: 18px !important;
+    border-radius: 22px !important;
+    background: rgba(255, 253, 248, .97) !important;
+    border: 1px solid rgba(222, 214, 201, .95) !important;
+    box-shadow: 0 18px 45px rgba(67, 55, 42, .13) !important;
+}
+
+.search-section::before {
+    color: #31526b;
+}
+
+.search-section input,
+.search-section select {
+    min-height: 52px;
+    background: #fffdf8;
+}
+
+.advanced-filters {
+    background: #f8f3eb;
+    border: 1px solid #e7dbcd;
+}
+
+/* -----------------------------
+   سبد خرید — بازگردانی استایل تمیز آیکونی
+   ----------------------------- */
+.cart-close-btn {
+    display: grid !important;
+    place-items: center;
+    width: 42px !important;
+    height: 42px !important;
+    padding: 0 !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    background: var(--surface-2) !important;
+    color: var(--text) !important;
+}
+
+.cart-close-icon {
+    display: block;
+    width: 18px !important;
+    height: 18px !important;
+    object-fit: contain;
+}
+
+.qty-btn {
+    display: grid !important;
+    place-items: center;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 9px !important;
+    background: var(--surface) !important;
+}
+
+.qty-icon {
+    display: block;
+    width: 17px !important;
+    height: 17px !important;
+    object-fit: contain;
+}
+
+.qty-btn:hover {
+    background: #31526b !important;
+}
+
+.remove-btn {
+    display: grid !important;
+    place-items: center;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    border: 1px solid transparent !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+}
+
+.remove-icon {
+    display: block;
+    width: 19px !important;
+    height: 19px !important;
+    object-fit: contain;
+}
+
+/* -----------------------------
+   فاصله پایین فیلتر تا محصولات
+   ----------------------------- */
+.main-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* -----------------------------
+   ریسپانسیو
+   ----------------------------- */
+@media (max-width: 850px) {
+    .hero {
+        height: 500px;
+    }
+
+    .search-section {
+        margin-top: -72px !important;
+    }
+}
+
+@media (max-width: 650px) {
+    .navbar {
+        padding: 9px 0;
+    }
+
+    .navbar-container {
+        min-height: 50px;
+    }
+
+    .logo {
+        font-size: 27px;
+    }
+
+    .customer-order-btn {
+        min-height: 41px;
+        padding: 8px 13px;
+        font-size: 12px;
+    }
+
+    .cart-btn {
+        width: 42px !important;
+        height: 42px !important;
+        border-radius: 12px !important;
+    }
+
+    .cart-icon {
+        width: 23px !important;
+        height: 23px !important;
+    }
+
+    .hero {
+        height: 410px;
+    }
+
+    .hero-text {
+        right: 25px;
+    }
+
+    .search-section {
+        width: calc(100% - 24px) !important;
+        margin-top: -62px !important;
+        margin-bottom: 38px !important;
+        padding: 13px !important;
+        border-radius: 18px !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .hero {
+        height: 370px;
+    }
+
+    .search-section {
+        margin-top: -55px !important;
+    }
+}
+
