@@ -1,351 +1,148 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<title>جزئیات محصول | T-Choob</title>
-
-	<link rel="icon" href="favicon.ico">
-	<link rel="stylesheet" href="style.css">
-
-	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جزئیات محصول | T-Choob</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="product-types.js"></script>
+    <script src="script.js"></script>
 </head>
-
 <body>
-
-	<nav class="navbar">
-
-		<div class="navbar-container">
-
-			<h1
-				class="logo"
-				onclick="window.location.reload()">
-				T-Choob
-			</h1>
-
-			<div class="navbar-actions">
-
-				<button
-					type="button"
-					onclick="toggleCart()"
-					class="cart-btn"
-					aria-label="سبد خرید">
-
-					<img
-						src="assets/admin-icons/cart.png"
-						alt=""
-						class="cart-icon">
-
-					<span id="cart-count">0</span>
-
-				</button>
-
-				<a
-					href="index.html"
-					class="back-link">
-					بازگشت
-				</a>
-
-			</div>
-
-		</div>
-
-	</nav>
-
-
-	<main class="main-container product-page">
-
-		<div
-			id="product-container"
-			class="product-detail-container hidden">
-
-			<section>
-
-				<div class="product-gallery-card">
-
-					<div class="product-main-image-wrap">
-
-						<img
-							id="main-image"
-							class="product-main-image"
-							alt="تصویر محصول">
-
-					</div>
-
-				</div>
-
-
-				<div
-					id="thumbs"
-					class="product-thumbs">
-				</div>
-
-			</section>
-
-
-			<section>
-
-				<div class="product-info-card">
-
-					<h1 id="product-name"></h1>
-
-					<p
-						id="product-price"
-						class="product-detail-price">
-					</p>
-
-					<p
-						id="product-description"
-						class="product-description">
-					</p>
-
-					<button
-						onclick="addCurrentProductToCart()"
-						class="product-btn product-detail-action">
-						افزودن به سبد خرید
-					</button>
-
-				</div>
-
-			</section>
-
-		</div>
-
-
-		<div
-			id="loading"
-			class="product-loading">
-			در حال بارگذاری...
-		</div>
-
-	</main>
-
-
-	<div
-		id="cart-modal"
-		class="cart-modal hidden">
-
-		<div class="cart-panel">
-
-			<div class="cart-header">
-
-				<h2>
-					سبد خرید
-				</h2>
-
-				<button
-					type="button"
-					onclick="toggleCart()"
-					aria-label="بستن">
-					×
-				</button>
-
-			</div>
-
-
-			<div
-				id="cart-items-list"
-				class="cart-items">
-			</div>
-
-
-			<div class="cart-footer">
-
-				<div class="cart-total">
-
-					<span>
-						جمع کل
-					</span>
-
-					<span id="cart-total">
-						۰ تومان
-					</span>
-
-				</div>
-
-
-				<button
-					type="button"
-					onclick="checkout()">
-					ثبت سفارش
-				</button>
-
-			</div>
-
-		</div>
-
-	</div>
-
-
-	<script src="script.js"></script>
-
-
-	<script>
-		let currentProduct = null;
-
-
-		document.addEventListener(
-			"DOMContentLoaded",
-			loadProduct
-		);
-
-
-		async function loadProduct() {
-
-			const id =
-				new URLSearchParams(
-					window.location.search
-				).get("id");
-
-
-			if (!id) {
-				location.href = "index.html";
-				return;
-			}
-
-
-			const { data, error } =
-				await shopDB
-					.from("products")
-					.select("*")
-					.eq("id", id)
-					.single();
-
-
-			if (error || !data) {
-				location.href = "index.html";
-				return;
-			}
-
-
-			currentProduct = data;
-
-
-			document
-				.getElementById("loading")
-				.classList.add("hidden");
-
-
-			document
-				.getElementById("product-container")
-				.classList.remove("hidden");
-
-
-			document.getElementById(
-				"product-name"
-			).innerText = data.name;
-
-
-			document.getElementById(
-				"product-price"
-			).innerText =
-				`${Number(data.price).toLocaleString()} تومان`;
-
-
-			document.getElementById(
-				"product-description"
-			).innerText =
-				data.description ||
-				"توضیحاتی ثبت نشده است.";
-
-
-			let images = [];
-
-
-			if (data.images) {
-
-				images =
-					data.images
-						.split("|")
-						.filter(Boolean);
-
-			}
-
-
-			if (
-				images.length === 0 &&
-				data.image_url
-			) {
-				images.push(data.image_url);
-			}
-
-
-			const mainImage =
-				document.getElementById(
-					"main-image"
-				);
-
-
-			if (images.length > 0) {
-
-				mainImage.src =
-					images[0];
-
-			}
-
-
-			document.getElementById(
-				"thumbs"
-			).innerHTML =
-				images.map(
-					(img, index) => `
-						<img
-							src="${img}"
-							onclick="changeImage(this)"
-							alt="تصویر ${index + 1}"
-							class="product-thumb ${index === 0 ? "active" : ""}"
-						>
-					`
-				).join("");
-
-		}
-
-
-		function changeImage(element) {
-
-			const mainImage =
-				document.getElementById(
-					"main-image"
-				);
-
-
-			mainImage.src =
-				element.src;
-
-
-			document
-				.querySelectorAll(".product-thumb")
-				.forEach(
-					thumb => thumb.classList.remove("active")
-				);
-
-
-			element.classList.add("active");
-
-		}
-
-
-		function addCurrentProductToCart() {
-
-			if (!currentProduct) {
-				return;
-			}
-
-
-			addToCart(currentProduct.id);
-
-			alert(
-				"محصول به سبد خرید اضافه شد."
-			);
-
-		}
-
-
-		updateCartCount();
-	</script>
-
+    <nav class="navbar">
+        <div class="navbar-container">
+            <h1 class="logo" onclick="window.location.reload()">T-Choob</h1>
+            <div class="navbar-actions">
+                <button type="button" onclick="toggleCart()" class="cart-btn" aria-label="سبد خرید">
+                    <span aria-hidden="true">🛒</span>
+                    <span id="cart-count">0</span>
+                </button>
+                <a href="index.html" class="back-link">بازگشت</a>
+            </div>
+        </div>
+    </nav>
+    <main class="main-container" style="padding-top: 40px;">
+        <div id="product-container" class="hidden" style="display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 35px; align-items: start;">
+            <section>
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 28px; overflow: hidden; box-shadow: var(--shadow);">
+                    <div style="width: 100%; height: 520px; background: var(--surface-2);">
+                        <img id="main-image" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="تصویر محصول">
+                    </div>
+                </div>
+                <div id="thumbs" style="display: flex; gap: 10px; margin-top: 14px; overflow-x: auto; padding-bottom: 4px;"></div>
+            </section>
+            <section>
+                <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 30px; box-shadow: var(--shadow);">
+                    <h1 id="product-name" style="color: var(--navy-dark); font-size: clamp(32px, 4vw, 46px);"></h1>
+                    <p id="product-price" style="margin-top: 12px; color: var(--wood-dark); font-size: 26px;"></p>
+                    <p id="product-description" style="margin-top: 22px; color: var(--muted); line-height: 2.2; font-size: 17px;"></p>
+                    <button onclick="addCurrentProductToCart()" class="product-btn" style="margin-top: 30px;">افزودن به سبد خرید</button>
+                </div>
+            </section>
+        </div>
+        <div id="loading" style="padding: 100px 0; text-align: center; color: var(--muted); font-size: 20px;">در حال بارگذاری...</div>
+    </main>
+    <div id="cart-modal" class="cart-modal hidden">
+        <div class="cart-panel">
+            <div class="cart-header">
+                <h2>سبد خرید</h2>
+                <button type="button" onclick="toggleCart()" aria-label="بستن">×</button>
+            </div>
+            <div id="cart-items-list" class="cart-items"></div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>جمع کل</span>
+                    <span id="cart-total">۰ تومان</span>
+                </div>
+                <button type="button" onclick="checkout()">ثبت سفارش</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentProduct = null;
+        document.addEventListener("DOMContentLoaded", loadProduct);
+
+        async function loadProduct() {
+            const id = new URLSearchParams(window.location.search).get("id");
+
+            if (!id) {
+                location.href = "index.html";
+                return;
+            }
+
+            const { data, error } = await shopDB
+                .from("products")
+                .select("*")
+                .eq("id", id)
+                .single();
+
+            if (error || !data) {
+                location.href = "index.html";
+                return;
+            }
+
+            currentProduct = data;
+            document.getElementById("loading").classList.add("hidden");
+            document.getElementById("product-container").classList.remove("hidden");
+            document.getElementById("product-name").innerText = data.name;
+            document.getElementById("product-price").innerText = `${Number(data.price).toLocaleString()} تومان`;
+            document.getElementById("product-description").innerText = data.description || "توضیحاتی ثبت نشده است.";
+
+            let images = [];
+
+            if (data.images) {
+                images = data.images.split("|").filter(Boolean);
+            }
+
+            if (images.length === 0 && data.image_url) {
+                images.push(data.image_url);
+            }
+
+            const mainImage = document.getElementById("main-image");
+
+            if (images.length > 0) {
+                mainImage.src = images[0];
+            }
+
+            document.getElementById("thumbs").innerHTML = images.map((img, index) => `
+                <img
+                    src="${img}"
+                    onclick="changeImage('${img.replace(/'/g, "\'")}')"
+                    alt="تصویر ${index + 1}"
+                    style="width: 82px; height: 82px; flex: 0 0 82px; object-fit: cover; border-radius: 14px; border: 2px solid var(--border); cursor: pointer;"
+                >
+            `).join("");
+        }
+
+        function changeImage(url) {
+            document.getElementById("main-image").src = url;
+        }
+
+        function addCurrentProductToCart() {
+            if (!currentProduct) {
+                return;
+            }
+
+            addToCart(currentProduct.id);
+            alert("محصول به سبد خرید اضافه شد.");
+        }
+
+        updateCartCount();
+    </script>
+    <style>
+        @media (max-width: 850px) {
+            #product-container {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #product-container > section:first-child > div:first-child > div {
+                height: 360px !important;
+            }
+        }
+    </style>
 </body>
-
 </html>
