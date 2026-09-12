@@ -2751,3 +2751,183 @@ html.dark-mode .auth-password-toggle:hover {
 	}
 
 }
+
+/* ============================================================
+   تصویر پروفایل قابل کلیک
+   ============================================================ */
+
+.profile-avatar-button {
+	display: block;
+
+	margin: 0 auto;
+
+	padding: 0;
+
+	border: 0;
+
+	background: transparent;
+
+	cursor: pointer;
+
+	border-radius: 50%;
+
+	line-height: 0;
+
+	outline: none;
+}
+
+.profile-avatar-button .profile-avatar {
+	cursor: pointer;
+
+	transition:
+		transform .2s ease,
+		box-shadow .2s ease;
+}
+
+.profile-avatar-button:hover .profile-avatar {
+	transform: scale(1.04);
+
+	box-shadow:
+		0 12px 30px rgba(49, 82, 107, 0.20);
+}
+
+
+/* ============================================================
+   نمایش بزرگ تصویر
+   ============================================================ */
+
+.profile-image-viewer {
+	position: fixed;
+
+	inset: 0;
+
+	z-index: 9999;
+
+	display: flex;
+
+	align-items: center;
+	justify-content: center;
+
+	padding: 30px;
+
+	background: rgba(20, 24, 27, 0.82);
+
+	backdrop-filter: blur(5px);
+
+	opacity: 1;
+
+	visibility: visible;
+
+	transition:
+		opacity .2s ease,
+		visibility .2s ease;
+
+	box-sizing: border-box;
+}
+
+.profile-image-viewer.hidden {
+	display: none;
+}
+
+.profile-image-large {
+	display: block;
+
+	max-width: min(850px, 90vw);
+
+	max-height: 85vh;
+
+	width: auto;
+	height: auto;
+
+	object-fit: contain;
+
+	border-radius: 18px;
+
+	background: var(--surface);
+
+	box-shadow:
+		0 25px 70px rgba(0, 0, 0, 0.35);
+}
+
+.profile-image-viewer-close {
+	position: absolute;
+
+	top: 22px;
+	right: 22px;
+
+	width: 44px;
+	height: 44px;
+
+	display: flex;
+
+	align-items: center;
+	justify-content: center;
+
+	padding: 0;
+
+	border: 0;
+
+	border-radius: 50%;
+
+	background: rgba(255, 255, 255, 0.92);
+
+	color: #31526b;
+
+	font-family: Arial, sans-serif;
+
+	font-size: 30px;
+
+	line-height: 1;
+
+	cursor: pointer;
+
+	box-shadow:
+		0 6px 20px rgba(0, 0, 0, 0.18);
+
+	transition:
+		transform .2s ease,
+		background .2s ease,
+		color .2s ease;
+}
+
+.profile-image-viewer-close:hover {
+	transform: scale(1.06);
+
+	background: #31526b;
+
+	color: #ffffff;
+}
+
+body.profile-image-viewer-open {
+	overflow: hidden;
+}
+
+
+/* ============================================================
+   موبایل
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+	.profile-image-viewer {
+		padding: 20px;
+	}
+
+	.profile-image-large {
+		max-width: 94vw;
+		max-height: 80vh;
+
+		border-radius: 14px;
+	}
+
+	.profile-image-viewer-close {
+		top: 14px;
+		right: 14px;
+
+		width: 40px;
+		height: 40px;
+
+		font-size: 27px;
+	}
+
+}
