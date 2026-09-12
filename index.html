@@ -5,25 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T-Choob | چوب گالری</title>
     <link rel="icon" href="favicon.ico">
-    <script>
-    	(function () {
-    
-    		const theme =
-    			localStorage.getItem(
-    				"tchoob-theme"
-    			);
-    
-    		if (theme === "dark") {
-    
-    			document.documentElement
-    				.classList.add(
-    					"dark-mode"
-    				);
-    
-    		}
-    
-    	})();
-    </script>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -39,11 +20,14 @@
                     <img src="assets/cart-icons/cart.png" alt="" class="cart-icon">
                     <span id="cart-count">0</span>
                 </button>
-                <button type="button" id="theme-toggle" class="theme-toggle" aria-label="تغییر حالت نمایش">
-                	<img id="theme-icon" src="assets/theme-icons/moon.png" alt="">
-                	<span id="theme-text">
-                		حالت تاریک
-                	</span>  
+                <button
+                    type="button"
+                    id="shop-theme-toggle"
+                    class="theme-toggle"
+                    onclick="toggleShopTheme()"
+                    aria-label="تغییر حالت نمایش"
+                >
+                    <span>حالت تاریک</span>
                 </button>
                 <div id="user-section"></div>
             </div>
@@ -147,129 +131,5 @@
         </div>
     </div>
     <script src="script.js"></script>
-    <script>
-    	/* ============================================================
-    	   حالت روشن / تاریک فروشگاه
-    	   ============================================================ */
-    
-    	(function () {
-    
-    		const themeToggle =
-    			document.getElementById(
-    				"theme-toggle"
-    			);
-    
-    		const themeIcon =
-    			document.getElementById(
-    				"theme-icon"
-    			);
-    
-    		const themeText =
-    			document.getElementById(
-    				"theme-text"
-    			);
-    
-    
-    		function applyTheme(theme) {
-    
-    			if (theme === "dark") {
-    
-    				document.documentElement
-    					.classList.add(
-    						"dark-mode"
-    					);
-    
-    				if (themeIcon) {
-    
-    					themeIcon.src =
-    						"assets/theme-icons/sun.png";
-    
-    				}
-    
-    				if (themeText) {
-    
-    					themeText.textContent =
-    						"حالت روشن";
-    
-    				}
-    
-    			} else {
-    
-    				document.documentElement
-    					.classList.remove(
-    						"dark-mode"
-    					);
-    
-    				if (themeIcon) {
-    
-    					themeIcon.src =
-    						"assets/theme-icons/moon.png";
-    
-    				}
-    
-    				if (themeText) {
-    
-    					themeText.textContent =
-    						"حالت تاریک";
-    
-    				}
-    
-    			}
-    
-    		}
-    
-    
-    		const savedTheme =
-    			localStorage.getItem(
-    				"tchoob-theme"
-    			);
-    
-    
-    		/* حالت پیش‌فرض روشن است */
-    
-    		applyTheme(
-    			savedTheme === "dark"
-    				? "dark"
-    				: "light"
-    		);
-    
-    
-    		if (themeToggle) {
-    
-    			themeToggle.addEventListener(
-    				"click",
-    				function () {
-    
-    					const isDark =
-    						document.documentElement
-    							.classList
-    							.contains(
-    								"dark-mode"
-    							);
-    
-    
-    					const newTheme =
-    						isDark
-    							? "light"
-    							: "dark";
-    
-    
-    					localStorage.setItem(
-    						"tchoob-theme",
-    						newTheme
-    					);
-    
-    
-    					applyTheme(
-    						newTheme
-    					);
-    
-    				}
-    			);
-    
-    		}
-    
-    	})();
-    </script>
 </body>
 </html>
