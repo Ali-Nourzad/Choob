@@ -27,7 +27,7 @@ window.TCHOO_PRODUCT_TYPES = {
         ]
     },
 
-    JS: {
+    GV: {
         name: 'گوشواره',
         fields: [
             { key: 'wood', label: 'چوب', type: 'select', options: ['گردو', 'عناب', 'کرات', 'نارنج', 'گردو سوخته', 'سنجد', 'متفرقه'], filter: true, filterLabel: 'همه چوب‌ها' },
