@@ -2353,3 +2353,401 @@ body.image-viewer-open {
         border-radius: 14px;
     }
 }
+
+/* ============================================================
+   صفحات ورود و ثبت‌نام
+   ============================================================ */
+
+.auth-page {
+	min-height: 100vh;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 20px;
+	background: var(--bg);
+	box-sizing: border-box;
+}
+
+.auth-container {
+	width: 100%;
+	max-width: 460px;
+	margin: 0 auto;
+}
+
+.auth-card {
+	width: 100%;
+	padding: 38px;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 24px;
+	box-shadow: var(--shadow-lg);
+	box-sizing: border-box;
+}
+
+.auth-header {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.auth-logo {
+	width: 64px;
+	height: 64px;
+	margin: 0 auto 18px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	background: #31526b;
+	color: #ffffff;
+
+	border-radius: 18px;
+
+	font-family: Lalezar, sans-serif;
+	font-size: 34px;
+	font-weight: 700;
+
+	text-decoration: none;
+
+	box-shadow:
+		0 10px 25px rgba(49, 82, 107, 0.22);
+
+	transition:
+		transform .2s ease,
+		box-shadow .2s ease;
+}
+
+.auth-logo:hover {
+	transform: translateY(-2px);
+
+	box-shadow:
+		0 14px 30px rgba(49, 82, 107, 0.28);
+}
+
+.auth-header h1 {
+	margin: 0 0 8px;
+
+	color: var(--text);
+
+	font-size: 28px;
+	font-weight: 800;
+}
+
+.auth-header p {
+	margin: 0;
+
+	color: var(--muted);
+
+	font-size: 14px;
+}
+
+.auth-form {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.auth-field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.auth-field label {
+	color: var(--text);
+
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.auth-field input {
+	width: 100%;
+	height: 50px;
+
+	padding: 0 15px;
+
+	border: 1px solid var(--border);
+	border-radius: 13px;
+
+	background: var(--surface-2);
+	color: var(--text);
+
+	font-family: inherit;
+	font-size: 14px;
+
+	outline: none;
+
+	box-sizing: border-box;
+
+	transition:
+		border-color .2s ease,
+		box-shadow .2s ease,
+		background .2s ease;
+}
+
+.auth-field input::placeholder {
+	color: var(--muted);
+}
+
+.auth-field input:focus {
+	border-color: #31526b;
+
+	background: var(--surface);
+
+	box-shadow:
+		0 0 0 3px rgba(49, 82, 107, 0.12);
+}
+
+.auth-password-wrapper {
+	position: relative;
+	width: 100%;
+}
+
+.auth-password-wrapper input {
+	padding-left: 76px;
+}
+
+.auth-password-toggle {
+	position: absolute;
+
+	left: 8px;
+	top: 50%;
+
+	transform: translateY(-50%);
+
+	height: 34px;
+	padding: 0 10px;
+
+	border: 0;
+	border-radius: 9px;
+
+	background: var(--navy-soft);
+	color: var(--navy-dark);
+
+	font-family: inherit;
+	font-size: 12px;
+	font-weight: 700;
+
+	cursor: pointer;
+
+	transition:
+		background .2s ease,
+		color .2s ease;
+}
+
+.auth-password-toggle:hover {
+	background: #31526b;
+	color: #ffffff;
+}
+
+.auth-message {
+	min-height: 20px;
+
+	margin-top: -5px;
+
+	color: var(--red);
+
+	font-size: 13px;
+	line-height: 1.7;
+
+	text-align: center;
+}
+
+.auth-submit {
+	width: 100%;
+	height: 52px;
+
+	border: 0;
+	border-radius: 13px;
+
+	background: #31526b;
+	color: #ffffff;
+
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 800;
+
+	cursor: pointer;
+
+	box-shadow:
+		0 8px 20px rgba(49, 82, 107, 0.18);
+
+	transition:
+		transform .2s ease,
+		background .2s ease,
+		box-shadow .2s ease;
+}
+
+.auth-submit:hover {
+	background: #253f53;
+
+	transform: translateY(-1px);
+
+	box-shadow:
+		0 11px 25px rgba(49, 82, 107, 0.24);
+}
+
+.auth-submit:active {
+	transform: translateY(0);
+}
+
+.auth-submit:disabled {
+	opacity: .65;
+	cursor: not-allowed;
+	transform: none;
+}
+
+.auth-divider {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+
+	margin: 26px 0 20px;
+
+	color: var(--muted);
+
+	font-size: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+	content: "";
+
+	flex: 1;
+
+	height: 1px;
+
+	background: var(--border);
+}
+
+.auth-divider span {
+	flex-shrink: 0;
+}
+
+.auth-register {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 6px;
+
+	color: var(--muted);
+
+	font-size: 13px;
+
+	text-align: center;
+}
+
+.auth-register a {
+	color: #31526b;
+
+	font-weight: 800;
+
+	text-decoration: none;
+
+	transition: color .2s ease;
+}
+
+.auth-register a:hover {
+	color: #253f53;
+	text-decoration: underline;
+}
+
+.auth-back {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 46px;
+
+	margin-top: 20px;
+
+	border: 1px solid var(--border);
+	border-radius: 12px;
+
+	background: transparent;
+	color: var(--text);
+
+	font-size: 13px;
+	font-weight: 700;
+
+	text-decoration: none;
+
+	box-sizing: border-box;
+
+	transition:
+		background .2s ease,
+		border-color .2s ease,
+		color .2s ease;
+}
+
+.auth-back:hover {
+	background: var(--surface-2);
+	border-color: #31526b;
+	color: #31526b;
+}
+
+
+/* ============================================================
+   حالت تاریک صفحات ورود و ثبت‌نام
+   ============================================================ */
+
+html.dark-mode .auth-logo {
+	background: #31526b;
+	color: #ffffff;
+}
+
+html.dark-mode .auth-submit {
+	background: #31526b;
+}
+
+html.dark-mode .auth-submit:hover {
+	background: #253f53;
+}
+
+html.dark-mode .auth-password-toggle {
+	background: var(--navy-soft);
+	color: var(--text);
+}
+
+html.dark-mode .auth-password-toggle:hover {
+	background: #31526b;
+	color: #ffffff;
+}
+
+
+/* ============================================================
+   موبایل
+   ============================================================ */
+
+@media (max-width: 560px) {
+
+	.auth-page {
+		padding: 20px 14px;
+	}
+
+	.auth-card {
+		padding: 28px 20px;
+		border-radius: 20px;
+	}
+
+	.auth-header {
+		margin-bottom: 26px;
+	}
+
+	.auth-header h1 {
+		font-size: 24px;
+	}
+
+	.auth-logo {
+		width: 58px;
+		height: 58px;
+		margin-bottom: 15px;
+	}
+
+	.auth-form {
+		gap: 17px;
+	}
+
+}
