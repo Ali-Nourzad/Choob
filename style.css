@@ -3099,3 +3099,455 @@ body.profile-image-viewer-open {
 	}
 
 }
+
+/* ============================================================
+   حالت روشن و تاریک فروشگاه
+   ============================================================ */
+
+:root {
+
+	--shop-bg: #f6f0e7;
+	--shop-bg-soft: #fbf7f1;
+
+	--shop-surface: #fffdf9;
+	--shop-surface-2: #f8f2e9;
+
+	--shop-text: #342d27;
+	--shop-text-soft: #6f6257;
+
+	--shop-border: #e7dbcd;
+
+	--shop-primary: #31526b;
+	--shop-primary-dark: #253f53;
+
+	--shop-shadow:
+		0 10px 35px rgba(75, 55, 38, 0.08);
+
+	--shop-shadow-lg:
+		0 20px 60px rgba(57, 42, 29, 0.14);
+}
+
+
+/* ============================================================
+   حالت تاریک
+   ============================================================ */
+
+html.dark-mode {
+
+	--shop-bg: #171513;
+	--shop-bg-soft: #201d1a;
+
+	--shop-surface: #24201d;
+	--shop-surface-2: #2b2622;
+
+	--shop-text: #eee5dc;
+	--shop-text-soft: #b7a99c;
+
+	--shop-border: #40372f;
+
+	--shop-primary: #31526b;
+	--shop-primary-dark: #253f53;
+
+	--shop-shadow:
+		0 10px 35px rgba(0, 0, 0, 0.28);
+
+	--shop-shadow-lg:
+		0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+
+/* ============================================================
+   پس زمینه اصلی فروشگاه
+   ============================================================ */
+
+html,
+body {
+
+	background-color: var(--shop-bg);
+
+	color: var(--shop-text);
+
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease;
+}
+
+
+/* ============================================================
+   بخش‌های اصلی
+   ============================================================ */
+
+main,
+section,
+.products-section,
+.products-container {
+
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease,
+		border-color 0.25s ease;
+}
+
+
+/* ============================================================
+   کارت فیلترها
+   ============================================================ */
+
+.filter-section,
+.filters-container,
+.filter-container {
+
+	background: var(--shop-surface) !important;
+
+	color: var(--shop-text);
+
+	border-color: var(--shop-border) !important;
+
+	box-shadow: var(--shop-shadow);
+
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease,
+		border-color 0.25s ease;
+}
+
+
+/* ============================================================
+   ورودی‌ها و Select ها
+   ============================================================ */
+
+input,
+select,
+textarea {
+
+	background-color: var(--shop-surface) !important;
+
+	color: var(--shop-text) !important;
+
+	border-color: var(--shop-border) !important;
+
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease,
+		border-color 0.25s ease;
+}
+
+
+input::placeholder,
+textarea::placeholder {
+
+	color: var(--shop-text-soft);
+}
+
+
+/* ============================================================
+   کارت محصولات
+   ============================================================ */
+
+.product-card {
+
+	background: var(--shop-surface) !important;
+
+	color: var(--shop-text);
+
+	border-color: var(--shop-border) !important;
+
+	box-shadow: var(--shop-shadow);
+
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease,
+		border-color 0.25s ease,
+		box-shadow 0.25s ease,
+		transform 0.2s ease;
+}
+
+
+.product-card:hover {
+
+	box-shadow: var(--shop-shadow-lg);
+}
+
+
+/* نام محصول */
+
+.product-name {
+
+	color: var(--shop-text) !important;
+}
+
+
+/* قیمت */
+
+.product-price {
+
+	color: var(--shop-primary) !important;
+}
+
+
+/* ============================================================
+   توضیحات و متن‌های فروشگاه
+   ============================================================ */
+
+.product-info,
+.product-description,
+.products-section p {
+
+	color: var(--shop-text);
+}
+
+
+/* ============================================================
+   سبد خرید
+   ============================================================ */
+
+.cart-panel {
+
+	background: var(--shop-surface) !important;
+
+	color: var(--shop-text);
+
+	border-color: var(--shop-border) !important;
+
+	box-shadow: var(--shop-shadow-lg);
+}
+
+
+.cart-header {
+
+	background: var(--shop-surface);
+
+	color: var(--shop-text);
+
+	border-color: var(--shop-border);
+}
+
+
+.cart-item {
+
+	background: var(--shop-surface-2);
+
+	color: var(--shop-text);
+
+	border-color: var(--shop-border);
+}
+
+
+.cart-item-name,
+.cart-item-price,
+.cart-item-total {
+
+	color: var(--shop-text);
+}
+
+
+.cart-footer {
+
+	background: var(--shop-surface-2);
+
+	color: var(--shop-text);
+
+	border-color: var(--shop-border);
+}
+
+
+/* ============================================================
+   پنجره‌های مودال
+   ============================================================ */
+
+.modal-content,
+.auth-modal-content,
+.customer-order-modal-content {
+
+	background: var(--shop-surface);
+
+	color: var(--shop-text);
+
+	border-color: var(--shop-border);
+}
+
+
+/* ============================================================
+   فیلترهای پیشرفته
+   ============================================================ */
+
+.advanced-filters {
+
+	color: var(--shop-text);
+}
+
+
+.advanced-filters input,
+.advanced-filters select {
+
+	background: var(--shop-surface) !important;
+
+	color: var(--shop-text) !important;
+}
+
+
+/* ============================================================
+   پیام‌های بدون محصول
+   ============================================================ */
+
+.no-products {
+
+	color: var(--shop-text-soft);
+}
+
+
+/* ============================================================
+   دکمه تغییر حالت
+   ============================================================ */
+
+.theme-toggle {
+
+	display: inline-flex;
+
+	align-items: center;
+
+	justify-content: center;
+
+	gap: 8px;
+
+	min-width: 125px;
+
+	height: 40px;
+
+	padding: 0 14px;
+
+	border: 1px solid rgba(255, 255, 255, 0.28);
+
+	border-radius: 10px;
+
+	background: rgba(255, 255, 255, 0.10);
+
+	color: #ffffff;
+
+	font-family: "Lalezar", sans-serif;
+
+	font-size: 14px;
+
+	cursor: pointer;
+
+	transition:
+		background-color 0.2s ease,
+		border-color 0.2s ease,
+		transform 0.2s ease;
+}
+
+
+.theme-toggle:hover {
+
+	background: rgba(255, 255, 255, 0.19);
+
+	border-color: rgba(255, 255, 255, 0.5);
+
+	transform: translateY(-1px);
+}
+
+
+.theme-toggle:active {
+
+	transform: translateY(0);
+}
+
+
+/* آیکون */
+
+.theme-toggle img {
+
+	width: 19px;
+
+	height: 19px;
+
+	object-fit: contain;
+
+	display: block;
+}
+
+
+/* ============================================================
+   حالت تاریک: ناوبار همچنان همان سرمه‌ای خاص بماند
+   ============================================================ */
+
+html.dark-mode .navbar {
+
+	background: #31526b !important;
+}
+
+
+/* ============================================================
+   حالت تاریک: متن‌های عمومی که CSS قبلی سفید/تیره کرده
+   ============================================================ */
+
+html.dark-mode .text-gray-600,
+html.dark-mode .text-gray-700,
+html.dark-mode .text-gray-500 {
+
+	color: var(--shop-text-soft) !important;
+}
+
+
+html.dark-mode .text-gray-400 {
+
+	color: #9f9185 !important;
+}
+
+
+html.dark-mode .bg-white {
+
+	background-color: var(--shop-surface) !important;
+}
+
+
+html.dark-mode .border-gray-100,
+html.dark-mode .border-gray-200 {
+
+	border-color: var(--shop-border) !important;
+}
+
+
+/* ============================================================
+   فوتر
+   ============================================================ */
+
+footer {
+
+	background: var(--shop-surface-2);
+
+	color: var(--shop-text);
+
+	border-color: var(--shop-border);
+
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease,
+		border-color 0.25s ease;
+}
+
+
+/* ============================================================
+   موبایل
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+	.theme-toggle {
+
+		min-width: 42px;
+
+		width: 42px;
+
+		padding: 0;
+
+		gap: 0;
+	}
+
+
+	.theme-toggle span {
+
+		display: none;
+	}
+
+}
