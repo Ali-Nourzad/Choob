@@ -2,19 +2,34 @@
 <html lang="fa" dir="rtl">
 
 <head>
+
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta
+		name="viewport"
+		content="width=device-width, initial-scale=1.0">
 
 	<title>پروفایل | T-Choob</title>
 
-	<link rel="icon" href="favicon.ico">
-	<link rel="stylesheet" href="style.css">
+	<link
+		rel="icon"
+		href="favicon.ico">
+
+	<link
+		rel="stylesheet"
+		href="style.css">
+
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 	<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+	<script src="script.js"></script>
+
 </head>
 
+
 <body>
+
 
 	<nav class="navbar">
 
@@ -23,13 +38,18 @@
 			<h1
 				onclick="window.location.reload()"
 				class="logo">
+
 				T-Choob
+
 			</h1>
+
 
 			<a
 				href="index.html"
 				class="back-link">
+
 				بازگشت
+
 			</a>
 
 		</div>
@@ -37,11 +57,15 @@
 	</nav>
 
 
+
 	<main class="profile-page">
+
 
 		<div class="profile-card">
 
+
 			<div class="profile-header">
+
 
 				<img
 					id="avatar"
@@ -49,34 +73,50 @@
 					src=""
 					alt="تصویر پروفایل">
 
+
 				<h1
 					id="username"
 					class="profile-username">
+
 					...
+
 				</h1>
+
 
 				<p
 					id="email"
 					class="profile-info">
+
 					...
+
 				</p>
+
 
 				<p
 					id="phone"
 					class="profile-info">
+
 					...
+
 				</p>
+
 
 			</div>
 
 
+
 			<section class="profile-section">
 
+
 				<h2 class="profile-title">
+
 					تنظیمات حساب
+
 				</h2>
 
+
 				<div class="profile-form">
+
 
 					<input
 						id="edit-username"
@@ -84,11 +124,13 @@
 						placeholder="نام کاربری"
 						class="profile-input">
 
+
 					<input
 						id="edit-phone"
 						type="text"
 						placeholder="شماره موبایل"
 						class="profile-input">
+
 
 					<input
 						id="edit-avatar"
@@ -96,109 +138,114 @@
 						placeholder="لینک عکس پروفایل"
 						class="profile-input">
 
+
 					<button
+						type="button"
 						onclick="sendResetPasswordEmail()"
 						class="profile-btn password-btn">
+
 						تغییر رمز عبور
+
 					</button>
+
 
 					<button
+						type="button"
 						onclick="saveProfile()"
 						class="profile-btn save-btn">
+
 						ذخیره تغییرات
+
 					</button>
 
+
 				</div>
+
 
 			</section>
 
 
+
 			<section class="profile-section">
-			
-				<h2 class="profile-title">
-					سفارش‌های من
-				</h2>
-			
+
+
+				<div class="orders-heading">
+
+					<h2 class="profile-title">
+
+						سفارش‌های من
+
+					</h2>
+
+				</div>
+
+
 				<div
 					id="orders-list"
 					class="orders-container">
+
 					در حال بارگذاری...
+
 				</div>
-			
+
+
 			</section>
-			
-			
-			<!-- =========================================
-			     IMAGE MODAL
-			========================================= -->
-			
-			<div
-				id="image-modal"
-				class="image-modal"
-				onclick="closeImageModal()">
-			
-				<div
-					class="image-modal-content"
-					onclick="event.stopPropagation()">
-			
-					<button
-						type="button"
-						class="image-modal-close"
-						onclick="closeImageModal()">
-						×
-					</button>
-			
-					<img
-						id="image-modal-img"
-						src=""
-						alt="تصویر سفارش">
-			
-				</div>
-			
-			</div>
+
 
 
 			<section class="profile-section">
 
+
 				<button
+					type="button"
 					onclick="handleLogout()"
 					class="profile-btn logout-btn">
+
 					خروج از حساب
+
 				</button>
+
 
 			</section>
 
+
 		</div>
+
 
 	</main>
 
 
-	<!-- =========================================
-	     ORDER IMAGE MODAL
-	========================================= -->
+
+	<!-- نمایش بزرگ تصویر سفارش -->
 
 	<div
-		id="order-image-modal"
-		class="order-image-modal"
-		aria-hidden="true">
+		id="image-viewer"
+		class="image-viewer hidden"
+		role="dialog"
+		aria-modal="true"
+		aria-label="نمایش تصویر سفارش">
+
 
 		<button
-			id="order-image-modal-close"
-			class="order-image-modal-close"
 			type="button"
-			aria-label="بستن">
+			class="image-viewer-close"
+			onclick="closeImageViewer()"
+			aria-label="بستن تصویر">
+
 			×
+
 		</button>
 
+
 		<img
-			id="order-image-modal-img"
+			id="image-viewer-image"
+			class="image-viewer-image"
 			src=""
-			alt="تصویر بزرگ سفارش">
+			alt="تصویر سفارش">
+
 
 	</div>
 
-
-	<script src="script.js"></script>
 
 
 	<script>
@@ -208,10 +255,6 @@
 			loadProfile
 		);
 
-
-		/* =========================================
-		   PROFILE
-		========================================= */
 
 		async function loadProfile() {
 
@@ -224,14 +267,16 @@
 
 			if (!user) {
 
-				location.href = "login.html";
+				location.href =
+					"login.html";
 
 				return;
 
 			}
 
 
-			currentUser = user;
+			currentUser =
+				user;
 
 
 			document.getElementById(
@@ -245,7 +290,10 @@
 			} = await shopDB
 				.from("profiles")
 				.select("*")
-				.eq("id", user.id)
+				.eq(
+					"id",
+					user.id
+				)
 				.single();
 
 
@@ -299,14 +347,12 @@
 		}
 
 
-		/* =========================================
-		   SAVE PROFILE
-		========================================= */
-
 		async function saveProfile() {
 
 			if (!currentUser) {
+
 				return;
+
 			}
 
 
@@ -363,192 +409,8 @@
 
 		}
 
-
-		/* =========================================
-		   ORDER IMAGE LIGHTBOX
-		========================================= */
-
-		const orderImageModal =
-			document.getElementById(
-				"order-image-modal"
-			);
-
-
-		const orderImageModalImg =
-			document.getElementById(
-				"order-image-modal-img"
-			);
-
-
-		const orderImageModalClose =
-			document.getElementById(
-				"order-image-modal-close"
-			);
-
-
-		/*
-		 * کلیک روی عکس سفارش
-		 *
-		 * از event delegation استفاده شده
-		 * تا عکس‌هایی که بعداً توسط script.js
-		 * ساخته می‌شوند هم کار کنند.
-		 */
-
-		document.addEventListener(
-			"click",
-			function (event) {
-
-				const imageBox =
-					event.target.closest(
-						".order-card-image"
-					);
-
-
-				if (!imageBox) {
-					return;
-				}
-
-
-				const image =
-					imageBox.querySelector(
-						"img"
-					);
-
-
-				if (!image) {
-					return;
-				}
-
-
-				const imageSource =
-					image.currentSrc ||
-					image.src;
-
-
-				if (!imageSource) {
-					return;
-				}
-
-
-				orderImageModalImg.src =
-					imageSource;
-
-
-				orderImageModalImg.alt =
-					image.alt ||
-					"تصویر سفارش";
-
-
-				orderImageModal.classList.add(
-					"active"
-				);
-
-
-				orderImageModal.setAttribute(
-					"aria-hidden",
-					"false"
-				);
-
-
-				document.body.style.overflow =
-					"hidden";
-
-			}
-		);
-
-
-		/* =========================================
-		   CLOSE IMAGE
-		========================================= */
-
-		function closeOrderImage() {
-
-			orderImageModal.classList.remove(
-				"active"
-			);
-
-
-			orderImageModal.setAttribute(
-				"aria-hidden",
-				"true"
-			);
-
-
-			document.body.style.overflow =
-				"";
-
-
-			setTimeout(
-				function () {
-
-					if (
-						!orderImageModal.classList.contains(
-							"active"
-						)
-					) {
-
-						orderImageModalImg.src =
-							"";
-
-					}
-
-				},
-				250
-			);
-
-		}
-
-
-		orderImageModalClose.addEventListener(
-			"click",
-			closeOrderImage
-		);
-
-
-		/*
-		 * کلیک روی فضای تاریک اطراف عکس
-		 */
-
-		orderImageModal.addEventListener(
-			"click",
-			function (event) {
-
-				if (
-					event.target ===
-					orderImageModal
-				) {
-
-					closeOrderImage();
-
-				}
-
-			}
-		);
-
-
-		/*
-		 * بستن با کلید Escape
-		 */
-
-		document.addEventListener(
-			"keydown",
-			function (event) {
-
-				if (
-					event.key === "Escape" &&
-					orderImageModal.classList.contains(
-						"active"
-					)
-				) {
-
-					closeOrderImage();
-
-				}
-
-			}
-		);
-
 	</script>
+
 
 </body>
 
