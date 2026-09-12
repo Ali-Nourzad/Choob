@@ -1391,163 +1391,455 @@ async function checkout() {
 
 async function loadOrders() {
 
-    const ordersBox =
-        document.getElementById(
-            'orders-list'
-        );
+	const ordersBox =
+		document.getElementById(
+			"orders-list"
+		);
 
 
-    if (!ordersBox) {
-        return;
-    }
+	if (!ordersBox) {
+		return;
+	}
+
+
+	const {
+		data: {
+			user
+		}
+	} =
+		await shopDB.auth.getUser();
+
+
+	if (!user) {
+
+		ordersBox.innerHTML =
+			'<p class="orders-empty-message">ابتدا وارد حساب شوید.</p>';
+
+		return;
+
+	}
+
+
+	const {
+		data: orders,
+		error
+	} =
+		await shopDB
+			.from("orders")
+			.select("*")
+			.eq(
+				"user_id",
+				user.id
+			)
+			.order(
+				"created_at",
+				{
+					ascending: false
+				}
+			);
+
+
+	if (error) {
+
+		console.error(
+			"خطا در دریافت سفارش‌ها:",
+			error
+		);
+
+
+		ordersBox.innerHTML =
+			'<p class="orders-error-message">خطا در دریافت سفارش‌ها</p>';
+
+		return;
+
+	}
+
+
+	if (
+		!orders ||
+		orders.length === 0
+	) {
+
+		ordersBox.innerHTML =
+			'<p class="orders-empty-message">هنوز سفارشی ثبت نشده است.</p>';
+
+		return;
+
+	}
+
+
+	ordersBox.innerHTML =
+		orders
+			.map(
+				order => {
+
+					const image =
+						order.image_url ||
+						DEFAULT_PRODUCT_IMAGE;
+
+
+					const quantity =
+						Number(
+							order.quantity || 1
+						);
+
+
+					const unitPrice =
+						Number(
+							order.price || 0
+						);
+
+
+					const totalPrice =
+						unitPrice *
+						quantity;
+
+
+					const status =
+						String(
+							order.status || ""
+						);
+
+
+					let statusText =
+						"در حال بررسی";
+
+
+					let statusClass =
+						"";
+
+
+					if (
+						status === "completed"
+					) {
+
+						statusText =
+							"تکمیل شده";
+
+						statusClass =
+							"completed";
+
+					}
+					else if (
+						status === "in progress"
+					) {
+
+						statusText =
+							"در حال بررسی";
+
+					}
+
+
+					const date =
+						order.created_at
+							? new Date(
+								order.created_at
+							).toLocaleDateString(
+								"fa-IR"
+							)
+							: "---";
+
+
+					return `
+						<article class="order-card">
+
+
+							<button
+								type="button"
+								class="order-image-button"
+								onclick="openImageViewer(this.dataset.image)"
+								data-image="${escapeHTML(image)}"
+								aria-label="بزرگ کردن تصویر سفارش"
+							>
+
+								<img
+									src="${escapeHTML(image)}"
+									class="order-image"
+									alt="${escapeHTML(
+										order.product_name ||
+										"محصول"
+									)}"
+									onerror="
+										this.onerror = null;
+										this.src = '${DEFAULT_PRODUCT_IMAGE}';
+									"
+								>
+
+
+								<span class="order-image-zoom">
+
+									<img
+										src="assets/admin-icons/zoom.png"
+										alt=""
+									>
+
+								</span>
+
+							</button>
 
 
 
-    const {
-        data: {
-            user
-        }
-    } =
-        await shopDB.auth.getUser();
+							<div class="order-content">
 
 
-    if (!user) {
-
-        ordersBox.innerHTML =
-            '<p>ابتدا وارد حساب شوید.</p>';
-
-        return;
-
-    }
+								<div class="order-main-info">
 
 
+									<div class="order-card-header">
 
-    const {
-        data: orders,
-        error
-    } =
-        await shopDB
-            .from('orders')
-            .select('*')
-            .eq(
-                'user_id',
-                user.id
-            )
-            .order(
-                'created_at',
-                {
-                    ascending: false
-                }
-            );
+
+										<h3 class="order-title">
+
+											${escapeHTML(
+												order.product_name ||
+												"محصول بدون نام"
+											)}
+
+										</h3>
+
+
+										${
+											order.code
+												? `
+													<span class="order-code">
+														${escapeHTML(
+															order.code
+														)}
+													</span>
+												`
+												: ""
+										}
+
+
+									</div>
 
 
 
-    if (error) {
-
-        ordersBox.innerHTML =
-            '<p>خطا در دریافت سفارش‌ها</p>';
-
-        return;
-
-    }
+									<div class="order-meta">
 
 
+										<span>
+											تعداد:
+											${quantity.toLocaleString(
+												"fa-IR"
+											)}
+										</span>
 
-    if (
-        !orders ||
-        orders.length === 0
-    ) {
 
-        ordersBox.innerHTML =
-            '<p>هنوز سفارشی ثبت نشده است.</p>';
+										<span>
+											تاریخ:
+											${date}
+										</span>
 
-        return;
 
-    }
+									</div>
 
 
 
-    ordersBox.innerHTML =
-        orders
-            .map(
-                order => `
-
-                    <div class="order-card">
+									<div class="order-status-row">
 
 
-                        <img
-                            src="${escapeHTML(
-                                order.image_url ||
-                                DEFAULT_PRODUCT_IMAGE
-                            )}"
-                            class="order-image"
-                            alt="${escapeHTML(
-                                order.product_name
-                            )}"
-                            onerror="this.onerror=null;this.src='${DEFAULT_PRODUCT_IMAGE}'"
-                        >
+										<span
+											class="order-status ${statusClass}"
+										>
+
+											${statusText}
+
+										</span>
 
 
-                        <div class="order-content">
+									</div>
 
 
-                            <h3 class="order-title">
-                                ${escapeHTML(
-                                    order.product_name
-                                )}
-                            </h3>
+								</div>
 
 
-                            <div class="order-meta">
 
-                                <span>
-                                    تعداد:
-                                    ${order.quantity}
-                                </span>
+								<div class="order-price-block">
 
 
-                                <span>
-                                    ${Number(
-                                        order.price || 0
-                                    ).toLocaleString(
-                                        'fa-IR'
-                                    )}
-                                    تومان
-                                </span>
+									<span class="order-price-label">
 
-                            </div>
+										مبلغ
+
+									</span>
 
 
-                            <div class="order-footer">
+									<strong class="order-price">
 
-                                <span class="order-status">
-                                    ${escapeHTML(
-                                        order.status
-                                    )}
-                                </span>
+										${totalPrice.toLocaleString(
+											"fa-IR"
+										)}
 
+										تومان
 
-                                <span class="order-date">
-                                    ${new Date(
-                                        order.created_at
-                                    ).toLocaleDateString(
-                                        'fa-IR'
-                                    )}
-                                </span>
-
-                            </div>
+									</strong>
 
 
-                        </div>
+									${
+										quantity > 1
+											? `
+												<span class="order-unit-price">
+
+													هر عدد
+													${unitPrice.toLocaleString(
+														"fa-IR"
+													)}
+													تومان
+
+												</span>
+											`
+											: ""
+									}
 
 
-                    </div>
+								</div>
 
-                `
-            )
-            .join('');
+
+							</div>
+
+
+						</article>
+					`;
+
+				}
+			)
+			.join("");
 
 }
+
+
+
+// ============================================================
+// بزرگ‌نمایی تصویر سفارش
+// ============================================================
+
+function openImageViewer(
+	imageUrl
+) {
+
+	if (!imageUrl) {
+		return;
+	}
+
+
+	const viewer =
+		document.getElementById(
+			"image-viewer"
+		);
+
+
+	const viewerImage =
+		document.getElementById(
+			"image-viewer-image"
+		);
+
+
+	if (
+		!viewer ||
+		!viewerImage
+	) {
+		return;
+	}
+
+
+	viewerImage.src =
+		imageUrl;
+
+
+	viewerImage.alt =
+		"تصویر سفارش";
+
+
+	viewer.classList.remove(
+		"hidden"
+	);
+
+
+	document.body.classList.add(
+		"image-viewer-open"
+	);
+
+}
+
+
+
+// ============================================================
+// بستن نمایشگر تصویر
+// ============================================================
+
+function closeImageViewer() {
+
+	const viewer =
+		document.getElementById(
+			"image-viewer"
+		);
+
+
+	if (!viewer) {
+		return;
+	}
+
+
+	viewer.classList.add(
+		"hidden"
+	);
+
+
+	document.body.classList.remove(
+		"image-viewer-open"
+	);
+
+}
+
+
+
+// ============================================================
+// بستن تصویر با Escape
+// ============================================================
+
+document.addEventListener(
+	"keydown",
+	event => {
+
+		if (
+			event.key === "Escape"
+		) {
+
+			closeImageViewer();
+
+		}
+
+	}
+);
+
+
+
+// ============================================================
+// بستن تصویر با کلیک روی فضای تاریک اطراف
+// ============================================================
+
+document.addEventListener(
+	"click",
+	event => {
+
+		const viewer =
+			document.getElementById(
+				"image-viewer"
+			);
+
+
+		if (
+			viewer &&
+			event.target === viewer
+		) {
+
+			closeImageViewer();
+
+		}
+
+	}
+);
 
 
 
