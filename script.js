@@ -152,36 +152,49 @@ async function fetchProducts() {
 
 function createProductSearch() {
 
-    fuse = new Fuse(
-        products,
-        {
+    // Fuse.js ممکن است به هر دلیل از CDN لود نشده باشد.
+    // در این حالت سایت نباید متوقف شود و جستجوی ساده استفاده می‌شود.
 
-            keys: [
+    if (typeof Fuse !== 'undefined') {
 
-                {
-                    name: 'name',
-                    weight: 2
-                },
+        fuse = new Fuse(
+            products,
+            {
 
-                {
-                    name: 'description',
-                    weight: 1
-                },
+                keys: [
 
-                {
-                    name: 'product_type',
-                    weight: 1
-                }
+                    {
+                        name: 'name',
+                        weight: 2
+                    },
 
-            ],
+                    {
+                        name: 'description',
+                        weight: 1
+                    },
 
-            threshold: 0.4,
+                    {
+                        name: 'product_type',
+                        weight: 1
+                    }
 
-            ignoreLocation: true
+                ],
 
-        }
+                threshold: 0.4,
+
+                ignoreLocation: true
+
+            }
+        );
+
+        return;
+    }
+
+    console.warn(
+        'Fuse.js بارگذاری نشده است؛ جستجوی ساده فعال شد.'
     );
 
+    fuse = null;
 }
 
 
@@ -773,9 +786,14 @@ function renderCartItems() {
                                 <button
                                     type="button"
                                     onclick="changeQty('${item.id}', -1)"
-                                    class="qty-btn"
+                                    class="qty-btn qty-minus"
+                                    aria-label="کاهش تعداد"
                                 >
-                                    ➖
+                                    <img
+                                        src="assets/cart-icons/minus.png"
+                                        alt=""
+                                        class="qty-icon"
+                                    >
                                 </button>
 
 
@@ -787,9 +805,14 @@ function renderCartItems() {
                                 <button
                                     type="button"
                                     onclick="changeQty('${item.id}', 1)"
-                                    class="qty-btn"
+                                    class="qty-btn qty-plus"
+                                    aria-label="افزایش تعداد"
                                 >
-                                    ➕
+                                    <img
+                                        src="assets/cart-icons/plus.png"
+                                        alt=""
+                                        class="qty-icon"
+                                    >
                                 </button>
 
 
@@ -815,7 +838,11 @@ function renderCartItems() {
                                 class="remove-btn"
                                 aria-label="حذف محصول"
                             >
-                                🗑️
+                                <img
+                                    src="assets/cart-icons/delete.png"
+                                    alt=""
+                                    class="remove-icon"
+                                >
                             </button>
 
 
@@ -2064,6 +2091,29 @@ function searchProducts(
 
         createProductSearch();
 
+    }
+
+
+
+    // اگر Fuse.js در دسترس نبود، جستجوی محلی انجام بده.
+    if (!fuse) {
+
+        const query =
+            search.toLocaleLowerCase('fa-IR');
+
+        return products.filter(product => {
+
+            const text = [
+                product?.name,
+                product?.description,
+                product?.product_type
+            ]
+                .filter(Boolean)
+                .join(' ')
+                .toLocaleLowerCase('fa-IR');
+
+            return text.includes(query);
+        });
     }
 
 
