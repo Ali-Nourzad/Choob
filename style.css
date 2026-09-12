@@ -3985,3 +3985,7 @@ html.dark-mode .product-detail-card .product-btn:hover {
     background: #405d6e !important;
     color: #ffffff !important;
 }
+
+html.dark-mode .hero h1 {
+    color: #e8edf1 !important;
+}
