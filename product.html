@@ -16,7 +16,7 @@
             <h1 class="logo" onclick="window.location.reload()">T-Choob</h1>
             <div class="navbar-actions">
                 <button type="button" onclick="toggleCart()" class="cart-btn" aria-label="سبد خرید">
-                    <span aria-hidden="true">🛒</span>
+                    <img src="assets/cart-icons/cart.png" alt="" class="cart-icon">
                     <span id="cart-count">0</span>
                 </button>
                 <a href="index.html" class="back-link">بازگشت</a>
@@ -38,6 +38,7 @@
                     <h1 id="product-name" style="color: var(--navy-dark); font-size: clamp(32px, 4vw, 46px);"></h1>
                     <p id="product-price" style="margin-top: 12px; color: var(--wood-dark); font-size: 26px;"></p>
                     <p id="product-description" style="margin-top: 22px; color: var(--muted); line-height: 2.2; font-size: 17px;"></p>
+                    <div id="product-details" class="product-details"></div>
                     <button onclick="addCurrentProductToCart()" class="product-btn" style="margin-top: 30px;">افزودن به سبد خرید</button>
                 </div>
             </section>
@@ -48,7 +49,9 @@
         <div class="cart-panel">
             <div class="cart-header">
                 <h2>سبد خرید</h2>
-                <button type="button" onclick="toggleCart()" aria-label="بستن">×</button>
+                <button type="button" onclick="toggleCart()" aria-label="بستن" class="cart-close-btn">
+                    <img src="assets/cart-icons/close.png" alt="" class="cart-close-icon">
+                </button>
             </div>
             <div id="cart-items-list" class="cart-items"></div>
             <div class="cart-footer">
@@ -89,6 +92,7 @@
             document.getElementById("product-name").innerText = data.name;
             document.getElementById("product-price").innerText = `${Number(data.price).toLocaleString()} تومان`;
             document.getElementById("product-description").innerText = data.description || "توضیحاتی ثبت نشده است.";
+            renderProductDetails(data);
 
             let images = [];
 
@@ -114,6 +118,50 @@
                     style="width: 82px; height: 82px; flex: 0 0 82px; object-fit: cover; border-radius: 14px; border: 2px solid var(--border); cursor: pointer;"
                 >
             `).join("");
+        }
+
+        function renderProductDetails(product) {
+            const container = document.getElementById("product-details");
+
+            if (!container) {
+                return;
+            }
+
+            const config = window.TCHOO_PRODUCT_TYPES?.[product.product_type];
+            const details = product.details && typeof product.details === "object"
+                ? product.details
+                : {};
+
+            if (!config || !Array.isArray(config.fields)) {
+                container.innerHTML = "";
+                return;
+            }
+
+            const rows = config.fields
+                .map(field => ({
+                    field,
+                    value: details[field.key]
+                }))
+                .filter(item => item.value !== undefined && item.value !== null && String(item.value).trim() !== "")
+                .map(({ field, value }) => `
+                    <div class="product-detail-row">
+                        <span class="product-detail-label">${escapeHTML(field.label)}</span>
+                        <span class="product-detail-value">${escapeHTML(String(value))}</span>
+                    </div>
+                `)
+                .join("");
+
+            if (!rows) {
+                container.innerHTML = "";
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="product-details-card">
+                    <h2>مشخصات محصول</h2>
+                    <div class="product-detail-list">${rows}</div>
+                </div>
+            `;
         }
 
         function changeImage(url) {
