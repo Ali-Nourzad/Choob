@@ -128,5 +128,129 @@
         </div>
     </div>
     <script src="script.js"></script>
+    <script>
+    	/* ============================================================
+    	   حالت روشن / تاریک فروشگاه
+    	   ============================================================ */
+    
+    	(function () {
+    
+    		const themeToggle =
+    			document.getElementById(
+    				"theme-toggle"
+    			);
+    
+    		const themeIcon =
+    			document.getElementById(
+    				"theme-icon"
+    			);
+    
+    		const themeText =
+    			document.getElementById(
+    				"theme-text"
+    			);
+    
+    
+    		function applyTheme(theme) {
+    
+    			if (theme === "dark") {
+    
+    				document.documentElement
+    					.classList.add(
+    						"dark-mode"
+    					);
+    
+    				if (themeIcon) {
+    
+    					themeIcon.src =
+    						"assets/theme-icons/sun.png";
+    
+    				}
+    
+    				if (themeText) {
+    
+    					themeText.textContent =
+    						"حالت روشن";
+    
+    				}
+    
+    			} else {
+    
+    				document.documentElement
+    					.classList.remove(
+    						"dark-mode"
+    					);
+    
+    				if (themeIcon) {
+    
+    					themeIcon.src =
+    						"assets/theme-icons/moon.png";
+    
+    				}
+    
+    				if (themeText) {
+    
+    					themeText.textContent =
+    						"حالت تاریک";
+    
+    				}
+    
+    			}
+    
+    		}
+    
+    
+    		const savedTheme =
+    			localStorage.getItem(
+    				"tchoob-theme"
+    			);
+    
+    
+    		/* حالت پیش‌فرض روشن است */
+    
+    		applyTheme(
+    			savedTheme === "dark"
+    				? "dark"
+    				: "light"
+    		);
+    
+    
+    		if (themeToggle) {
+    
+    			themeToggle.addEventListener(
+    				"click",
+    				function () {
+    
+    					const isDark =
+    						document.documentElement
+    							.classList
+    							.contains(
+    								"dark-mode"
+    							);
+    
+    
+    					const newTheme =
+    						isDark
+    							? "light"
+    							: "dark";
+    
+    
+    					localStorage.setItem(
+    						"tchoob-theme",
+    						newTheme
+    					);
+    
+    
+    					applyTheme(
+    						newTheme
+    					);
+    
+    				}
+    			);
+    
+    		}
+    
+    	})();
+    </script>
 </body>
 </html>
