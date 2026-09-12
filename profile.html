@@ -143,15 +143,45 @@
 	</main>
 
 
+	<!-- =========================================
+	     ORDER IMAGE MODAL
+	========================================= -->
+
+	<div
+		id="order-image-modal"
+		class="order-image-modal"
+		aria-hidden="true">
+
+		<button
+			id="order-image-modal-close"
+			class="order-image-modal-close"
+			type="button"
+			aria-label="بستن">
+			×
+		</button>
+
+		<img
+			id="order-image-modal-img"
+			src=""
+			alt="تصویر بزرگ سفارش">
+
+	</div>
+
+
 	<script src="script.js"></script>
 
 
 	<script>
+
 		document.addEventListener(
 			"DOMContentLoaded",
 			loadProfile
 		);
 
+
+		/* =========================================
+		   PROFILE
+		========================================= */
 
 		async function loadProfile() {
 
@@ -164,8 +194,7 @@
 
 			if (!user) {
 
-				location.href =
-					"login.html";
+				location.href = "login.html";
 
 				return;
 
@@ -240,6 +269,10 @@
 		}
 
 
+		/* =========================================
+		   SAVE PROFILE
+		========================================= */
+
 		async function saveProfile() {
 
 			if (!currentUser) {
@@ -299,6 +332,192 @@
 			loadProfile();
 
 		}
+
+
+		/* =========================================
+		   ORDER IMAGE LIGHTBOX
+		========================================= */
+
+		const orderImageModal =
+			document.getElementById(
+				"order-image-modal"
+			);
+
+
+		const orderImageModalImg =
+			document.getElementById(
+				"order-image-modal-img"
+			);
+
+
+		const orderImageModalClose =
+			document.getElementById(
+				"order-image-modal-close"
+			);
+
+
+		/*
+		 * کلیک روی عکس سفارش
+		 *
+		 * از event delegation استفاده شده
+		 * تا عکس‌هایی که بعداً توسط script.js
+		 * ساخته می‌شوند هم کار کنند.
+		 */
+
+		document.addEventListener(
+			"click",
+			function (event) {
+
+				const imageBox =
+					event.target.closest(
+						".order-card-image"
+					);
+
+
+				if (!imageBox) {
+					return;
+				}
+
+
+				const image =
+					imageBox.querySelector(
+						"img"
+					);
+
+
+				if (!image) {
+					return;
+				}
+
+
+				const imageSource =
+					image.currentSrc ||
+					image.src;
+
+
+				if (!imageSource) {
+					return;
+				}
+
+
+				orderImageModalImg.src =
+					imageSource;
+
+
+				orderImageModalImg.alt =
+					image.alt ||
+					"تصویر سفارش";
+
+
+				orderImageModal.classList.add(
+					"active"
+				);
+
+
+				orderImageModal.setAttribute(
+					"aria-hidden",
+					"false"
+				);
+
+
+				document.body.style.overflow =
+					"hidden";
+
+			}
+		);
+
+
+		/* =========================================
+		   CLOSE IMAGE
+		========================================= */
+
+		function closeOrderImage() {
+
+			orderImageModal.classList.remove(
+				"active"
+			);
+
+
+			orderImageModal.setAttribute(
+				"aria-hidden",
+				"true"
+			);
+
+
+			document.body.style.overflow =
+				"";
+
+
+			setTimeout(
+				function () {
+
+					if (
+						!orderImageModal.classList.contains(
+							"active"
+						)
+					) {
+
+						orderImageModalImg.src =
+							"";
+
+					}
+
+				},
+				250
+			);
+
+		}
+
+
+		orderImageModalClose.addEventListener(
+			"click",
+			closeOrderImage
+		);
+
+
+		/*
+		 * کلیک روی فضای تاریک اطراف عکس
+		 */
+
+		orderImageModal.addEventListener(
+			"click",
+			function (event) {
+
+				if (
+					event.target ===
+					orderImageModal
+				) {
+
+					closeOrderImage();
+
+				}
+
+			}
+		);
+
+
+		/*
+		 * بستن با کلید Escape
+		 */
+
+		document.addEventListener(
+			"keydown",
+			function (event) {
+
+				if (
+					event.key === "Escape" &&
+					orderImageModal.classList.contains(
+						"active"
+					)
+				) {
+
+					closeOrderImage();
+
+				}
+
+			}
+		);
+
 	</script>
 
 </body>
