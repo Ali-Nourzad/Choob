@@ -34,6 +34,10 @@
 								<img alt="" class="ui-icon" src="assets/admin-icons/products.png"/>
 								محصولات
 							</button>
+							<button id="top-users-btn" onclick="switchTopSection('users')">
+								<img alt="" class="ui-icon" src="assets/admin-icons/order-list.png"/>
+								کاربران
+							</button>
 						</nav>
 					</div>
 					<div class="admin-profile">
@@ -117,9 +121,28 @@
 							<img alt="" class="ui-icon" src="assets/admin-icons/add.png"/>
 						</button>
 					</div>
+					<div class="sidebar-section hidden" id="users-sidebar" style="margin-top:24px;">
+						<p class="sidebar-title">کاربران</p>
+						<button class="sidebar-btn active" data-tab="users-list" onclick="showTab('users-list',this)">
+							<span>همه کاربران</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/order-list.png"/>
+						</button>
+						<button class="sidebar-btn" data-tab="users-add" onclick="openAddUserModal()">
+							<span>افزودن کاربر</span>
+							<img alt="" class="ui-icon" src="assets/admin-icons/add.png"/>
+						</button>
+					</div>
 				</div>
 			</aside>
 			<main class="main-content">
+				<section class="tab-content hidden" id="tab-users-list">
+					<div class="page-header users-page-header">
+						<div><h2>مدیریت کاربران</h2><p>مدیریت اطلاعات و دسترسی کاربران فروشگاه</p></div>
+						<button class="btn btn-submit" onclick="openAddUserModal()" type="button"><img alt="" class="ui-icon" src="assets/admin-icons/add.png"/>افزودن کاربر</button>
+					</div>
+					<div class="users-toolbar"><div class="users-search"><label for="users-search-input">جستجوی کاربر</label><input id="users-search-input" type="search" placeholder="نام، نام کاربری، ایمیل یا شماره موبایل..." autocomplete="off"></div><button class="btn btn-refresh" onclick="loadAdminUsers()" type="button"><img alt="" class="ui-icon" src="assets/admin-icons/refresh.png"/>بروزرسانی</button></div>
+					<div id="users-list-content"><div class="loading">در حال دریافت کاربران...</div></div>
+				</section>
 				<section class="tab-content" id="tab-orders-list">
 					<div class="page-header">
 						<div>
@@ -933,6 +956,28 @@
 				</span>
 			</div>
 		</footer>
+		<div class="modal edit-modal" id="user-modal">
+			<div class="edit-modal-content user-modal-content">
+				<div class="modal-header"><h3 id="user-modal-title">افزودن کاربر</h3><button class="close-modal-btn" onclick="closeUserModal()" type="button">×</button></div>
+				<form id="user-form">
+					<input id="user-id" type="hidden">
+					<div class="form-grid">
+						<div class="form-group"><label for="user-username">نام کاربری</label><input id="user-username" type="text" required autocomplete="username"></div>
+						<div class="form-group"><label for="user-email">ایمیل</label><input id="user-email" type="email" required autocomplete="email" dir="ltr"></div>
+						<div class="form-group"><label for="user-first-name">نام</label><input id="user-first-name" type="text" autocomplete="given-name"></div>
+						<div class="form-group"><label for="user-last-name">نام خانوادگی</label><input id="user-last-name" type="text" autocomplete="family-name"></div>
+						<div class="form-group"><label for="user-gender">جنسیت</label><select id="user-gender"><option value="">انتخاب کنید...</option><option value="male">مرد</option><option value="female">زن</option></select></div>
+						<div class="form-group"><label for="user-phone">شماره موبایل</label><input id="user-phone" type="tel" autocomplete="tel" dir="ltr"></div>
+						<div class="form-group form-group-full"><label for="user-address">آدرس</label><textarea id="user-address" placeholder="آدرس کاربر..."></textarea></div>
+						<div class="form-group form-group-full"><label for="user-avatar">لینک تصویر پروفایل</label><input id="user-avatar" type="url" placeholder="https://..." dir="ltr"></div>
+						<div class="form-group form-group-full" id="user-password-group"><label for="user-password">رمز عبور اولیه</label><input id="user-password" type="password" minlength="6" autocomplete="new-password"><small>حداقل ۶ کاراکتر.</small></div>
+					</div>
+					<div class="order-form-message" id="user-form-message"></div>
+					<div class="modal-actions"><button class="btn btn-cancel" onclick="closeUserModal()" type="button">انصراف</button><button class="btn btn-submit" id="user-submit-btn" type="submit">افزودن کاربر</button></div>
+				</form>
+			</div>
+		</div>
+
 		<div class="modal image-modal" id="image-modal" onclick="closeImageModal(event)">
 			<div class="image-modal-content">
 				<button class="close-image-btn" onclick="closeImageModal()" type="button">
@@ -1180,8 +1225,40 @@ function toggleTheme(){const dark=document.documentElement.classList.contains("d
 applyTheme();
 async function checkAdmin(){const {data,error}=await shopDB.auth.getSession();if(error||!data.session){window.location.href="login.html";return false;}const user=data.session.user;const {data:profile,error:profileError}=await shopDB.from("profiles").select("*").eq("id",user.id).single();if(profileError||!profile){alert("دسترسی مدیر پیدا نشد.");await shopDB.auth.signOut();window.location.href="login.html";return false;}if(profile.username!=="admin"){alert("شما دسترسی مدیریت ندارید.");await shopDB.auth.signOut();window.location.href="login.html";return false;}document.getElementById("admin-name").textContent=getProfileName(profile);document.getElementById("admin-avatar").src=profile.avatar_url||ICON_PATH+"avatar.png";return true;}
 async function logout(){await shopDB.auth.signOut();window.location.href="login.html";}
-function switchTopSection(section){const ordersSidebar=document.getElementById("orders-sidebar");const productsSidebar=document.getElementById("products-sidebar");const ordersBtn=document.getElementById("top-orders-btn");const productsBtn=document.getElementById("top-products-btn");if(section==="orders"){ordersSidebar.classList.remove("hidden");productsSidebar.classList.add("hidden");ordersBtn.classList.add("active");productsBtn.classList.remove("active");showTab("orders-list",document.querySelector('[data-tab="orders-list"]'));}else{ordersSidebar.classList.add("hidden");productsSidebar.classList.remove("hidden");ordersBtn.classList.remove("active");productsBtn.classList.add("active");showTab("products-active",document.querySelector('[data-tab="products-active"]'));}}
-function showTab(tabName,button){document.querySelectorAll(".tab-content").forEach(tab=>tab.classList.add("hidden"));const target=document.getElementById(`tab-${tabName}`);if(target)target.classList.remove("hidden");document.querySelectorAll(".sidebar-btn").forEach(btn=>btn.classList.remove("active"));if(button)button.classList.add("active");if(tabName==="orders-list")loadCurrentOrders();if(tabName==="orders-completed")loadCompletedOrders();if(tabName==="orders-create")loadProfiles();if(tabName==="orders-cart")loadCarts();if(tabName==="products-active")loadProducts("active");if(tabName==="products-out")loadProducts("out");if(tabName==="products-deleted")loadProducts("deleted");}
+function switchTopSection(section){
+	const ordersSidebar=document.getElementById("orders-sidebar");
+	const productsSidebar=document.getElementById("products-sidebar");
+	const usersSidebar=document.getElementById("users-sidebar");
+	const ordersBtn=document.getElementById("top-orders-btn");
+	const productsBtn=document.getElementById("top-products-btn");
+	const usersBtn=document.getElementById("top-users-btn");
+	ordersSidebar.classList.toggle("hidden",section!=="orders");
+	productsSidebar.classList.toggle("hidden",section!=="products");
+	usersSidebar.classList.toggle("hidden",section!=="users");
+	ordersBtn.classList.toggle("active",section==="orders");
+	productsBtn.classList.toggle("active",section==="products");
+	usersBtn.classList.toggle("active",section==="users");
+	if(section==="orders")showTab("orders-list",document.querySelector('[data-tab="orders-list"]'));
+	else if(section==="products")showTab("products-active",document.querySelector('[data-tab="products-active"]'));
+	else showTab("users-list",document.querySelector('[data-tab="users-list"]'));
+}
+
+function showTab(tabName,button){
+	if(tabName==="users-add"){openAddUserModal();return;}
+	document.querySelectorAll(".tab-content").forEach(tab=>tab.classList.add("hidden"));
+	const target=document.getElementById(`tab-${tabName}`);
+	if(target)target.classList.remove("hidden");
+	document.querySelectorAll(".sidebar-btn").forEach(btn=>btn.classList.remove("active"));
+	if(button)button.classList.add("active");
+	if(tabName==="orders-list")loadCurrentOrders();
+	if(tabName==="orders-completed")loadCompletedOrders();
+	if(tabName==="orders-create")loadProfiles();
+	if(tabName==="orders-cart")loadCarts();
+	if(tabName==="products-active")loadProducts("active");
+	if(tabName==="products-out")loadProducts("out");
+	if(tabName==="products-deleted")loadProducts("deleted");
+	if(tabName==="users-list")loadAdminUsers();
+}
 async function loadProfiles(){const select=document.getElementById("order-buyer");if(!select)return;select.innerHTML="<option value=''>در حال دریافت کاربران...</option>";const {data,error}=await shopDB.from("profiles").select("id,username,first_name,last_name,avatar_url").neq("username","admin").order("username",{ascending:true});if(error){select.innerHTML="<option value=''>خطا در دریافت کاربران</option>";return;}allProfiles=data||[];select.innerHTML="<option value=''>انتخاب کاربر...</option>";allProfiles.forEach(profile=>{const option=document.createElement("option");option.value=profile.id;option.textContent=getProfileName(profile)+(profile.username?` (@${profile.username})`:"");select.appendChild(option);});}
 async function fetchOrders(status){const {data,error}=await shopDB.from("orders").select("*").eq("status",status).order("created_at",{ascending:false});if(error)throw error;return data||[];}
 async function attachProfilesToOrders(orders){const userIds=[...new Set(orders.map(o=>o.user_id).filter(Boolean))];if(!userIds.length)return orders.map(o=>({...o,profile:null}));const {data:profiles,error}=await shopDB.from("profiles").select("id,username,first_name,last_name,avatar_url").in("id",userIds);if(error)return orders.map(o=>({...o,profile:null}));const map=new Map((profiles||[]).map(p=>[p.id,p]));return orders.map(o=>({...o,profile:map.get(o.user_id)||null}));}
@@ -1306,8 +1383,181 @@ async function loadProductForEdit(productId){const {data,error}=await shopDB.fro
 function closeProductEditModal(){document.getElementById("edit-product-modal").classList.remove("show");currentEditingProduct=null;}
 document.getElementById("edit-product-form").addEventListener("submit",async event=>{event.preventDefault();if(!currentEditingProduct)return;const id=document.getElementById("edit-product-id").value;const code=document.getElementById("edit-product-code").value.trim().toUpperCase();const type=document.getElementById("edit-product-type").value;const price=Number(document.getElementById("edit-product-price").value);const status=document.getElementById("edit-product-status").value;const images=document.getElementById("edit-product-images").value.trim();const description=document.getElementById("edit-product-description").value.trim();if(!isValidProductCode(code))return showFormMessage("edit-product-message","کد محصول معتبر نیست.","error");if(!Number.isFinite(price)||price<0)return showFormMessage("edit-product-message","قیمت معتبر نیست.","error");const firstImage=images.split("|").map(x=>x.trim()).filter(Boolean)[0]||null;const details=getEditedDetails(type);const {error}=await shopDB.from("products").update({name:code,product_type:type,price,status,images:images||null,image_url:firstImage,description,details}).eq("id",id);if(error){showFormMessage("edit-product-message","خطا در ذخیره: "+error.message,"error");return;}closeProductEditModal();await loadProducts("active");await loadProducts("out");await loadProducts("deleted");});
 async function loadCarts(){const container=document.getElementById("carts-content");container.innerHTML='<div class="loading">در حال دریافت سبدهای خرید...</div>';try{const {data:carts,error}=await shopDB.from("carts").select("id,user_id,product_id,quantity,created_at").order("created_at",{ascending:false});if(error)throw error;if(!carts?.length){container.innerHTML='<div class="carts-empty">هیچ کاربری در حال حاضر محصولی در سبد خرید ندارد.</div>';return;}const userIds=[...new Set(carts.map(x=>x.user_id).filter(Boolean))];const productIds=[...new Set(carts.map(x=>x.product_id).filter(Boolean))];const {data:profiles,error:pe}=await shopDB.from("profiles").select("id,username,first_name,last_name,avatar_url").in("id",userIds);if(pe)throw pe;const {data:products,error:prode}=await shopDB.from("products").select("id,name,price,image_url,images").in("id",productIds);if(prode)throw prode;const pm=new Map((profiles||[]).map(x=>[x.id,x]));const prm=new Map((products||[]).map(x=>[x.id,x]));const grouped=new Map();carts.forEach(cart=>{if(!grouped.has(cart.user_id))grouped.set(cart.user_id,[]);grouped.get(cart.user_id).push({...cart,product:prm.get(cart.product_id)});});const cards=[];grouped.forEach((items,userId)=>{items=items.filter(x=>x.product);if(!items.length)return;const profile=pm.get(userId);const total=items.reduce((s,x)=>s+Number(x.product.price||0)*Number(x.quantity||0),0);const itemsHTML=items.map(item=>{const image=getFirstImage(item.product.images,item.product.image_url);const imageHTML=image?'<img class="cart-product-image clickable" src="'+escapeHTML(image)+'" data-image="'+encodeURIComponent(image)+'">':'<img class="empty-product-icon" src="'+ICON_PATH+'product-placeholder.png" alt="">';return '<div class="cart-item"><div class="cart-product-image-wrapper">'+imageHTML+'</div><div class="cart-product-info"><div class="cart-product-name">'+escapeHTML(item.product.name)+'</div><div class="cart-product-price">'+formatPrice(item.product.price)+'</div></div><div class="cart-product-quantity">تعداد <strong>'+Number(item.quantity||0).toLocaleString("fa-IR")+'</strong></div><div class="cart-product-total">'+formatPrice(Number(item.product.price||0)*Number(item.quantity||0))+'</div></div>';}).join("");cards.push('<div class="cart-card"><div class="cart-card-header"><div class="cart-customer"><div class="cart-customer-avatar">'+(profile?.avatar_url?'<img src="'+escapeHTML(profile.avatar_url)+'">':icon("avatar"))+'</div><div class="cart-customer-info"><div class="cart-customer-name">'+escapeHTML(getProfileName(profile))+'</div><div class="cart-customer-id">'+escapeHTML(profile?.username?"@"+profile.username:profile?.id||"")+'</div></div></div></div><div class="cart-items">'+itemsHTML+'</div><div class="cart-card-footer"><strong>مجموع سبد: '+formatPrice(total)+'</strong></div></div>');});container.innerHTML=cards.length?'<div class="carts-container">'+cards.join("")+'</div>':'<div class="carts-empty">سبد معتبری پیدا نشد.</div>';container.querySelectorAll(".cart-product-image[data-image]").forEach(img=>{img.addEventListener("click",()=>openImageModal(decodeURIComponent(img.dataset.image)));});}catch(error){container.innerHTML='<div class="error-box">خطا در دریافت سبدهای خرید: '+escapeHTML(error.message)+'</div>';}}
-document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeImageModal();closeEditModal();closeProductEditModal();}});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"){closeImageModal();closeEditModal();closeProductEditModal();closeUserModal();}});
 document.getElementById("image-modal").addEventListener("click",event=>{if(event.target.id==="image-modal")closeImageModal(event);});
+const ADMIN_USERS_FUNCTION = "admin-users";
+const RESET_PASSWORD_REDIRECT = new URL("reset-password.html", window.location.href).href;
+const MAGIC_LINK_REDIRECT = new URL("index.html", window.location.href).href;
+let adminUsers=[];
+let editingUserId=null;
+
+async function callAdminUsers(action,payload={}){
+	const {data,error}=await shopDB.functions.invoke(ADMIN_USERS_FUNCTION,{body:{action,...payload}});
+	if(error)throw error;
+	if(data?.error)throw new Error(data.error);
+	return data;
+}
+
+async function loadAdminUsers(){
+	const container=document.getElementById("users-list-content");
+	if(!container)return;
+	container.innerHTML='<div class="loading">در حال دریافت کاربران...</div>';
+	try{
+		const result=await callAdminUsers("list");
+		adminUsers=result.users||[];
+		renderAdminUsers();
+	}catch(error){
+		container.innerHTML=`<div class="error-box">خطا در دریافت کاربران: ${escapeHTML(error.message)}</div>`;
+	}
+}
+
+function renderAdminUsers(){
+	const container=document.getElementById("users-list-content");
+	const query=document.getElementById("users-search-input")?.value.trim().toLowerCase()||"";
+	const users=adminUsers.filter(user=>{
+		if(!query)return true;
+		const text=[user.email,user.username,user.first_name,user.last_name,user.phone].filter(Boolean).join(" ").toLowerCase();
+		return text.includes(query);
+	});
+	if(!users.length){
+		container.innerHTML='<div class="empty">کاربری پیدا نشد.</div>';
+		return;
+	}
+	container.innerHTML=`<div class="table-wrapper users-table-wrapper"><table class="orders-table users-table"><thead><tr><th>کاربر</th><th>نام کاربری</th><th>ایمیل</th><th>موبایل</th><th>عضویت</th><th>عملیات</th></tr></thead><tbody>${users.map(user=>{
+		const avatar=user.avatar_url||ICON_PATH+"avatar.png";
+		const name=getProfileName(user);
+		return `<tr><td><div class="buyer-cell"><img class="buyer-avatar" src="${escapeHTML(avatar)}" alt=""><div><strong>${escapeHTML(name)}</strong><div class="user-row-muted">${escapeHTML(user.username?"@"+user.username:"")}</div></div></div></td><td class="user-username-cell">${escapeHTML(user.username||"-")}</td><td class="user-email-cell" dir="ltr">${escapeHTML(user.email||"-")}</td><td dir="ltr">${escapeHTML(user.phone||"-")}</td><td class="date-cell">${formatDate(user.created_at)}</td><td><div class="actions user-actions"><button class="action-btn btn-blue" onclick="openEditUserModal('${escapeHTML(user.id)}')"><img class="ui-icon" src="${ICON_PATH}edit.png" alt="">ویرایش</button><button class="action-btn btn-green" onclick="sendUserResetLink('${escapeHTML(user.id)}')"><img class="ui-icon" src="${ICON_PATH}reset.png" alt="">تغییر رمز</button><button class="action-btn btn-blue" onclick="sendUserMagicLink('${escapeHTML(user.id)}')"><img class="ui-icon" src="${ICON_PATH}magic-link.png" alt="">لینک ورود</button><button class="action-btn btn-delete-user" onclick="deleteAdminUser('${escapeHTML(user.id)}')"><img class="ui-icon" src="${ICON_PATH}delete.png" alt="">حذف</button></div></td></tr>`;
+	}).join("")}</tbody></table></div>`;
+}
+
+function openAddUserModal(){
+	editingUserId=null;
+	document.getElementById("user-modal-title").textContent="افزودن کاربر";
+	document.getElementById("user-submit-btn").textContent="افزودن کاربر";
+	document.getElementById("user-form").reset();
+	document.getElementById("user-id").value="";
+	document.getElementById("user-password-group").classList.remove("hidden");
+	document.getElementById("user-password").required=true;
+	document.getElementById("user-form-message").className="order-form-message";
+	document.getElementById("user-form-message").textContent="";
+	document.getElementById("user-modal").classList.add("show");
+}
+
+function openEditUserModal(userId){
+	const user=adminUsers.find(item=>String(item.id)===String(userId));
+	if(!user)return;
+	editingUserId=user.id;
+	document.getElementById("user-modal-title").textContent="ویرایش اطلاعات کاربر";
+	document.getElementById("user-submit-btn").textContent="ذخیره تغییرات";
+	document.getElementById("user-id").value=user.id;
+	document.getElementById("user-username").value=user.username||"";
+	document.getElementById("user-email").value=user.email||"";
+	document.getElementById("user-first-name").value=user.first_name||"";
+	document.getElementById("user-last-name").value=user.last_name||"";
+	document.getElementById("user-gender").value=user.gender||"";
+	document.getElementById("user-phone").value=user.phone||"";
+	document.getElementById("user-address").value=user.address||"";
+	document.getElementById("user-avatar").value=user.avatar_url||"";
+	document.getElementById("user-password-group").classList.add("hidden");
+	document.getElementById("user-password").required=false;
+	document.getElementById("user-form-message").className="order-form-message";
+	document.getElementById("user-form-message").textContent="";
+	document.getElementById("user-modal").classList.add("show");
+}
+
+function closeUserModal(){
+	document.getElementById("user-modal").classList.remove("show");
+	editingUserId=null;
+}
+
+function getUserFormData(){
+	return {
+		username:document.getElementById("user-username").value.trim(),
+		email:document.getElementById("user-email").value.trim().toLowerCase(),
+		first_name:document.getElementById("user-first-name").value.trim(),
+		last_name:document.getElementById("user-last-name").value.trim(),
+		gender:document.getElementById("user-gender").value,
+		phone:document.getElementById("user-phone").value.trim(),
+		address:document.getElementById("user-address").value.trim(),
+		avatar_url:document.getElementById("user-avatar").value.trim()
+	};
+}
+
+document.getElementById("user-form").addEventListener("submit",async event=>{
+	event.preventDefault();
+	const button=document.getElementById("user-submit-btn");
+	const data=getUserFormData();
+	if(!data.username||data.username==="admin"){
+		showFormMessage("user-form-message","نام کاربری معتبر وارد کنید.","error");
+		return;
+	}
+	if(!data.email){
+		showFormMessage("user-form-message","ایمیل را وارد کنید.","error");
+		return;
+	}
+	if(!editingUserId&&!document.getElementById("user-password").value){
+		showFormMessage("user-form-message","برای کاربر جدید رمز عبور را وارد کنید.","error");
+		return;
+	}
+	button.disabled=true;
+	button.textContent=editingUserId?"در حال ذخیره...":"در حال افزودن...";
+	try{
+		if(editingUserId){
+			await callAdminUsers("update",{user_id:editingUserId,user:data});
+			showFormMessage("user-form-message","اطلاعات کاربر با موفقیت ذخیره شد.","success");
+		}else{
+			const password=document.getElementById("user-password").value;
+			if(password.length<6)throw new Error("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+			await callAdminUsers("create",{user:{...data,password}});
+			showFormMessage("user-form-message","کاربر با موفقیت اضافه شد.","success");
+		}
+		await loadAdminUsers();
+		setTimeout(closeUserModal,500);
+	}catch(error){
+		showFormMessage("user-form-message","خطا: "+error.message,"error");
+	}finally{
+		button.disabled=false;
+		button.textContent=editingUserId?"ذخیره تغییرات":"افزودن کاربر";
+	}
+});
+
+async function sendUserResetLink(userId){
+	const user=adminUsers.find(item=>String(item.id)===String(userId));
+	if(!user?.email)return alert("ایمیل این کاربر پیدا نشد.");
+	if(!confirm(`لینک تغییر رمز برای ${user.email} ارسال شود؟`))return;
+	const {error}=await shopDB.auth.resetPasswordForEmail(user.email,{redirectTo:RESET_PASSWORD_REDIRECT});
+	if(error){alert("خطا در ارسال لینک تغییر رمز: "+error.message);return;}
+	alert("لینک تغییر رمز عبور ارسال شد.");
+}
+
+async function sendUserMagicLink(userId){
+	const user=adminUsers.find(item=>String(item.id)===String(userId));
+	if(!user?.email)return alert("ایمیل این کاربر پیدا نشد.");
+	if(!confirm(`لینک ورود بدون رمز برای ${user.email} ارسال شود؟`))return;
+	const {error}=await shopDB.auth.signInWithOtp({email:user.email,options:{emailRedirectTo:MAGIC_LINK_REDIRECT,shouldCreateUser:false}});
+	if(error){alert("خطا در ارسال لینک ورود: "+error.message);return;}
+	alert("لینک ورود بدون رمز ارسال شد.");
+}
+
+async function deleteAdminUser(userId){
+	const user=adminUsers.find(item=>String(item.id)===String(userId));
+	if(!user)return;
+	if(!confirm(`آیا کاربر «${getProfileName(user)}» حذف شود؟\nاین عملیات حساب کاربری را نیز حذف می‌کند.`))return;
+	try{
+		await callAdminUsers("delete",{user_id:user.id});
+		alert("کاربر با موفقیت حذف شد.");
+		await loadAdminUsers();
+	}catch(error){
+		alert("خطا در حذف کاربر: "+error.message);
+	}
+}
+
+document.getElementById("users-search-input").addEventListener("input",renderAdminUsers);
+
+document.getElementById("user-modal").addEventListener("click",event=>{
+	if(event.target.id==="user-modal")closeUserModal();
+});
+
 (async function init(){const isAdmin=await checkAdmin();if(!isAdmin)return;await loadCurrentOrders();await loadProfiles();})();
 		</script>
 	</body>
