@@ -1,101 +1,506 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پروفایل | T-Choob</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-    <script src="product-types.js"></script>
-    <script src="script.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>پروفایل | T-Choob</title>
+
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" href="style.css">
+
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+	<script src="product-types.js"></script>
+	<script src="script.js"></script>
 </head>
+
 <body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <h1 onclick="window.location.reload()" class="logo">T-Choob</h1>
-            <a href="index.html" class="back-link">بازگشت</a>
-        </div>
-    </nav>
-    <main class="profile-page">
-        <div class="profile-card">
-            <div class="profile-header">
-                <img id="avatar" class="profile-avatar" src="" alt="تصویر پروفایل">
-                <h1 id="username" class="profile-username">...</h1>
-                <p id="email" class="profile-info">...</p>
-                <p id="phone" class="profile-info">...</p>
-            </div>
-            <section class="profile-section">
-                <h2 class="profile-title">تنظیمات حساب</h2>
-                <div class="profile-form">
-                    <input id="edit-username" type="text" placeholder="نام کاربری" class="profile-input">
-                    <input id="edit-phone" type="text" placeholder="شماره موبایل" class="profile-input">
-                    <input id="edit-avatar" type="text" placeholder="لینک عکس پروفایل" class="profile-input">
-                    <button onclick="sendResetPasswordEmail()" class="profile-btn password-btn">تغییر رمز عبور</button>
-                    <button onclick="saveProfile()" class="profile-btn save-btn">ذخیره تغییرات</button>
-                </div>
-            </section>
-            <section class="profile-section">
-                <h2 class="profile-title">سفارش‌های من</h2>
-                <div id="orders-list" class="orders-container">در حال بارگذاری...</div>
-            </section>
-            <section class="profile-section">
-                <button onclick="handleLogout()" class="profile-btn logout-btn">خروج از حساب</button>
-            </section>
-        </div>
-    </main>
-    <script>
-        document.addEventListener("DOMContentLoaded", loadProfile);
 
-        async function loadProfile() {
-            const { data: { user } } = await shopDB.auth.getUser();
+	<nav class="navbar">
 
-            if (!user) {
-                location.href = "login.html";
-                return;
-            }
+		<div class="navbar-container">
 
-            currentUser = user;
-            document.getElementById("email").innerText = user.email || "";
+			<h1
+				onclick="window.location.reload()"
+				class="logo">
+				T-Choob
+			</h1>
 
-            const { data: profile } = await shopDB
-                .from("profiles")
-                .select("*")
-                .eq("id", user.id)
-                .single();
+			<a
+				href="index.html"
+				class="back-link">
+				بازگشت
+			</a>
 
-            if (!profile) {
-                alert("پروفایل پیدا نشد");
-                return;
-            }
+		</div>
 
-            document.getElementById("avatar").src = profile.avatar_url || "assets/avatar.png";
-            document.getElementById("username").innerText = profile.username || "";
-            document.getElementById("phone").innerText = profile.phone || "";
-            document.getElementById("edit-username").value = profile.username || "";
-            document.getElementById("edit-phone").value = profile.phone || "";
-            document.getElementById("edit-avatar").value = profile.avatar_url || "";
-        }
+	</nav>
 
-        async function saveProfile() {
-            const username = document.getElementById("edit-username").value.trim();
-            const phone = document.getElementById("edit-phone").value.trim();
-            const avatar_url = document.getElementById("edit-avatar").value.trim();
 
-            const { error } = await shopDB
-                .from("profiles")
-                .update({ username, phone, avatar_url })
-                .eq("id", currentUser.id);
+	<main class="profile-page">
 
-            if (error) {
-                alert("خطا در ذخیره اطلاعات");
-                return;
-            }
+		<div class="profile-card">
 
-            alert("ذخیره شد");
-            loadProfile();
-        }
-    </script>
+			<div class="profile-header">
+
+				<button
+					type="button"
+					class="profile-avatar-button"
+					onclick="openProfileImage()"
+					aria-label="نمایش تصویر پروفایل">
+
+					<img
+						id="avatar"
+						class="profile-avatar"
+						src="assets/avatar.png"
+						alt="تصویر پروفایل">
+
+				</button>
+
+				<h1
+					id="username"
+					class="profile-username">
+					...
+				</h1>
+
+				<p
+					id="email"
+					class="profile-info">
+					...
+				</p>
+
+				<p
+					id="phone"
+					class="profile-info">
+					...
+				</p>
+
+			</div>
+
+
+			<section class="profile-section">
+
+				<h2 class="profile-title">
+					تنظیمات حساب
+				</h2>
+
+				<div class="profile-form">
+
+					<input
+						id="edit-username"
+						type="text"
+						placeholder="نام کاربری"
+						class="profile-input">
+
+					<input
+						id="edit-phone"
+						type="text"
+						placeholder="شماره موبایل"
+						class="profile-input">
+
+					<input
+						id="edit-avatar"
+						type="text"
+						placeholder="لینک عکس پروفایل"
+						class="profile-input">
+
+					<button
+						type="button"
+						onclick="sendResetPasswordEmail()"
+						class="profile-btn password-btn">
+						تغییر رمز عبور
+					</button>
+
+					<button
+						type="button"
+						onclick="saveProfile()"
+						class="profile-btn save-btn">
+						ذخیره تغییرات
+					</button>
+
+				</div>
+
+			</section>
+
+
+			<section class="profile-section">
+
+				<h2 class="profile-title">
+					سفارش‌های من
+				</h2>
+
+				<div
+					id="orders-list"
+					class="orders-container">
+					در حال بارگذاری...
+				</div>
+
+			</section>
+
+
+			<section class="profile-section">
+
+				<button
+					type="button"
+					onclick="handleLogout()"
+					class="profile-btn logout-btn">
+					خروج از حساب
+				</button>
+
+			</section>
+
+		</div>
+
+	</main>
+
+
+	<!-- =====================================================
+	     نمایش بزرگ تصویر پروفایل
+	     ===================================================== -->
+
+	<div
+		id="profile-image-viewer"
+		class="profile-image-viewer hidden"
+		role="dialog"
+		aria-modal="true"
+		aria-label="تصویر بزرگ پروفایل">
+
+		<button
+			type="button"
+			class="profile-image-viewer-close"
+			onclick="closeProfileImage()"
+			aria-label="بستن">
+			×
+		</button>
+
+		<img
+			id="profile-image-large"
+			class="profile-image-large"
+			src=""
+			alt="تصویر پروفایل">
+
+	</div>
+
+
+	<script>
+
+		document.addEventListener(
+			"DOMContentLoaded",
+			loadProfile
+		);
+
+
+		// =====================================================
+		// بارگذاری پروفایل
+		// =====================================================
+
+		async function loadProfile() {
+
+			const {
+				data: {
+					user
+				}
+			} =
+				await shopDB.auth.getUser();
+
+
+			if (!user) {
+
+				location.href =
+					"login.html";
+
+				return;
+
+			}
+
+
+			currentUser =
+				user;
+
+
+			document.getElementById(
+				"email"
+			).innerText =
+				user.email || "";
+
+
+			const {
+				data: profile,
+				error
+			} =
+				await shopDB
+					.from("profiles")
+					.select("*")
+					.eq(
+						"id",
+						user.id
+					)
+					.single();
+
+
+			if (
+				error ||
+				!profile
+			) {
+
+				alert(
+					"پروفایل پیدا نشد"
+				);
+
+				return;
+
+			}
+
+
+			const avatar =
+				profile.avatar_url ||
+				"assets/avatar.png";
+
+
+			document.getElementById(
+				"avatar"
+			).src =
+				avatar;
+
+
+			document.getElementById(
+				"username"
+			).innerText =
+				profile.username || "";
+
+
+			document.getElementById(
+				"phone"
+			).innerText =
+				profile.phone || "";
+
+
+			document.getElementById(
+				"edit-username"
+			).value =
+				profile.username || "";
+
+
+			document.getElementById(
+				"edit-phone"
+			).value =
+				profile.phone || "";
+
+
+			document.getElementById(
+				"edit-avatar"
+			).value =
+				profile.avatar_url || "";
+
+		}
+
+
+		// =====================================================
+		// ذخیره پروفایل
+		// =====================================================
+
+		async function saveProfile() {
+
+			if (!currentUser) {
+
+				alert(
+					"ابتدا وارد حساب شوید"
+				);
+
+				return;
+
+			}
+
+
+			const username =
+				document.getElementById(
+					"edit-username"
+				).value.trim();
+
+
+			const phone =
+				document.getElementById(
+					"edit-phone"
+				).value.trim();
+
+
+			const avatar_url =
+				document.getElementById(
+					"edit-avatar"
+				).value.trim();
+
+
+			const {
+				error
+			} =
+				await shopDB
+					.from("profiles")
+					.update({
+						username,
+						phone,
+						avatar_url
+					})
+					.eq(
+						"id",
+						currentUser.id
+					);
+
+
+			if (error) {
+
+				console.error(
+					error
+				);
+
+				alert(
+					"خطا در ذخیره اطلاعات"
+				);
+
+				return;
+
+			}
+
+
+			alert(
+				"ذخیره شد"
+			);
+
+
+			loadProfile();
+
+		}
+
+
+		// =====================================================
+		// باز کردن تصویر بزرگ پروفایل
+		// =====================================================
+
+		function openProfileImage() {
+
+			const avatar =
+				document.getElementById(
+					"avatar"
+				);
+
+			const viewer =
+				document.getElementById(
+					"profile-image-viewer"
+				);
+
+			const largeImage =
+				document.getElementById(
+					"profile-image-large"
+				);
+
+
+			if (
+				!avatar ||
+				!viewer ||
+				!largeImage ||
+				!avatar.src
+			) {
+
+				return;
+
+			}
+
+
+			largeImage.src =
+				avatar.src;
+
+
+			viewer.classList.remove(
+				"hidden"
+			);
+
+
+			document.body.classList.add(
+				"profile-image-viewer-open"
+			);
+
+		}
+
+
+		// =====================================================
+		// بستن تصویر
+		// =====================================================
+
+		function closeProfileImage() {
+
+			const viewer =
+				document.getElementById(
+					"profile-image-viewer"
+				);
+
+
+			if (!viewer) {
+
+				return;
+
+			}
+
+
+			viewer.classList.add(
+				"hidden"
+			);
+
+
+			document.body.classList.remove(
+				"profile-image-viewer-open"
+			);
+
+		}
+
+
+		// =====================================================
+		// بستن با ESC
+		// =====================================================
+
+		document.addEventListener(
+			"keydown",
+			function(event) {
+
+				if (
+					event.key ===
+					"Escape"
+				) {
+
+					closeProfileImage();
+
+				}
+
+			}
+		);
+
+
+		// =====================================================
+		// کلیک روی فضای بیرون تصویر
+		// =====================================================
+
+		document
+			.getElementById(
+				"profile-image-viewer"
+			)
+			?.addEventListener(
+				"click",
+				function(event) {
+
+					if (
+						event.target ===
+						this
+					) {
+
+						closeProfileImage();
+
+					}
+
+				}
+			);
+
+	</script>
+
 </body>
+
 </html>
